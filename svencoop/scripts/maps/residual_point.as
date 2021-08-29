@@ -2,6 +2,8 @@
 #include "residualpoint/monster_xenocrab"
 #include "residualpoint/anti_rush"
 
+const bool blAntiRushEnable = true; //Enable this to get Anti-Rush and survival mode -mikk
+
 array<ItemMapping@> g_ItemMappings = { ItemMapping( "weapon_m16", "weapon_9mmAR" ) };
 
 
@@ -18,8 +20,9 @@ bool ShouldRestartIfClassicModeChangesOn( const string& in szMapName )
 
 void MapInit()
 {
-
-	RegisterAntiRushEntity();
+	
+	if( blAntiRushEnable )
+		RegisterAntiRushEntity();
 
 	// I'm too lazy to change the classname and put the model on it
 	XenCrab::Register();

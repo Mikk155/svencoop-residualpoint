@@ -23,7 +23,7 @@ add sprites on this origins for this maps
 "model" "sprites/mikk/rp/level_change.spr"
 "scale" "0.25"
 "renderamt" "255"
-"rendermode" "0"
+"rendermode" "5"
 "origin" 
 }
 

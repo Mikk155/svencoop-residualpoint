@@ -13,7 +13,7 @@ bool ShouldRestartIfClassicModeChangesOn( const string& in szMapName )
 	szMapName != "rp_c00_m2" && 
 	szMapName != "rp_c00_m3" && 
 	szMapName != "rp_c00_m4" && 
-	szMapName != "rp_c00_m5"; //<- Nombre de los mapas del tren (Despues de que terminen todos los mapas pueda comenzar el classicmode sin la necesidad de hacer restart)
+	szMapName != "rp_c00_m5"; //<- name of the maps that classic mode can be enabled / disabled via vote without restart
 }
 
 void MapInit()

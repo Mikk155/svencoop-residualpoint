@@ -1,5 +1,6 @@
 
 #include "residualpoint/monster_xenocrab"
+#include "residualpoint/anti_rush"
 
 array<ItemMapping@> g_ItemMappings = { ItemMapping( "weapon_m16", "weapon_9mmAR" ) };
 
@@ -8,15 +9,18 @@ bool ShouldRestartIfClassicModeChangesOn( const string& in szMapName )
 {
 	return 
 
-	szMapName != "" && 
-	szMapName != "" && 
-	szMapName != "" && 
-	szMapName != "" && 
-	szMapName != ""; //<- Nombre de los mapas del tren (Despues de que terminen todos los mapas pueda comenzar el classicmode sin la necesidad de hacer restart)
+	szMapName != "rp_c00_m1" && 
+	szMapName != "rp_c00_m2" && 
+	szMapName != "rp_c00_m3" && 
+	szMapName != "rp_c00_m4" && 
+	szMapName != "rp_c00_m5"; //<- Nombre de los mapas del tren (Despues de que terminen todos los mapas pueda comenzar el classicmode sin la necesidad de hacer restart)
 }
 
 void MapInit()
 {
+
+	RegisterAntiRushEntity();
+
 	// I'm too lazy to change the classname and put the model on it
 	XenCrab::Register();
 

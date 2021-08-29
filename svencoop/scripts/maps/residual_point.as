@@ -1,8 +1,11 @@
 
 #include "residualpoint/monster_xenocrab"
 #include "residualpoint/anti_rush"
+#include "residualpoint/leveldead_loadsaved"
 
 const bool blAntiRushEnable = true; //Enable this to get Anti-Rush and survival mode -mikk
+
+const bool blSurvivalEnable = true; //Enable this to get Anti-Rush and survival mode -mikk
 
 array<ItemMapping@> g_ItemMappings = { ItemMapping( "weapon_m16", "weapon_9mmAR" ) };
 
@@ -23,6 +26,9 @@ void MapInit()
 	
 	if( blAntiRushEnable )
 		RegisterAntiRushEntity();
+		
+	if( blSurvivalEnable )
+		Survival_on();
 
 	// I'm too lazy to change the classname and put the model on it
 	XenCrab::Register();
@@ -34,4 +40,21 @@ void MapInit()
 
 	if( !ShouldRestartIfClassicModeChangesOn( g_Engine.mapname ) )
 		g_ClassicMode.SetShouldRestartOnChange( false );
+}
+
+void Survival_on()
+{
+	dictionary survivalon =
+	{
+		{ "triggerstate", "1" },
+		{ "delay", "25"},
+		{ "target", "survival_on" }
+	};
+
+	CBaseEntity@ test1 = g_EntityFuncs.CreateEntity( "trigger_auto", survivalon, true );
+}
+
+void ActivateSurvival(CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useType, float flValue)
+{
+	g_SurvivalMode.Activate();
 }

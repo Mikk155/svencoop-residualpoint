@@ -1,1 +1,3 @@
-c01_m1 sk02a - Incoming
+SC Map name	original	tittle		bug
+c01_m1		sk02a		Incoming	cambiar teleports por info_player_deatmatch-. cada que un trigger_teleport deba activarse. triggerea un trigger_respawn sin spawnflags. el metodo es mm spawn viejo 0#0 spawn nuevo 0 y el trigger respawn necesita 1 segundo. osea el mm debe activarse 1 segundo antes que el trigger_teleport
+c01_m2		

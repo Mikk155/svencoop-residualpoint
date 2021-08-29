@@ -27,4 +27,18 @@ add sprites on this origins for this maps
 {
 "classname" "env_sprite"
 "spawnflags" "1"
+"model" "sprites/mikk/rp/level_change.spr"
+"scale" "0.25"
+"renderamt" "255"
+"rendermode" "0"
+}
 
+mapname		origin				Extra weas
+rp_c00_m1		1215 1324 3177
+rp_c00_m2		-196 -1112 3246
+rp_c00_m3		2392 -1856 1677
+rp_c00_m4		-487 2465 1638
+rp_c00_m5		-152 1876 1643		"targetname" "remove_sprite"
+rp_c01_m1		328 3912 -575		"targetname" "ynkg_teledoor"
+rp_c01_m2		560 -6476 -1754
+		

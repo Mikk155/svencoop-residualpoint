@@ -1,3 +1,30 @@
-SC Map name	original	tittle		bug
+MAPS SIDE
+
+SC Map name	original	tittle		fix
 c01_m1		sk02a		Incoming	cambiar teleports por info_player_deatmatch-. cada que un trigger_teleport deba activarse. triggerea un trigger_respawn sin spawnflags. el metodo es mm spawn viejo 0#0 spawn nuevo 0 y el trigger respawn necesita 1 segundo. osea el mm debe activarse 1 segundo antes que el trigger_teleport
 c01_m2		
+
+
+SCRIPT SIDE
+
+script name		fix
+antirush.as		puedes adoptar un trigger_auto_mp que este solo exista en el bsp cuando el antirush esta on, este trigger auto triggereara un multimanager que siempre se llamara "anti_rush_on" y este mm estara en el mapa el cual activara todas las func_wall_toggle que empiezan en "start invisible", me ahorraria mucho tiempo creando hullsizes en el start
+
+
+MODELS SIDE
+
+
+
+
+
+
+
+MAPS RIPENT SIDE (Guardar al final)
+change wads survivor. suvivor to residualpoint.wad
+delete all globalnames keyvalues
+add sprites on this origins for this maps
+
+{
+"classname" "env_sprite"
+"spawnflags" "1"
+

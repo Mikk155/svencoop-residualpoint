@@ -3,9 +3,9 @@
 #include "residualpoint/anti_rush"
 #include "residualpoint/leveldead_loadsaved"
 
-const bool blAntiRushEnable = true; //Enable this to get Anti-Rush and survival mode -mikk
+const bool blAntiRushEnable = true; //Enable this to get Anti-Rush mode -mikk
 
-const bool blSurvivalEnable = true; //Enable this to get Anti-Rush and survival mode -mikk
+const bool blSurvivalEnable = true; //Enable this to get Survival mode -mikk
 
 array<ItemMapping@> g_ItemMappings = { ItemMapping( "weapon_m16", "weapon_9mmAR" ) };
 
@@ -50,8 +50,18 @@ void Survival_on()
 		{ "delay", "25"},
 		{ "target", "survival_on" }
 	};
+	
+	dictionary survivalon2 =
+	{
+		{ "m_iMode", "1" },
+		{ "m_iszScriptFunctionName", "ActivateSurvival"},
+		{ "targetname", "survival_on" }
+	};
 
 	CBaseEntity@ test1 = g_EntityFuncs.CreateEntity( "trigger_auto", survivalon, true );
+	
+	CBaseEntity@ test2 = g_EntityFuncs.CreateEntity( "trigger_script", survivalon2, true );
+	
 }
 
 void ActivateSurvival(CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useType, float flValue)

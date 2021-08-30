@@ -45,7 +45,7 @@ namespace XenCrab
 	const string XENO_HEADCRAB_MODEL = "models/residualpoint/xenocrab.mdl";
 	const string XENO_HEADCRAB_NAME = "Xeno Head Crab";
 	
-	const float iBitDamage = g_EngineFuncs.CVarGetFloat( "sk_headcrab_dmg_bite" );
+	const float iBitDamage = g_EngineFuncs.CVarGetFloat( "sk_headcrab_dmg_bite" ) * 2.4;
     //const int iBitDamage = 25;
 
     const float iHealth = g_EngineFuncs.CVarGetFloat( "sk_headcrab_health" );
@@ -201,7 +201,7 @@ namespace XenCrab
 			pev.movetype		        = MOVETYPE_STEP;
 			self.m_bloodColor	        = BLOOD_COLOR_GREEN;
 			pev.effects		            = 0;
-			self.pev.dmg                = iBitDamage * 2.4;
+			self.pev.dmg                = iBitDamage;
 			
 			if( self.pev.health == 0.0f )
 			{

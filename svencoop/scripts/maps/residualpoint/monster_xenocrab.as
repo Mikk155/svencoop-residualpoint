@@ -267,11 +267,8 @@ namespace XenCrab
 			switch ( pTask.iTask )
 			{
 				case TASK_RANGE_ATTACK1:
+				case TASK_RANGE_ATTACK2:
 				{
-					g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_attack1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch);
-					self.m_IdealActivity = ACT_RANGE_ATTACK1;
-					SetTouch ( TouchFunction(LeapTouch) );
-
 					if ( self.m_fSequenceFinished )
 					{
 						self.TaskComplete();
@@ -280,7 +277,6 @@ namespace XenCrab
 					}
 					break;
 				}
-				case TASK_RANGE_ATTACK2:
 				default:
 				{
 					BaseClass.RunTask( pTask );
@@ -307,7 +303,7 @@ namespace XenCrab
 			// Don't hit if back on ground
 			if (  pev.flags & FL_ONGROUND == 0 )
 			{
-				g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_headbite.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch );
+				BiteSound();
 				pOther.TakeDamage( self.pev, self.pev, iBitDamage, DMG_SLASH );
 				pev.nextthink = g_Engine.time +  0.1;
 			}
@@ -328,7 +324,7 @@ namespace XenCrab
 			}
 		}
 		
-		/*void StartTask( Task@ pTask )
+		void StartTask( Task@ pTask )
 		{
 			switch ( pTask.iTask )
 			{
@@ -339,14 +335,12 @@ namespace XenCrab
 					SetTouch ( TouchFunction(LeapTouch) );
 					break;
 				}
-				
 				default:
-			
 				{
 					BaseClass.StartTask( pTask );
 				}
 			}
-		}*/
+		}
 
 		//=========================================================
 		// CheckRangeAttack1

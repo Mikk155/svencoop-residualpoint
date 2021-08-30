@@ -26,7 +26,7 @@
 "models/hlclassic/v_gauss.mdl" "models/residualpoint/weapons/classic/v_gauss.mdl"
 "models/hlclassic/v_grenade.mdl" "models/residualpoint/weapons/classic/v_handgrenade.mdl"
 "models/hlclassic/v_m16a2.mdl" "models/residualpoint/weapons/classic/v_m16a2.mdl"
-"models/hlclassic/v_medkit.mdl" "models/residualpoint/weapons/v_medkit.mdl"
+"models/hlclassic/v_medkit.mdl" "models/residualpoint/weapons/classic/v_medkit.mdl"
 "models/hlclassic/v_rpg.mdl" "models/residualpoint/weapons/classic/v_rpg.mdl"
 "models/hlclassic/v_satchel.mdl" "models/residualpoint/weapons/classic/v_satchel.mdl"
 "models/hlclassic/v_satchel_radio.mdl" "models/residualpoint/weapons/classic/v_satchel_radio.mdl"

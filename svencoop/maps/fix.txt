@@ -29,3 +29,5 @@ add sprites on this origins for this maps
 
 mapname			origin			Extra weas
 rp_c01_m1		"328 3912 -575"		"targetname" "ynkg_teledoor"
+
+rp_c01_m3		"400 -3507 -624"

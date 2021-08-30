@@ -1,7 +1,7 @@
 
 #include "residualpoint/monster_xenocrab"
 #include "residualpoint/anti_rush"
-#include "residualpoint/leveldead_loadsaved"
+#include "residualpoint/env_hurt"
 
 const bool blAntiRushEnable = true; //Enable this to get Anti-Rush mode -mikk
 
@@ -29,6 +29,8 @@ void MapInit()
 		
 	if( blSurvivalEnable )
 		Survival_on();
+
+	RegisterEnvHurtEntity();
 
 	// I'm too lazy to change the classname and put the model on it
 	XenCrab::Register();

@@ -6,7 +6,6 @@ c01_m2
 
 
 SCRIPT SIDE
-crear un trigger_auto_mp que se pueda desactivar en el mapscript para llamar el survival via esa entity
 agregar el weapon_ofshockrifle y ofm249 solo esos dos, deberian ser not classic mode. se reemplazaran los models via gmr. que usen los models de SC vanilla
 agregare el game_hud_custom creo que era. de outerbeast. para poner el titulo "Residual point"
 Classic mode vote NOT Restart en map rp_c00_m6, el resto se pueden quitar o dejar para los servers que tienen el vote activado. yo en m6 pondre un trigger_vote
@@ -28,6 +27,4 @@ add sprites on this origins for this maps
 }
 
 mapname			origin			Extra weas
-rp_c01_m1		"328 3912 -575"		"targetname" "ynkg_teledoor"
-
 rp_c01_m3		"400 -3507 -624"

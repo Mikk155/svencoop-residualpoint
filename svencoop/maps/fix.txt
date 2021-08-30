@@ -27,4 +27,5 @@ add sprites on this origins for this maps
 }
 
 mapname			origin			Extra weas
-rp_c01_m3		"400 -3507 -624"
+rp_c03_m2		"400 -3507 -624"
+rp_c03_m3		"5869 -820 -693"

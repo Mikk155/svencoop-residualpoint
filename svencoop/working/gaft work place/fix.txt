@@ -1,4 +1,4 @@
-agregar sprite level change fijate bien el origin idk
+agregar sprite level change al c04 fijate bien el origin idk
 poner antirush me da wea sin enemy
 
 {

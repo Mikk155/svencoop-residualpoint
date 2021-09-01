@@ -11,3 +11,11 @@ Outerbeast
 Testers
 Sare
 Izanagi
+
+
+Sources:
+Original files:		https://www.moddb.com/mods/hl-residual-point
+Program we used:	Ripent & https://github.com/wootguy/bspguy
+Checkpoint Spawner:	https://github.com/Outerbeast/Entities-and-Gamemodes/blob/master/checkpoint_spawner.as
+Anti-Rush:		https://github.com/CubeMath/UCHFastDL2/blob/master/svencoop/scripts/maps/cubemath/trigger_once_mp.as
+Anti-Rush Entity:	https://github.com/Outerbeast/anti_rush

@@ -1,14 +1,10 @@
 MAPS SIDE
 
 SC Map name	original	tittle		fix
-c01_m1		sk02a		Incoming	cambiar teleports por info_player_deatmatch-. cada que un trigger_teleport deba activarse. triggerea un trigger_respawn sin spawnflags. el metodo es mm spawn viejo 0#0 spawn nuevo 0 y el trigger respawn necesita 1 segundo. osea el mm debe activarse 1 segundo antes que el trigger_teleport
-c01_m2		
 
 
 SCRIPT SIDE
 agregar el weapon_ofshockrifle y ofm249 solo esos dos, deberian ser not classic mode. se reemplazaran los models via gmr. que usen los models de SC vanilla
-agregare el game_hud_custom creo que era. de outerbeast. para poner el titulo "Residual point"
-Classic mode vote NOT Restart en map rp_c00_m6, el resto se pueden quitar o dejar para los servers que tienen el vote activado. yo en m6 pondre un trigger_vote
 
 
 MAPS RIPENT SIDE (Guardar al final)

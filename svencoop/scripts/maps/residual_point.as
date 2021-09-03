@@ -1,39 +1,33 @@
 
 #include "residualpoint/monster_xenocrab"
 #include "residualpoint/anti_rush"
-#include "residualpoint/env_hurt"
 #include "residualpoint/checkpoint_spawner"
 
 const bool blAntiRushEnable = true; //Enable this to get Anti-Rush mode -mikk
 
-const bool blSurvivalEnable = true; //Enable this to get Survival mode -mikk
+bool blSurvivalEnable = true; //Enable this to get Survival mode -mikk
 
 array<ItemMapping@> g_ItemMappings = { ItemMapping( "weapon_m16", "weapon_9mmAR" ) };
 
-bool ShouldRestartIfClassicModeChangesOn( const string& in szMapName )
+bool ActivateSurvivalAndClassicMode( const string& in szMapName )
 {
 	return 
 
-	szMapName != "rp_c00_m1" && 
-	szMapName != "rp_c00_m2" && 
-	szMapName != "rp_c00_m3" && 
-	szMapName != "rp_c00_m4" && 
-	szMapName != "rp_c00_m5"; //<- name of the maps that classic mode can be enabled / disabled via vote without restart
+    szMapName != "rp_c00_m1" && 
+    szMapName != "rp_c00_m2" && 
+    szMapName != "rp_c00_m3" && 
+    szMapName != "rp_c00_m4" &&
+    szMapName != "rp_c00_m5" &&    
+    szMapName != "rp_c01" 	 &&
+    szMapName != "rp_c02"; //<- name of the maps that classic/survival mode can be enabled / disabled via vote without restart
 }
 
 void MapInit()
 {
-	
+	RegisterCheckPointSpawnerEntity();
+		
 	if( blAntiRushEnable )
 		RegisterAntiRushEntity();
-		
-	if( blSurvivalEnable )
-		Survival_on();
-
-	if( blSurvivalEnable )
-		RegisterCheckPointSpawnerEntity();
-	
-	RegisterEnvHurtEntity();
 
 	// I'm too lazy to change the classname and put the model on it
 	XenCrab::Register();
@@ -42,9 +36,18 @@ void MapInit()
 	g_ClassicMode.EnableMapSupport();
 	
 	g_ClassicMode.SetItemMappings( @g_ItemMappings );
+	
+	if( !ActivateSurvivalAndClassicMode( g_Engine.mapname ) )
+		g_ClassicMode.SetShouldRestartOnChange( false );	
+}
 
-	if( !ShouldRestartIfClassicModeChangesOn( g_Engine.mapname ) )
-		g_ClassicMode.SetShouldRestartOnChange( false );
+void MapStart()
+{
+	if( !ActivateSurvivalAndClassicMode( g_Engine.mapname ) )
+		blSurvivalEnable = false;
+		
+	if( blSurvivalEnable )
+		Survival_on();
 }
 
 void Survival_on()

@@ -41,14 +41,15 @@ namespace XenCrab
 	};
 	
 	const int XHC_AE_JUMPATTACK = 2;
-    const int XHC_AE_ROTATEYAW = 120;
+    const int XHC_AE_ROTATEYAW = 75;
 	const string XENO_HEADCRAB_MODEL = "models/residualpoint/xenocrab.mdl";
 	const string XENO_HEADCRAB_NAME = "Xeno Head Crab";
+	const string FXENO_HEADCRAB_NAME = "Friendly Xeno Head Crab";
 	
 	const float iBitDamage = g_EngineFuncs.CVarGetFloat( "sk_headcrab_dmg_bite" ) * 2.4;
     //const int iBitDamage = 25;
 
-    const float iHealth = g_EngineFuncs.CVarGetFloat( "sk_headcrab_health" );
+    const float iHealth = g_EngineFuncs.CVarGetFloat( "sk_headcrab_health" ) * 2.3;
 	//const int iHealth = 40;
 
 
@@ -199,27 +200,39 @@ namespace XenCrab
 			
 			pev.solid			        = SOLID_SLIDEBOX;
 			pev.movetype		        = MOVETYPE_STEP;
-			self.m_bloodColor	        = BLOOD_COLOR_GREEN;
 			pev.effects		            = 0;
+			self.m_bloodColor	        = BLOOD_COLOR_GREEN;
 			self.pev.dmg                = iBitDamage;
 			
 			if( self.pev.health == 0.0f )
 			{
-				self.pev.health = iHealth * 2.3;
+				self.pev.health = iHealth;
 			}
 			
 			self.pev.view_ofs		    = Vector ( 0, 0, 20 );
-			self.pev.yaw_speed		    = XHC_AE_ROTATEYAW;
 			self.m_flFieldOfView        = 0.5;
 			self.m_MonsterState		    = MONSTERSTATE_NONE;
 			
 			if( string( self.m_FormattedName ).IsEmpty() )
 			{
-				self.m_FormattedName 	= XENO_HEADCRAB_NAME;
+				if( self.IsPlayerAlly() )
+					self.m_FormattedName = FXENO_HEADCRAB_NAME;
+				else
+					self.m_FormattedName = XENO_HEADCRAB_NAME;
 			}
+			
+			if( self.IsPlayerAlly() )
+				SetUse( UseFunction( this.FollowerUse ) );
 		
 			self.MonsterInit();
-			BaseClass.Spawn();
+		}
+		
+		int ObjectCaps( void )
+		{
+			if( self.IsPlayerAlly() )
+				return FCAP_IMPULSE_USE;
+			else
+				return BaseClass.ObjectCaps();
 		}
 		
 		void Precache()
@@ -290,6 +303,7 @@ namespace XenCrab
 		//=========================================================
 		void LeapTouch( CBaseEntity @pOther )
 		{
+			
 			if ( pOther.pev.takedamage == DAMAGE_NO )
 			{
 				return;
@@ -301,14 +315,13 @@ namespace XenCrab
 			}
 			
 			// Don't hit if back on ground
-			if (  pev.flags & FL_ONGROUND == 0 )
+			if ( pev.flags & FL_ONGROUND == 0 )
 			{
 				BiteSound();
 				pOther.TakeDamage( self.pev, self.pev, iBitDamage, DMG_SLASH );
 				pev.nextthink = g_Engine.time +  0.1;
+				SetTouch( null );
 			}
-			
-			SetTouch( null );
 		}
 
 
@@ -330,6 +343,13 @@ namespace XenCrab
 			{
 				case TASK_RANGE_ATTACK1:
 				{
+					//Friendly fire stuff.
+					if( !self.NoFriendlyFire() )
+					{
+						self.ChangeSchedule( self.GetScheduleOfType ( SCHED_FIND_ATTACK_POINT ) );
+						return;
+					}
+					
 					g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_attack1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch);
 					self.m_IdealActivity = ACT_RANGE_ATTACK1;
 					SetTouch ( TouchFunction(LeapTouch) );
@@ -347,7 +367,7 @@ namespace XenCrab
 		//=========================================================
 		bool CheckRangeAttack1( float flDot, float flDist )
 		{
-			if ( (pev.flags & FL_ONGROUND != 0) && flDist <= 256 && flDot >= 0.65 )
+			if ( (pev.flags & FL_ONGROUND != 0) && flDist <= 256 && flDot >= 0.65 && self.NoFriendlyFire() )
 			{
 				return true;
 			}
@@ -374,6 +394,11 @@ namespace XenCrab
 
 		int TakeDamage( entvars_t@ pevInflictor, entvars_t@ pevAttacker, float flDamage, int bitsDamageType)
 		{	
+			// Make sure friends talk about it if player hurts talkmonsters...
+			int ret = BaseClass.TakeDamage(pevInflictor, pevAttacker, flDamage, bitsDamageType);
+			if( ( !self.IsAlive() || self.pev.deadflag == DEAD_DYING) && (!self.IsPlayerAlly()))	// Evils dont alert friends!
+				return ret;
+				
 			if ( bitsDamageType & DMG_ACID != 0)
 				flDamage = 0;
 
@@ -462,6 +487,26 @@ namespace XenCrab
 					return slHCRangeAttack1;
 			}
 			return BaseClass.GetScheduleOfType( Type );
+		}
+		
+		//=========================================================
+		// FollowerUse
+		//=========================================================
+		void FollowerUse( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue )
+		{
+			self.FollowerPlayerUse( pActivator, pCaller, useType, flValue );
+			
+			CBaseEntity@ pTarget = self.m_hTargetEnt;
+			
+		if( pTarget is pActivator )
+		{
+			AlertSound();
+		}
+		else
+		{
+			IdleSound();
+		}
+		
 		}
 	}
 

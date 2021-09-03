@@ -12,6 +12,7 @@ enum PointCheckpointFlags
 class point_checkpoint : ScriptBaseAnimating
 {
 	private CSprite@ m_pSprite;
+	
 	private int m_iNextPlayerToRevive = 1;
 	
 	// How much time between being triggered and starting the revival of dead players
@@ -28,6 +29,12 @@ class point_checkpoint : ScriptBaseAnimating
 	
 	// Show Xenmaker-like effect when the checkpoint is spawned?
 	private bool m_fSpawnEffect					= false; 
+	
+	//This checkpoint may only be activated with the use key
+	private bool SF_CHECKPOINT_USEONLY 			= true;
+	
+	// If defined, player will spawn in this location instead of the entity's origin
+	private Vector m_vecAltPosition;
 	
 	bool KeyValue( const string& in szKey, const string& in szValue )
 	{
@@ -59,6 +66,11 @@ class point_checkpoint : ScriptBaseAnimating
 		else if( szKey == "m_fSpawnEffect" )
 		{
 			m_fSpawnEffect = atoi( szValue ) != 0;
+			return true;
+		}
+		else if( szKey == "m_vecAltPosition" )
+		{
+			g_Utility.StringToVector( m_vecAltPosition, szValue );
 			return true;
 		}
 		else
@@ -149,6 +161,18 @@ class point_checkpoint : ScriptBaseAnimating
 		self.pev.nextthink = g_Engine.time + 0.1f;
 	}
 	
+	int ObjectCaps()
+	{
+		if( SF_CHECKPOINT_USEONLY && g_SurvivalMode.MapSupportEnabled() && g_SurvivalMode.IsActive() )
+		{
+			return BaseClass.ObjectCaps() | FCAP_IMPULSE_USE;
+		}
+		else
+		{
+			return BaseClass.ObjectCaps();
+		}
+	}
+	
 	void CreateSpawnEffect()
 	{
 		int iBeamCount = 8;
@@ -197,9 +221,36 @@ class point_checkpoint : ScriptBaseAnimating
 	
 	void Touch( CBaseEntity@ pOther )
 	{
-		if( !IsEnabled() || IsActivated() || !pOther.IsPlayer() )
+		if( !IsEnabled() || IsActivated() || !pOther.IsPlayer() || SF_CHECKPOINT_USEONLY )
 			return;
 		
+		// Tell everyone the name of the player that activated this checkpoint
+		g_Game.AlertMessage( at_logged, "CHECKPOINT: \"%1\" activated Checkpoint\n", pOther.pev.netname );
+		g_PlayerFuncs.ClientPrintAll( HUD_PRINTTALK, "" + pOther.pev.netname + " just activated a Respawn-Point.\n" );
+		
+		// Set activated
+		self.pev.frags = 1.0f;
+		
+		g_SoundSystem.EmitSound( self.edict(), CHAN_STATIC, "../media/valve.mp3", 1.0f, ATTN_NONE );
+
+		self.pev.rendermode		= kRenderTransTexture;
+		self.pev.renderamt		= 255;
+		
+		SetThink( ThinkFunction( this.FadeThink ) );
+		self.pev.nextthink = g_Engine.time + 0.1f;
+		
+		// Trigger targets
+		self.SUB_UseTargets( pOther, USE_TOGGLE, 0 );
+	}
+	
+	void Use( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue = 0.0f )
+	{
+		CBasePlayer@ pOther = cast<CBasePlayer@>(pActivator);
+		
+		if( !IsEnabled() || IsActivated() || !pOther.IsPlayer() || !SF_CHECKPOINT_USEONLY  )
+			return;
+		
+		// Tell everyone the name of the player that activated this checkpoint
 		g_Game.AlertMessage( at_logged, "CHECKPOINT: \"%1\" activated Checkpoint\n", pOther.pev.netname );
 		g_PlayerFuncs.ClientPrintAll( HUD_PRINTTALK, "" + pOther.pev.netname + " just activated a Respawn-Point.\n" );
 		
@@ -359,6 +410,9 @@ class point_checkpoint : ScriptBaseAnimating
 		{
 			g_EntityFuncs.Remove( m_pSprite );
 			@m_pSprite = null;
+			
+			//Remove after take it
+			g_EntityFuncs.Remove( self );
 		}
 		
 		CheckReusable();

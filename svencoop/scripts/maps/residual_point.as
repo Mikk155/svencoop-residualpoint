@@ -2,6 +2,7 @@
 #include "residualpoint/monster_xenocrab"
 #include "residualpoint/anti_rush"
 #include "residualpoint/checkpoint_spawner"
+#include "residualpoint/teleportzone"
 
 const bool blAntiRushEnable = true; //Enable this to get Anti-Rush mode -mikk
 

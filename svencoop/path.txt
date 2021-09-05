@@ -1,0 +1,62 @@
+														ak01a( Start ) 
+														  |
+														ak01z
+														  |
+														ak01s
+														  |
+														ak01f
+														  |
+														ak01d
+														  |
+											  sk02h <-> wk02( Insecurity )
+														  |
+														sk02a
+														  |
+														sk02q( Incoming )
+														  |
+														 ak02
+														  |
+														ak02a( Among the ruins )
+														  |
+														ak02b
+														  |
+														ak02s
+														  |
+														ak02m
+														  |
+														ak02n
+														  |
+														ak02i
+														  |
+														ak02u
+														  |
+														ak03j( Office facility)
+														  |
+														ak03p
+														  |
+														ok03u( Obscure true )
+														  |
+														ok03o
+														  |
+														ok03w
+														  |
+														ok03e
+														  |
+														zk03y
+														  |
+									  zk03c(Pump 1) <-> zk03d( Residual Pit ) <-> zk03z(Pump 2)
+														  |
+														zk03q
+														  |
+														zk03t( Bombing Surface )
+														  |
+														zk03w
+														  |
+									   zk03e <--------- zk03a ---------> zk03b
+										 |                 					|
+									   pk01( Recession ) 		  		  zk03f( Recession ) + ( Se tiene que proteger al scientifo hasta llegar al elevador )
+										 |               					|
+																		  zk03g
+										 |                 					|
+																		  zk03j( Se necesita el item_airbubble )							 
+		   

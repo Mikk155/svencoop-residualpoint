@@ -1,9 +1,9 @@
 /* AntiRush custom entity 
 by Outerbeast
 */
-#include "../cubemath/trigger_once_mp"
-#include "../cubemath/trigger_multiple_mp"
-#include "../cubemath/func_wall_custom"
+#include "cubemath/trigger_once_mp"
+#include "cubemath/trigger_multiple_mp"
+#include "cubemath/func_wall_custom"
 
 class anti_rush : ScriptBaseEntity
 {

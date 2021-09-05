@@ -42,7 +42,7 @@ namespace XenCrab
 	
 	const int XHC_AE_JUMPATTACK = 2;
     const int XHC_AE_ROTATEYAW = 75;
-	const string XENO_HEADCRAB_MODEL = "models/residualpoint/xenocrab.mdl";
+	const string XENO_HEADCRAB_MODEL = "models/residualpoint/monsters/xenocrab.mdl";
 	const string XENO_HEADCRAB_NAME = "Xeno Head Crab";
 	const string FXENO_HEADCRAB_NAME = "Friendly Xeno Head Crab";
 	

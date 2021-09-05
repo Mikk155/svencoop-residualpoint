@@ -32,20 +32,20 @@
 "models/hlclassic/v_squeak.mdl" "models/residualpoint/weapons/v_squeak.mdl"
 
 
-// you can disable and enable this depend if want classic mode on or not
-/"models/v_desert_eagle.mdl" "models/mikk/arms_clsuit/v_desert_eagle.mdl"
-/"models/v_saw.mdl" "models/mikk/arms_clsuit/v_saw.mdl"
+// You can disable and enable this depend if want classic mode on or not
+// "models/v_desert_eagle.mdl" "models/mikk/arms_clsuit/v_desert_eagle.mdl"
+// "models/v_saw.mdl" "models/mikk/arms_clsuit/v_saw.mdl"
 
-"models/v_saw.mdl" "models/residualpoint/weapons/v_saw.mdl"
-"models/v_desert_eagle.mdl" "models/residualpoint/weapons/v_desert_eagle.mdl"
+// "models/v_saw.mdl" "models/residualpoint/weapons/v_saw.mdl"
+// "models/v_desert_eagle.mdl" "models/residualpoint/weapons/v_desert_eagle.mdl"
 
 
 // MONSTERS FOR RESIDUAL POINT
-"models/massn.mdl" "models/residualpoint/monsters/zgrunt.mdl"
-"models/cleansuit_scientist.mdl" "models/residualpoint/monsters/cleansuit_scientist.mdl"
-"models/barney.mdl" "models/residualpoint/monsters/barney.mdl"
-"models/scientist.mdl" "models/residualpoint/monsters/scientist.mdl"
+// "models/massn.mdl" "models/residualpoint/monsters/zgrunt.mdl"
+// "models/cleansuit_scientist.mdl" "models/residualpoint/monsters/cleansuit_scientist.mdl"
+// "models/barney.mdl" "models/residualpoint/monsters/barney.mdl"
+// "models/scientist.mdl" "models/residualpoint/monsters/scientist.mdl"
 
 // MISC FOR RESIDUAL POINT (FILES THAT YOU CAN DISABLE)
-"models/common/lambda.mdl" "models/residualpoint/misc/lambda.mdl"
-"models/player.mdl" "models/residualpoint/misc/sohn.mdl"
+// "models/common/lambda.mdl" "models/residualpoint/misc/lambda.mdl"
+// "models/player.mdl" "models/residualpoint/misc/sohn.mdl"

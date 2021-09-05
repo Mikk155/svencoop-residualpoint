@@ -8,7 +8,7 @@ Additional keys:-
 "endsound" "path/to/sound.wav"			- customise spawning end sound fx
 - Outerbeast 
 */
-#include "point_checkpoint"
+#include "../point_checkpoint"
 
 class checkpoint_spawner : ScriptBaseEntity
 {

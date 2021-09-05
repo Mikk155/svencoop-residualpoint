@@ -3,7 +3,7 @@
 #include "anti_rush"
 #include "beast/checkpoint_spawner"
 #include "beast/teleport_zone"
-#include "cubemath/item_airbubble"
+#include "residualpoint/item_airbubble"
 
 const bool blAntiRushEnable = true; //Enable this to get Anti-Rush mode -mikk
 

@@ -2,7 +2,8 @@
 #include "residualpoint/monster_xenocrab"
 #include "residualpoint/anti_rush"
 #include "residualpoint/checkpoint_spawner"
-#include "residualpoint/teleportzone"
+#include "residualpoint/teleport_zone"
+#include "residualpoint/item_airbubble"
 
 const bool blAntiRushEnable = true; //Enable this to get Anti-Rush mode -mikk
 
@@ -26,6 +27,8 @@ bool ActivateSurvivalAndClassicMode( const string& in szMapName )
 void MapInit()
 {
 	RegisterCheckPointSpawnerEntity();
+	
+	RegisterAirbubbleCustomEntity();
 		
 	if( blAntiRushEnable )
 		RegisterAntiRushEntity();

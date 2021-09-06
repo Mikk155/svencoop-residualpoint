@@ -21,7 +21,7 @@ bool ActivateSurvivalAndClassicMode( const string& in szMapName )
     szMapName != "rp_c00_m4" &&
     szMapName != "rp_c00_m5" &&    
     szMapName != "rp_c01" 	 &&
-    szMapName != "rp_c02"; //<- name of the maps that classic/survival mode can be enabled / disabled via vote without restart
+    szMapName != "rp_c02"; //<- name of the maps that classic mode can be enabled / disabled via vote without restart
 }
 
 void MapInit()

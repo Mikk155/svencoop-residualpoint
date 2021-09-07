@@ -56,8 +56,8 @@ class checkpoint_spawner : ScriptBaseEntity
 		g_SoundSystem.PrecacheSound( strStartSound );
 		g_SoundSystem.PrecacheSound( strEndSound );
 
-		g_Game.PrecacheGeneric( strStartSound );
-		g_Game.PrecacheGeneric( strEndSound );
+		g_Game.PrecacheGeneric( "sound/" + strStartSound );
+		g_Game.PrecacheGeneric( "sound/" + strEndSound );
 
 		BaseClass.Precache();
 	}

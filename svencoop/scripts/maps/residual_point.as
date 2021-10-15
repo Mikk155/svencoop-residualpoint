@@ -1,9 +1,10 @@
 
 #include "residualpoint/monster_xenocrab"
-#include "anti_rush"
+#include "residualpoint/item_airbubble"
+#include "residualpoint/monster_zgrunt"
 #include "beast/checkpoint_spawner"
 #include "beast/teleport_zone"
-#include "residualpoint/item_airbubble"
+#include "anti_rush"
 
 const bool blAntiRushEnable = true; //Enable this to get Anti-Rush mode -mikk
 
@@ -35,6 +36,7 @@ void MapInit()
 
 	// I'm too lazy to change the classname and put the model on it
 	XenCrab::Register();
+	ZombieGrunt::Register();
 
 	//We want classic mode voting to be enabled here
 	g_ClassicMode.EnableMapSupport();

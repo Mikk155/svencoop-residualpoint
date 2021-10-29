@@ -1,5 +1,22 @@
 namespace XenCrab
 {
+	//=========================================================
+	// Monster's Anim Events Go Here
+	//=========================================================
+	const int TASKSTATUS_RUNNING = 1; // Running task & movement
+
+	const int XHC_AE_JUMPATTACK = 2;
+    const int XHC_AE_ROTATEYAW = 75;
+
+	const string XENO_HEADCRAB_MODEL = "models/residualpoint/monsters/xenocrab.mdl";
+	
+	const float XENO_HEADCRAB_DAMAGE = g_EngineFuncs.CVarGetFloat( "sk_headcrab_dmg_bite" ) * 2.4;
+
+    const float XENO_HEADCRAB_HEALTH = g_EngineFuncs.CVarGetFloat( "sk_headcrab_health" ) * 2.3;
+
+	const string XENO_HEADCRAB_NAME = "Xeno Head Crab";
+	const string FXENO_HEADCRAB_NAME = "Friendly Xeno Head Crab";
+
 	const array<string> pIdleSounds = 
 	{
 		"headcrab/hc_idle1.wav",
@@ -40,22 +57,8 @@ namespace XenCrab
 		"headcrab/hc_headbite.wav",
 	};
 	
-	const int XHC_AE_JUMPATTACK = 2;
-    const int XHC_AE_ROTATEYAW = 75;
-	const string XENO_HEADCRAB_MODEL = "models/residualpoint/monsters/xenocrab.mdl";
-	const string XENO_HEADCRAB_NAME = "Xeno Head Crab";
-	const string FXENO_HEADCRAB_NAME = "Friendly Xeno Head Crab";
-	
-	const float iBitDamage = g_EngineFuncs.CVarGetFloat( "sk_headcrab_dmg_bite" ) * 2.4;
-    //const int iBitDamage = 25;
-
-    const float iHealth = g_EngineFuncs.CVarGetFloat( "sk_headcrab_health" ) * 2.3;
-	//const int iHealth = 40;
-
-
 	class CXenCrab : ScriptBaseMonsterEntity
-	{
-		
+	{	
 		private int m_iSoundVolue = 1;
 		private	int m_iVoicePitch = PITCH_NORM;
 
@@ -135,28 +138,28 @@ namespace XenCrab
 			{
 				case XHC_AE_JUMPATTACK:
 				{
-					pev.flags &= FL_ONGROUND;
+					self.pev.flags &= ~FL_ONGROUND;
 
-					g_EntityFuncs.SetOrigin (self, pev.origin + Vector ( 0 , 0 , 1) );// take him off ground so engine doesn't instantly reset onground 
-					Math.MakeVectors ( pev.angles );
+					g_EntityFuncs.SetOrigin(self, self.pev.origin + Vector ( 0 , 0 , 1) );// take him off ground so engine doesn't instantly reset onground 
+					Math.MakeVectors( self.pev.angles );
 
 					Vector vecJumpDir;
-					if (self.m_hEnemy.IsValid())
+					if( self.m_hEnemy.GetEntity() !is null )
 					{
-	
 						float gravity = g_EngineFuncs.CVarGetFloat( "sv_gravity" );
 						if (gravity <= 1)
 							gravity = 1;
 							
 						// How fast does the headcrab need to travel to reach that height given gravity?
-						float height = (self.m_hEnemy.GetEntity().pev.origin.z + self.m_hEnemy.GetEntity().pev.view_ofs.z - pev.origin.z);
+						float height = ( self.m_hEnemy.GetEntity().pev.origin.z + self.m_hEnemy.GetEntity().pev.view_ofs.z - self.pev.origin.z );
 						if (height < 16)
 							height = 16;
+
 						float speed = sqrt( 2 * gravity * height );
 						float time = speed / gravity;
 						
 						// Scale the sideways velocity to get there at the right time
-						vecJumpDir = (self.m_hEnemy.GetEntity().pev.origin + self.m_hEnemy.GetEntity().pev.view_ofs - pev.origin);
+						vecJumpDir = ( self.m_hEnemy.GetEntity().pev.origin + self.m_hEnemy.GetEntity().pev.view_ofs - self.pev.origin );
 						vecJumpDir = vecJumpDir * ( 1.0 / time );
 						
 						// Speed to offset gravity at the desired height
@@ -176,16 +179,28 @@ namespace XenCrab
 						vecJumpDir = Vector( g_Engine.v_forward.x, g_Engine.v_forward.y, g_Engine.v_up.z ) * 350;
 					}
 
-					g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_attack2.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch);
+					int iSound = Math.RandomLong( 0, 2 );
+					if ( iSound != 0 )	
+					{
+						switch(Math.RandomLong( 0, 2 ))
+						{
+							case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_attack1.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+							break;
+
+							case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_attack2.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+							break;
+
+							case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_attack3.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+							break;
+						}
+					}
 						
-					pev.velocity = vecJumpDir;
+					self.pev.velocity = vecJumpDir;
 					self.m_flNextAttack = g_Engine.time + 2;
 				}
 				break;
 
-				default:
-					BaseClass.HandleAnimEvent( pEvent );
-					break;
+				default: BaseClass.HandleAnimEvent( pEvent ); break;
 			}
 		}
 
@@ -202,11 +217,10 @@ namespace XenCrab
 			pev.movetype		        = MOVETYPE_STEP;
 			pev.effects		            = 0;
 			self.m_bloodColor	        = BLOOD_COLOR_GREEN;
-			self.pev.dmg                = iBitDamage;
 			
 			if( self.pev.health == 0.0f )
 			{
-				self.pev.health = iHealth;
+				self.pev.health = XENO_HEADCRAB_HEALTH;
 			}
 			
 			self.pev.view_ofs		    = Vector ( 0, 0, 20 );
@@ -271,7 +285,6 @@ namespace XenCrab
 			g_Game.PrecacheModel(XENO_HEADCRAB_MODEL);
 		}
 		
-
 		//=========================================================
 		// RunTask 
 		//=========================================================
@@ -290,10 +303,7 @@ namespace XenCrab
 					}
 					break;
 				}
-				default:
-				{
-					BaseClass.RunTask( pTask );
-				}
+				default: BaseClass.RunTask( pTask );
 			}
 		}
 		
@@ -303,27 +313,22 @@ namespace XenCrab
 		//=========================================================
 		void LeapTouch( CBaseEntity @pOther )
 		{
-			
 			if ( pOther.pev.takedamage == DAMAGE_NO )
-			{
 				return;
-			}
 			
 			if ( pOther.Classify() == Classify() )
-			{
 				return;
-			}
 			
 			// Don't hit if back on ground
-			if ( pev.flags & FL_ONGROUND == 0 )
+			if ( !self.pev.FlagBitSet( FL_ONGROUND ) )
 			{
 				BiteSound();
-				pOther.TakeDamage( self.pev, self.pev, iBitDamage, DMG_SLASH );
-				pev.nextthink = g_Engine.time +  0.1;
-				SetTouch( null );
-			}
-		}
 
+				pOther.TakeDamage( self.pev, self.pev, XENO_HEADCRAB_DAMAGE, DMG_SLASH  );
+			}
+
+			SetTouch( null );
+		}
 
 		//=========================================================
 		// PrescheduleThink
@@ -339,26 +344,18 @@ namespace XenCrab
 		
 		void StartTask( Task@ pTask )
 		{
+			self.m_iTaskStatus = TASKSTATUS_RUNNING;
+
 			switch ( pTask.iTask )
 			{
 				case TASK_RANGE_ATTACK1:
-				{
-					//Friendly fire stuff.
-					if( !self.NoFriendlyFire() )
-					{
-						self.ChangeSchedule( self.GetScheduleOfType ( SCHED_FIND_ATTACK_POINT ) );
-						return;
-					}
-					
+				{					
 					g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_attack1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch);
 					self.m_IdealActivity = ACT_RANGE_ATTACK1;
 					SetTouch ( TouchFunction(LeapTouch) );
 					break;
 				}
-				default:
-				{
-					BaseClass.StartTask( pTask );
-				}
+				default: BaseClass.StartTask( pTask );
 			}
 		}
 
@@ -395,9 +392,8 @@ namespace XenCrab
 		int TakeDamage( entvars_t@ pevInflictor, entvars_t@ pevAttacker, float flDamage, int bitsDamageType)
 		{	
 			// Make sure friends talk about it if player hurts talkmonsters...
-			int ret = BaseClass.TakeDamage(pevInflictor, pevAttacker, flDamage, bitsDamageType);
 			if( ( !self.IsAlive() || self.pev.deadflag == DEAD_DYING) && (!self.IsPlayerAlly()))	// Evils dont alert friends!
-				return ret;
+				return BaseClass.TakeDamage(pevInflictor, pevAttacker, flDamage, bitsDamageType);
 				
 			if ( bitsDamageType & DMG_ACID != 0)
 				flDamage = 0;
@@ -410,14 +406,22 @@ namespace XenCrab
 		//=========================================================
 		void IdleSound()
 		{
-		
-			switch (Math.RandomLong(0,4))
+			switch (Math.RandomLong( 0, 4 ))
 			{
-				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle2.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle3.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle4.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 4: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle5.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
+				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle1.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle2.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle3.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle4.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 4: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_idle5.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
 			}
 		}
 		
@@ -426,10 +430,13 @@ namespace XenCrab
 		//=========================================================
 		void AlertSound()
 		{			
-			switch (Math.RandomLong(0,1))
+			switch (Math.RandomLong( 0, 1 ))
 			{
-				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_alert1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_alert2.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
+				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_alert1.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_alert2.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
 			}
 		}
 
@@ -438,11 +445,16 @@ namespace XenCrab
 		//=========================================================
 		void PainSound()
 		{
-			switch (Math.RandomLong(0,2))
+			switch (Math.RandomLong( 0, 2 ))
 			{
-				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_pain1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_pain2.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_pain3.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
+				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_pain1.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_pain2.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_pain3.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
 			}
 		}
 
@@ -451,11 +463,16 @@ namespace XenCrab
 		//=========================================================
 		void AttackSound()
 		{
-			switch (Math.RandomLong(0,2))
+			switch (Math.RandomLong( 0, 2 ))
 			{
-				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_attack1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_attack2.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_attack3.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
+				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_attack1.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_attack2.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_attack3.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
 			}
 		}
 
@@ -464,10 +481,13 @@ namespace XenCrab
 		//=========================================================
 		void DeathSound()
 		{
-			switch (Math.RandomLong(0,1))
+			switch (Math.RandomLong( 0, 1 ))
 			{
-				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_die1.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
-				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_die2.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch); break;
+				case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_die1.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
+
+				case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_die2.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch); 
+				break;
 			}
 		}
 		
@@ -476,15 +496,14 @@ namespace XenCrab
 		//=========================================================
 		void BiteSound()
 		{
-			g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "headcrab/hc_headbite.wav", m_iSoundVolue, ATTN_NORM, 0, m_iVoicePitch );
+			g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "headcrab/hc_headbite.wav", m_iSoundVolue, ATTN_IDLE, 0, m_iVoicePitch );
 		}
 
 		Schedule@ GetScheduleOfType( int Type )
 		{	
 			switch	( Type )
 			{
-				case SCHED_RANGE_ATTACK1:
-					return slHCRangeAttack1;
+				case SCHED_RANGE_ATTACK1: return slHCRangeAttack1;
 			}
 			return BaseClass.GetScheduleOfType( Type );
 		}
@@ -498,28 +517,30 @@ namespace XenCrab
 			
 			CBaseEntity@ pTarget = self.m_hTargetEnt;
 			
-		if( pTarget is pActivator )
-		{
-			AlertSound();
-		}
-		else
-		{
-			IdleSound();
-		}
+			if( pTarget is pActivator )
+			{
+				AlertSound();
+			}
+			else
+			{
+				IdleSound();
+			}
 		
 		}
 	}
 
 	array<ScriptSchedule@>@ monster_xenocrab_schedules;
 
-	ScriptSchedule slHCRangeAttack1 (
+	ScriptSchedule slHCRangeAttack1 
+	(
 		bits_COND_ENEMY_OCCLUDED	|
 		bits_COND_NO_AMMO_LOADED,
 		0,
 		"HCRangeAttack1"
 	);
 
-	ScriptSchedule slHCRangeAttack1Fast (
+	ScriptSchedule slHCRangeAttack1Fast 
+	(
 		bits_COND_ENEMY_OCCLUDED	|
 		bits_COND_NO_AMMO_LOADED,
 		0,
@@ -539,7 +560,9 @@ namespace XenCrab
 		slHCRangeAttack1Fast.AddTask( ScriptTask(TASK_FACE_IDEAL) );
 		slHCRangeAttack1Fast.AddTask( ScriptTask(TASK_RANGE_ATTACK1) );
 		slHCRangeAttack1Fast.AddTask( ScriptTask(TASK_SET_ACTIVITY, float(ACT_IDLE)) );
+
 		array<ScriptSchedule@> scheds = {slHCRangeAttack1, slHCRangeAttack1Fast};
+
 		@monster_xenocrab_schedules = @scheds;
 	}
 

@@ -15,40 +15,14 @@
 */
 void AntiRushSpawnEntities() // void MapActivate()
 {			// Create entities only on this maps.
-	if( string(g_Engine.mapname) == "rp_c00_m5" )
+	if( string(g_Engine.mapname) == "rp_c04" )
 	{
-		AntiRushPercent( "66", "213 2075 1811", "-326 1681 1549", "1" );
+		AntiRushPercent( "66", "-1722 -474 -850", "-2438 -1254 -930", "1" );
+		AntiRushBlocker( "1", "369", "-3392 -3200 776" );
+		AntiRushPercent( "66", "2838 -2618 -362", "2410 -2902 -606", "2" );
+		AntiRushBlocker( "2", "220", "400 -2864 776" );
 	}
-	if( string(g_Engine.mapname) == "rp_c01" )
-	{
-		AntiRushPercent( "66", "5950 -1290 -2482", "4370 -1821 -2654", "1" );
-		
-		AntiRushPercent( "66", "582 -2034 -2138", "2 -2686 -2310", "2" );
-		AntiRushBlocker( "2", "226", "2016 -5278 -880" );
-		
-		LockPercentage( "3", "2" );
-		AntiRushPercent( "66", "2262 -1458 -2154", "1410 -1686 -2310", "3" );
-	}
-	if( string(g_Engine.mapname) == "rp_c02" )
-	{
-		AntiRushBlocker( "1", "184", "0 0 0" );
-		AntiRushPercent( "66", "1570 4054 -452", "50 3146 -646", "1" );
-	}
-	if( string(g_Engine.mapname) == "rp_c03_m1" )
-	{
-		AntiRushPercent( "66", "-361 -5837 -844", "-576 -6637 -1018", "1" );
-		AntiRushAlt( "ANTI-RUSH: Please. kill remain enemies first.", "-368 -6053 -894", "-416 -6253 -1014", "1" );
-		LockPercentage( "1", "1" );
-		
-		AntiRushPercent( "66", "-256 -6378 -1622", "-707 -6588 -1805", "2" );
-		LockPercentage( "2", "327" );
-		AntiRushBlocker( "2", "327", "739 -8180 -936" );
-		
-		AntiRushPercent( "66", "2132 -5645 -2254", "1312 -6799 -2492", "3" );
-		AntiRushAlt( "ANTI-RUSH: Please. kill remain enemies first.", "2124 -6248 -2377", "2056 -6413 -2505", "3" );
-		AntiRushPercent( "66", "-1103 1298 -1025", "-1881 729 -1247", "3" );
-		AntiRushBlocker( "3", "177", "-1256 732 -1192" );
-	}
+	
 	if( string(g_Engine.mapname) == "rp_c03_m2" )
 	{
 		AntiRushPercent( "66", "-10835 -4075 -499", "-12081 -4652 -852", "1" );
@@ -69,6 +43,44 @@ void AntiRushSpawnEntities() // void MapActivate()
 		AntiRushBlocker( "6", "2", "7081 -3238 577" );
 		
 		AntiRushPercent( "66", "11991 -420 -1487", "11398 -1023 -1760", "7" );
+	}
+	
+	if( string(g_Engine.mapname) == "rp_c03_m1" )
+	{
+		AntiRushPercent( "66", "-361 -5837 -844", "-576 -6637 -1018", "1" );
+		AntiRushAlt( "ANTI-RUSH: Please. kill remain enemies first.", "-368 -6053 -894", "-416 -6253 -1014", "1" );
+		LockPercentage( "1", "1" );
+		
+		AntiRushPercent( "66", "-256 -6378 -1622", "-707 -6588 -1805", "2" );
+		LockPercentage( "2", "327" );
+		AntiRushBlocker( "2", "327", "739 -8180 -936" );
+		
+		AntiRushPercent( "66", "2132 -5645 -2254", "1312 -6799 -2492", "3" );
+		AntiRushAlt( "ANTI-RUSH: Please. kill remain enemies first.", "2124 -6248 -2377", "2056 -6413 -2505", "3" );
+		AntiRushPercent( "66", "-1103 1298 -1025", "-1881 729 -1247", "3" );
+		AntiRushBlocker( "3", "177", "-1256 732 -1192" );
+	}
+	
+	if( string(g_Engine.mapname) == "rp_c02" )
+	{
+		AntiRushBlocker( "1", "184", "0 0 0" );
+		AntiRushPercent( "66", "1570 4054 -452", "50 3146 -646", "1" );
+	}
+	
+	if( string(g_Engine.mapname) == "rp_c01" )
+	{
+		AntiRushPercent( "66", "5950 -1290 -2482", "4370 -1821 -2654", "1" );
+		
+		AntiRushPercent( "66", "582 -2034 -2138", "2 -2686 -2310", "2" );
+		AntiRushBlocker( "2", "226", "2016 -5278 -880" );
+		
+		LockPercentage( "3", "2" );
+		AntiRushPercent( "66", "2262 -1458 -2154", "1410 -1686 -2310", "3" );
+	}
+	
+	if( string(g_Engine.mapname) == "rp_c00_m5" )
+	{
+		AntiRushPercent( "66", "213 2075 1811", "-326 1681 1549", "1" );
 	}
 }
 
@@ -95,14 +107,13 @@ void AntiRushAlt( const string messag, const string maxh, const string minh, con
 	
 	altmess =
 	{
-		{ "percentage", "01"},
-		{ "spawnflags", "12"},
-		{ "zonecornermin", "" + minh },
-		{ "zonecornermax", "" + maxh },
+		{ "m_flPercentage", "0.01"},
+		{ "minhullsize", "" + minh },
+		{ "maxhullsize", "" + maxh },
 		{ "target", "antirush_vol2_" + namese },
-		{ "wait", "1"}
+		{ "m_flDelay", "1"}
 	};
-	@pEntity = g_EntityFuncs.CreateEntity( "anti_rush", altmess, true );
+	@pEntity = g_EntityFuncs.CreateEntity( "trigger_multiple_mp", altmess, true );
 
 	altmess =														// trigger_entity_volume by outerbeast
 	{
@@ -172,15 +183,14 @@ void AntiRushPercent( const string percent, const string maxh, const string minh
 
 	antirush =
 	{
-		{ "percentage", "01"},
-		{ "zonecornermin", "" + minh },
-		{ "zonecornermax", "" + maxh },
+		{ "m_flPercentage", "0.01"},
+		{ "minhullsize", "" + minh },
+		{ "maxhullsize", "" + maxh },
 		{ "master", "antirush_master_" + namese },
 		{ "target", "antirush_vol_" + namese },
-		{ "spawnflags", "12"},
-		{ "wait", "1"}
+		{ "m_flDelay", "1"}
 	};
-	@pEntity = g_EntityFuncs.CreateEntity( "anti_rush", antirush, true );
+	@pEntity = g_EntityFuncs.CreateEntity( "trigger_multiple_mp", antirush, true );
 
 	antirush =														// trigger_entity_volume by outerbeast
 	{

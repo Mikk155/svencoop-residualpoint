@@ -3,11 +3,12 @@
 #include "anti_rush"								// Anti Rush Entity by Outerbeast
 #include "beast/checkpoint_spawner"					// Checkpoint Spawner Entity by Outerbeast
 #include "beast/teleport_zone"						// monster Teleport Zone Script by Outerbeast
-#include "cubemath/item_airbubble"				// item airbubbles Entity by Cubemath
+#include "cubemath/item_airbubble"					// item airbubbles Entity by Cubemath
+#include "cubemath/trigger_multiple_mp"				// Anti Rush Entity By Cubemath
+#include "residualpoint/configs"					// Configs file. feel free to customize the whole campaign config there.
+#include "mikk/antirush/residualpoint"				// Anti-Rush Script
 
-#include "residualpoint/configs"		// Configs file. feel free to customize the whole campaign config there.
-#include "mikk/antirush/residualpoint"	// Anti-Rush Script
-bool blAntiRushEnabled = true;			// true = Anti-Rush mode - Mikk
+bool blAntiRushEnabled = true;						// true = Anti-Rush Register
 
 void MapInit()
 {
@@ -36,13 +37,17 @@ void MapInit()
 	// HOOKS
 	g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @SpamTime );
 	
-	// Anti Rush Entity by Outerbeast
-	ANTI_RUSH::anti_rush();
+	if( blAntiRushEnabled )
+	{
+		// Anti Rush Entity by Outerbeast
+		ANTI_RUSH::anti_rush();
+		// Anti-Rush entity by Cubemath
+		RegisterTriggerMultipleMpEntity();
+	}
 }
 
 void MapActivate()
-{
-//	After register Outerbeast's entities. Will create entities if the next conditions are meet.
+{	//	After register Antirush entities
 	if( blAntiRushEnabled )
 	{
 		AntiRushSpawnEntities();

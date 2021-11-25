@@ -1,19 +1,13 @@
-Residual Point Full conversion for Sven Co-op with Survival & Anti-Rush support that are optional,
+Residual Point Mod Ported for Sven Co-op By Mikk & Gaftherman
 
-Conversion		Mikk & Gaftherman
-Original mod		(toxagen5@hotmail.com) http://blog.naver.com/toxagen
+Original mod author: (toxagen5@hotmail.com) http://blog.naver.com/toxagen
 
 Special thanks to:
+noi
 Sparks
-Cubemath
 W00tguy
+Cubemath
 Outerbeast
 
 Testers
 noi
-
-
-Sources:
-Original files:		https://www.moddb.com/mods/hl-residual-point
-Programs used:	Ripent & https://github.com/wootguy/bspguy
-Checkpoint Spawner:	https://github.com/Outerbeast/Entities-and-Gamemodes/blob/master/checkpoint_spawner.as

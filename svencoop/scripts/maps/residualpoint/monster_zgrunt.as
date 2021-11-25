@@ -2,22 +2,22 @@ namespace ZombieGrunt
 {
     class monster_zgrunt : ScriptBaseMonsterEntity
     {
-        void Precache()
-        {
-            g_Game.PrecacheModel( "models/mikk/residualpoint/zgrunt.mdl" );
+	
+		void Precache()
+		{
+			g_Game.PrecacheModel( "models/mikk/residualpoint/zgrunt.mdl" );
 
-            g_SoundSystem.PrecacheSound( "null.wav" ); // cache
-            g_Game.PrecacheGeneric( "sound/" + "null.wav" ); // client has to download
-        }
-
+			g_SoundSystem.PrecacheSound( "null.wav" ); // cache
+			g_Game.PrecacheGeneric( "sound/" + "null.wav" ); // client has to download
+		}
+		
         void Spawn( void )
         {
             Precache();
 
             pev.solid = SOLID_NOT;
 
-            dictionary keyvalues = 
-            {
+            dictionary keyvalues = {
                 { "model", "models/mikk/residualpoint/zgrunt.mdl" },
                 { "soundlist", "../mikk/residualpoint/zgrunt.txt" },
                 { "displayname", "Zombified Human Grunt" },
@@ -61,6 +61,5 @@ namespace ZombieGrunt
     void Register()
     {
         g_CustomEntityFuncs.RegisterCustomEntity( "ZombieGrunt::monster_zgrunt", "monster_zgrunt" );
-
     }
 }

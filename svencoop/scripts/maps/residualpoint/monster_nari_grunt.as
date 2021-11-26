@@ -17,11 +17,11 @@ namespace NariGrunt
                 { "model", "models/mikk/residualpoint/ngrunt.mdl" },
                 { "displayname", "Medic Human Grunt" },
                 { "is_player_ally", "1" },
-                { "weapons", "2" }
+                { "weapons", "5" }
 
             };
 
-            CBaseEntity@ pEntity = g_EntityFuncs.CreateEntity( "monster_human_medic_ally", keyvalues, false );
+            CBaseEntity@ pEntity = g_EntityFuncs.CreateEntity( "monster_human_grunt_ally", keyvalues, false );
 
             CBaseMonster@ pNrunt = pEntity.MyMonsterPointer();
 

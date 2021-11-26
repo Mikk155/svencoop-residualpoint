@@ -14,8 +14,7 @@ namespace ZombieGruntDead
             pev.solid = SOLID_NOT;
 
             dictionary keyvalues2 = {
-                { "model", "models/mikk/residualpoint/zgrunt.mdl" },
-                { "bloodcolor", "2" }
+                { "model", "models/mikk/residualpoint/zgrunt.mdl" }
 
             };
 

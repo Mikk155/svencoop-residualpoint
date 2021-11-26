@@ -1,8 +1,10 @@
 #include "residualpoint/monster_xenocrab"
 #include "residualpoint/monster_zgrunt"
-#include "residualpoint/monster_zgrunt_dead"
 #include "residualpoint/monster_alien_worker"
 #include "residualpoint/monster_nari_grunt"
+#include "residualpoint/monster_baby_ichthyosaur"
+#include "residualpoint/monster_zgrunt_dead"
+#include "residualpoint/monster_civ_scientist_dead"
 
 #include "residualpoint/checkpoint_spawner"
 #include "beast/teleport_zone"
@@ -18,6 +20,8 @@ void MapInit()
 	XenCrab::Register();	  
 	ZombieGrunt::Register();
 	ZombieGruntDead::Register();
+	ScientistCivdead::Register();
+	BabyIcky::Register();
 	AlienWorker::Register();
 	NariGrunt::Register();
 	

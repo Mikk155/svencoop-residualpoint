@@ -8,7 +8,7 @@ Additional keys:-
 "endsound" "path/to/sound.wav"			- customise spawning end sound fx
 - Outerbeast 
 */
-#include "point_checkpoint"
+#include "../point_checkpoint"
 
 class checkpoint_spawner : ScriptBaseEntity
 {
@@ -103,7 +103,7 @@ class checkpoint_spawner : ScriptBaseEntity
 		cp ["origin"]						= "" + self.GetOrigin().ToString();
 		cp ["angles"]						= "" + self.pev.angles.ToString();
 		cp ["target"]						= "" + self.pev.target;
-		cp ["model"]						= "" + self.pev.model;
+		cp ["model"]						= "" + self.pev.model;		// Why this wasn't on the original? -microphone
 		cp ["minhullsize"]					= "" + self.pev.vuser1.ToString();
 		cp ["maxhullsize"]					= "" + self.pev.vuser2.ToString();
 		cp ["m_fSpawnEffect"]				= "" + m_fSpawnEffect;

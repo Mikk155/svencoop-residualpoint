@@ -4,7 +4,7 @@ namespace AlienWorker
     {
 		void Precache()
 		{
-			g_Game.PrecacheModel( "models/mikk/residualpoint/tor.mdl" );
+			g_Game.PrecacheModel( "models/mikk/residualpoint/aworker.mdl" );
 		}
 
         void Spawn( void )
@@ -15,7 +15,7 @@ namespace AlienWorker
 
             dictionary keyvalues = 
             {
-                { "model", "models/mikk/residualpoint/tor.mdl" },
+                { "model", "models/mikk/residualpoint/aworker.mdl" },
                 { "health", "200" },
                 { "new_health", "200" },
                 { "$i_dyndiff_skip", "1" },

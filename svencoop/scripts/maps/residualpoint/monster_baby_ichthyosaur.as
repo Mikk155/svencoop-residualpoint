@@ -16,8 +16,8 @@ namespace BabyIcky
 
             dictionary keyvalues = {
                 { "model", "models/mikk/residualpoint/baby_icky.mdl" },
-                { "displayname", "Baby ichthyosaur" }
                 { "health", "250" },
+                { "displayname", "Baby ichthyosaur" }
 
             };
 

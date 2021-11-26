@@ -21,7 +21,7 @@ namespace BabyIcky
 
             };
 
-            CBaseEntity@ pEntity = g_EntityFuncs.CreateEntity( "monster_human_grunt", keyvalues, false );
+            CBaseEntity@ pEntity = g_EntityFuncs.CreateEntity( "monster_ichthyosaur", keyvalues, false );
 
             CBaseMonster@ pIcky = pEntity.MyMonsterPointer();
 

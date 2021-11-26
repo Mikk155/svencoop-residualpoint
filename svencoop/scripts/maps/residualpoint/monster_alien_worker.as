@@ -16,7 +16,7 @@ namespace AlienWorker
             dictionary keyvalues = 
             {
                 { "model", "models/mikk/residualpoint/aworker.mdl" },
-                { "health", "200" },
+                { "health", "500" },
                 { "new_health", "200" },
                 { "$i_dyndiff_skip", "1" },
                 { "displayname", "Alien Worker" }

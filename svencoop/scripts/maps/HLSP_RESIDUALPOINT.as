@@ -4,6 +4,7 @@
 #include "residualpoint/monster_nari_grunt"
 #include "residualpoint/monster_baby_ichthyosaur"
 #include "residualpoint/monster_zgrunt_dead"
+#include "residualpoint/monster_civ_barney_dead"
 #include "residualpoint/monster_civ_scientist_dead"
 
 #include "residualpoint/checkpoint_spawner"
@@ -11,21 +12,28 @@
 
 #include "cubemath/item_airbubble"
 
-const string configfile = "maps/rp_global_config.cfg" ;
+// Take'd from StaticCfg plugin by Outerbeast
+const string configfile = "maps/rp_global_config.cfg";	// a simple configuration cfg file for the whole campaign. made'd for lazy server operators. -microphone
 dictionary dCvars;
+// https://github.com/Outerbeast/Addons/blob/main/StaticCfg.as
 
 void MapInit()
 {
-	// I'm too lazy to change the classname and put the model on it -gaftherman
+	// I'm too lazy to change the classname and put the model on it -Pavotherman
 	XenCrab::Register();	  
 	ZombieGrunt::Register();
-	ZombieGruntDead::Register();
+	
+	// take'd from monster_cleansuit_scientist_dead by Rick 
 	ScientistCivdead::Register();
+	ZombieGruntDead::Register();
+	DeadCivBarney::Register();
+	// https://github.com/RedSprend/svencoop_plugins/blob/master/svencoop/scripts/maps/opfor/monsters/monster_cleansuit_scientist_dead.as
+	
 	BabyIcky::Register();
 	AlienWorker::Register();
 	NariGrunt::Register();
 	
-	Configurations();	// Easy configuration cfg for lazy server operators. -microphone
+	Configurations();
 	
 	RegisterAirbubbleCustomEntity();
 	RegisterCheckPointSpawnerEntity();
@@ -44,7 +52,7 @@ void MapInit()
 	}
 }
 
-void Configurations()	// StaticCfg by Outerbeast: https://github.com/Outerbeast/Addons/blob/main/StaticCfg.as
+void Configurations()
 {
 	File@ pFile = g_FileSystem.OpenFile( configfile, OpenFile::READ );
 	if( pFile !is null && pFile.IsOpen() ){

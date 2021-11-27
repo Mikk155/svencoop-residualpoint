@@ -1,6 +1,6 @@
-namespace ScientistCivdead
+namespace DeadCivBarney
 {
-const string g_szDefaultModel = "models/mikk/residualpoint/civ_scientist.mdl";
+const string g_szDefaultModel = "models/mikk/residualpoint/dead_barney.mdl";
 
 enum BodyGroup
 {
@@ -23,10 +23,10 @@ enum NeedleSubModel
 	NEEDLE_ON
 }
 
-class monster_civ_scientist_dead : ScriptBaseMonsterEntity
+class monster_civ_barney_dead : ScriptBaseMonsterEntity
 {
 	int m_iPose = 0;
-	private array<string>m_szPoses = { "lying_on_back", "lying_on_stomach", "dead_sitting", "dead_table1", "dead_table2", "dead_table3", "scientist_deadpose1", "dead_against_wall" };
+	private array<string>m_szPoses = { "lying_on_back", "lying_on_side", "lying_on_stomach", "stuffed_in_vent" };
 
 	bool KeyValue( const string& in szKey, const string& in szValue )
 	{
@@ -78,7 +78,7 @@ class monster_civ_scientist_dead : ScriptBaseMonsterEntity
 
 		self.SetClassification( CLASS_HUMAN_PASSIVE );
 
-		self.m_FormattedName = "Dead Civilian Scientist";
+		self.m_FormattedName = "civilian barney dead";
 
 		switch( self.pev.body )
 		{
@@ -98,14 +98,14 @@ class monster_civ_scientist_dead : ScriptBaseMonsterEntity
 		self.pev.sequence = self.LookupSequence( m_szPoses[m_iPose] );
 		if ( self.pev.sequence == -1 )
 		{
-			g_Game.AlertMessage( at_console, "Dead civilian scientist with bad pose\n" );
+			g_Game.AlertMessage( at_console, "Dead civ barney with bad pose\n" );
 		}
 	}
 }
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "ScientistCivdead::monster_civ_scientist_dead", "monster_civ_scientist_dead" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "DeadCivBarney::monster_civ_barney_dead", "monster_civ_barney_dead" );
 }
 
 } // end of namespace

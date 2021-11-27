@@ -17,7 +17,7 @@ namespace AlienWorker
             {
                 { "model", "models/mikk/residualpoint/aworker.mdl" },
                 { "health", "500" },
-                { "new_health", "200" },
+                { "new_health", "500" },
                 { "$i_dyndiff_skip", "1" },
                 { "displayname", "Alien Worker" }
 

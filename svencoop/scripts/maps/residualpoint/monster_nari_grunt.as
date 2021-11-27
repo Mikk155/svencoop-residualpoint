@@ -15,13 +15,11 @@ namespace NariGrunt
 
             dictionary keyvalues = {
                 { "model", "models/mikk/residualpoint/ngrunt.mdl" },
-                { "displayname", "Medic Human Grunt" },
-                { "is_player_ally", "1" },
-                { "weapons", "5" }
+                { "displayname", "Human Grunt" }
 
             };
 
-            CBaseEntity@ pEntity = g_EntityFuncs.CreateEntity( "monster_human_grunt_ally", keyvalues, false );
+            CBaseEntity@ pEntity = g_EntityFuncs.CreateEntity( "monster_male_assassin", keyvalues, false );
 
             CBaseMonster@ pNrunt = pEntity.MyMonsterPointer();
 

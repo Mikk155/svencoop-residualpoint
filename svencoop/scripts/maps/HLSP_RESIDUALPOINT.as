@@ -6,11 +6,15 @@
 #include "residualpoint/monster_zgrunt_dead"
 #include "residualpoint/monster_civ_barney_dead"
 #include "residualpoint/monster_civ_scientist_dead"
+#include "residualpoint/monster_required"
+#include "residualpoint/weapon_hlsatchel"
 
 #include "residualpoint/checkpoint_spawner"
 #include "beast/teleport_zone"
 
 #include "cubemath/item_airbubble"
+
+bool blSpawnNpcRequired = true: // Change to true = spawn npcs required for the map when they die instead of restart the map
 
 // Take'd from StaticCfg plugin by Outerbeast
 const string configfile = "maps/rp_global_config.cfg";	// a simple configuration cfg file for the whole campaign. made'd for lazy server operators. -microphone
@@ -33,6 +37,10 @@ void MapInit()
 	AlienWorker::Register();
 	NariGrunt::Register();
 	
+	// Take'd from weapon_hlsatchel by JulianR0
+	RegisterHLSatchel();
+	// https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
+	
 	Configurations();
 	
 	RegisterAirbubbleCustomEntity();
@@ -49,6 +57,14 @@ void MapInit()
 		dCvars.get( dCvarsKeys[i], CvarValue );
 		g_EngineFuncs.CVarSetFloat( dCvarsKeys[i], atof( CvarValue ) );
 		g_EngineFuncs.ServerPrint( "StaticCfg: Set CVar " + dCvarsKeys[i] + " " + CvarValue + "\n" );
+	}
+}
+
+MapActivate()
+{
+	if( blSpawnNpcRequired )
+	{
+		NpcRequiredStuff();
 	}
 }
 

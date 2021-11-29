@@ -7,7 +7,7 @@
 #include "residualpoint/monster_civ_barney_dead"
 #include "residualpoint/monster_civ_scientist_dead"
 #include "residualpoint/monster_required"
-#include "residualpoint/weapon_hlsatchel"
+//#include "residualpoint/weapon_hlsatchel"
 
 #include "residualpoint/checkpoint_spawner"
 #include "beast/teleport_zone"
@@ -38,7 +38,7 @@ void MapInit()
 	NariGrunt::Register();
 	
 	// Take'd from weapon_hlsatchel by JulianR0
-	RegisterHLSatchel();
+//	RegisterHLSatchel();
 	/* idk no precacha
 	g_Game.PrecacheModel( "models/v_satchel.mdl" );
 	g_Game.PrecacheModel( "models/p_satchel.mdl" );

@@ -14,7 +14,7 @@
 
 #include "cubemath/item_airbubble"
 
-bool blSpawnNpcRequired = true: // Change to true = spawn npcs required for the map when they die instead of restart the map
+bool blSpawnNpcRequired = true; // Change to true = spawn npcs required for the map when they die instead of restart the map
 
 // Take'd from StaticCfg plugin by Outerbeast
 const string configfile = "maps/rp_global_config.cfg";	// a simple configuration cfg file for the whole campaign. made'd for lazy server operators. -microphone
@@ -39,6 +39,17 @@ void MapInit()
 	
 	// Take'd from weapon_hlsatchel by JulianR0
 	RegisterHLSatchel();
+	/* idk no precacha
+	g_Game.PrecacheModel( "models/v_satchel.mdl" );
+	g_Game.PrecacheModel( "models/p_satchel.mdl" );
+	g_Game.PrecacheModel( "models/w_satchel.mdl" );
+	g_Game.PrecacheGeneric( "models/v_satchel.mdl" );
+	g_Game.PrecacheGeneric( "models/p_satchel.mdl" );
+	g_Game.PrecacheGeneric( "models/w_satchel.mdl" );
+	g_Game.PrecacheModel( "models/v_satchel_radio.mdl" );
+	g_Game.PrecacheModel( "models/p_satchel_radio.mdl" );
+	g_Game.PrecacheGeneric( "models/v_satchel_radio.mdl" );
+	g_Game.PrecacheGeneric( "models/p_satchel_radio.mdl" );*/
 	// https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
 	
 	Configurations();
@@ -60,7 +71,7 @@ void MapInit()
 	}
 }
 
-MapActivate()
+void MapActivate()
 {
 	if( blSpawnNpcRequired )
 	{

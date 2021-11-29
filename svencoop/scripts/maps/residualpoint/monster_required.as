@@ -53,7 +53,7 @@ void MakeTextofIt(){
 
 	keyvalues =	{
 		{ "delay", "0.5"},
-		{ "triggerstate", "1" }
+		{ "triggerstate", "1" },
 		{ "target", "spawn_npc_required"}
 	};
 	@pEntity = g_EntityFuncs.CreateEntity( "trigger_auto", keyvalues, true );

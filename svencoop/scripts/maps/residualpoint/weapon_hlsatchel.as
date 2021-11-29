@@ -178,7 +178,7 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 		
 		g_Game.PrecacheOther( "monster_hlsatchel" );
 		
-		g_Game.PrecacheGeneric( "models/weapon_hlsatchel.txt" );
+		g_Game.PrecacheGeneric( "sprites/weapon_hlsatchel.txt" );
 	}
 	
 	float WeaponTimeBase()

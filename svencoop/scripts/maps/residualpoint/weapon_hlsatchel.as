@@ -177,6 +177,7 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 		g_Game.PrecacheModel( "models/p_satchel_radio.mdl" );
 		
 		g_Game.PrecacheOther( "monster_hlsatchel" );
+		g_Game.PrecacheOther( "weapon_hlsatchel" );
 		
 		g_Game.PrecacheGeneric( "sprites/weapon_hlsatchel.txt" );
 	}

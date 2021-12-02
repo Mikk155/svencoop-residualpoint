@@ -45,7 +45,7 @@ void MakeTextofIt(){
 		{ "fadeout", "3"},
 		{ "holdtime", "10"},
 		{ "fxtime", "0.5"},
-		{ "channel", "5"},
+		{ "channel", "8"},
 		{ "message", "MAP: required npc are dead. new one will spawn in 1 minute." },
 		{ "targetname", "npc_required_die"}
 	};

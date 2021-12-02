@@ -7,38 +7,36 @@
 #include "residualpoint/monster_civ_barney_dead"
 #include "residualpoint/monster_civ_scientist_dead"
 #include "residualpoint/monster_required"
-//#include "residualpoint/weapon_hlsatchel"
+#include "residualpoint/weapon_hlsatchel"
+#include "residualpoint/monster_zombie_hev"
+#include "residualpoint/monster_boss"
+#include "residualpoint/ammo_individual"
 
 #include "residualpoint/checkpoint_spawner"
 #include "beast/teleport_zone"
 
 #include "cubemath/item_airbubble"
 
-bool blSpawnNpcRequired = true; // Change to true = spawn npcs required for the map when they die instead of restart the map
+bool blSpawnNpcRequired = true; // Change to true = spawn npcs required for the map when they die instead of restart the map NOTE: if enabled. archivemets will be disabled
+bool bSurvivalEnabled = true;	// Change to true = survival mode enabled NOTE: if disabled. archivemets will be disabled
 
 // Take'd from StaticCfg plugin by Outerbeast
 const string configfile = "maps/rp_global_config.cfg";	// a simple configuration cfg file for the whole campaign. made'd for lazy server operators. -microphone
 dictionary dCvars;
 // https://github.com/Outerbeast/Addons/blob/main/StaticCfg.as
 
+float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay" );
+
 void MapInit()
 {
-	// I'm too lazy to change the classname and put the model on it -Pavotherman
-	XenCrab::Register();	  
-	ZombieGrunt::Register();
-	
 	// take'd from monster_cleansuit_scientist_dead by Rick 
 	ScientistCivdead::Register();
 	ZombieGruntDead::Register();
 	DeadCivBarney::Register();
 	// https://github.com/RedSprend/svencoop_plugins/blob/master/svencoop/scripts/maps/opfor/monsters/monster_cleansuit_scientist_dead.as
 	
-	BabyIcky::Register();
-	AlienWorker::Register();
-	NariGrunt::Register();
-	
 	// Take'd from weapon_hlsatchel by JulianR0
-//	RegisterHLSatchel();
+	RegisterHLSatchel();
 	/* idk no precacha
 	g_Game.PrecacheModel( "models/v_satchel.mdl" );
 	g_Game.PrecacheModel( "models/p_satchel.mdl" );
@@ -52,8 +50,17 @@ void MapInit()
 	g_Game.PrecacheGeneric( "models/p_satchel_radio.mdl" );*/
 	// https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
 	
+	// I'm too lazy to change the classname and put the model on it -Pavotherman
+	XenCrab::Register();	  
+	ZombieGrunt::Register();
 	Configurations();
-	
+	BabyIcky::Register();
+	AlienWorker::Register();
+	NariGrunt::Register();
+	MonsterZombieHev::Register();
+	g_Game.PrecacheOther( "monster_zombie_hev" );
+	g_Game.PrecacheOther( "monster_headcrab" );
+	RegisterAllItems();
 	RegisterAirbubbleCustomEntity();
 	RegisterCheckPointSpawnerEntity();
 	
@@ -69,14 +76,47 @@ void MapInit()
 		g_EngineFuncs.CVarSetFloat( dCvarsKeys[i], atof( CvarValue ) );
 		g_EngineFuncs.ServerPrint( "StaticCfg: Set CVar " + dCvarsKeys[i] + " " + CvarValue + "\n" );
 	}
+	
+    if( string(g_Engine.mapname) == "rp_c13_m3a" ){
+		ControllerMapInit();
+	}
 }
 
 void MapActivate()
 {
+    if( string(g_Engine.mapname) == "rp_c13_m3a" ) // This is for Limitless potential server
+	{	//  that use this custom keyvalue to prevent DynamicDifficulty change npcs health values
+		CBaseEntity@ pEntity = null;
+		while( ( @pEntity = g_EntityFuncs.FindEntityByClassname( pEntity, "squad*" ) ) !is null ){
+			g_EntityFuncs.DispatchKeyValue( pEntity.edict(), "$i_dyndiff_skip", "1" );
+		}
+		while( ( @pEntity = g_EntityFuncs.FindEntityByClassname( pEntity, "monster_*" ) ) !is null ){
+			g_EntityFuncs.DispatchKeyValue( pEntity.edict(), "$i_dyndiff_skip", "1" );
+		}
+	}
+	
 	if( blSpawnNpcRequired )
 	{
 		NpcRequiredStuff();
 	}
+	
+	if( bSurvivalEnabled )
+	{	/* https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as */
+		g_SurvivalMode.Disable();
+		g_Scheduler.SetTimeout( "SurvivalModeEnable", flSurvivalStartDelay );
+		g_EngineFuncs.CVarSetFloat( "mp_survival_startdelay", 0 );
+		g_EngineFuncs.CVarSetFloat( "mp_survival_starton", 0 );
+		g_EngineFuncs.CVarSetFloat( "mp_dropweapons", 0 );
+	}
+}
+
+void SurvivalModeEnable()
+{
+    g_SurvivalMode.Activate( true );
+    g_EngineFuncs.CVarSetFloat( "mp_dropweapons", 1 );
+    NetworkMessage message( MSG_ALL, NetworkMessages::SVC_STUFFTEXT );
+    message.WriteString( "spk buttons/bell1" );
+    message.End();
 }
 
 void Configurations()
@@ -99,6 +139,11 @@ void Configurations()
 		
 		pFile.Close();
 	}
+}
+
+void ActivateSurvival(CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useType, float flValue)
+{
+	g_SurvivalMode.Activate();
 }
 
 HookReturnCode SpamTime(CBasePlayer@ pPlayer)

@@ -173,7 +173,7 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 		g_Game.PrecacheModel( "models/w_satchel.mdl" );
 		g_Game.PrecacheModel( "models/p_satchel.mdl" );
 		
-		g_Game.PrecacheModel( "models/v_satchel_radio.mdl" );
+		g_Game.PrecacheModel( "models/mikk/residualpoint/v_satchel_radio.mdl" );
 		g_Game.PrecacheModel( "models/p_satchel_radio.mdl" );
 		
 		g_Game.PrecacheOther( "monster_hlsatchel" );
@@ -268,7 +268,7 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 		self.m_flTimeWeaponIdle = WeaponTimeBase() + g_PlayerFuncs.SharedRandomFloat( m_pPlayer.random_seed, 10, 15 );
 		
 		if ( self.pev.iuser1 > 0 )
-			return self.DefaultDeploy( self.GetV_Model( "models/v_satchel_radio.mdl" ), self.GetP_Model( "models/p_satchel_radio.mdl" ), SATCHEL_RADIO_DRAW, "hive" );
+			return self.DefaultDeploy( self.GetV_Model( "models/mikk/residualpoint/v_satchel_radio.mdl" ), self.GetP_Model( "models/p_satchel_radio.mdl" ), SATCHEL_RADIO_DRAW, "hive" );
 		else
 			return self.DefaultDeploy( self.GetV_Model( "models/v_satchel.mdl" ), self.GetP_Model( "models/p_satchel.mdl" ), SATCHEL_DRAW, "trip" );
 	}
@@ -358,7 +358,7 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 			pSatchel.pev.velocity = vecThrow;
 			pSatchel.pev.avelocity.y = 400;
 			
-			m_pPlayer.pev.viewmodel = string( "models/v_satchel_radio.mdl" );
+			m_pPlayer.pev.viewmodel = string( "models/mikk/residualpoint/v_satchel_radio.mdl" );
 			m_pPlayer.pev.weaponmodel = string( "models/p_satchel_radio.mdl" );
 			
 			self.SendWeaponAnim( SATCHEL_RADIO_DRAW );

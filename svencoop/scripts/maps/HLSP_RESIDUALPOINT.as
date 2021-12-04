@@ -10,6 +10,7 @@
 #include "residualpoint/weapon_hlsatchel"
 #include "residualpoint/monster_zombie_hev"
 #include "residualpoint/monster_boss"
+#include "residualpoint/archievemets"
 #include "residualpoint/ammo_individual"
 
 #include "residualpoint/checkpoint_spawner"
@@ -29,37 +30,27 @@ float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay
 
 void MapInit()
 {
-	// take'd from monster_cleansuit_scientist_dead by Rick 
-	ScientistCivdead::Register();
-	ZombieGruntDead::Register();
-	DeadCivBarney::Register();
-	// https://github.com/RedSprend/svencoop_plugins/blob/master/svencoop/scripts/maps/opfor/monsters/monster_cleansuit_scientist_dead.as
-	
 	// Take'd from weapon_hlsatchel by JulianR0
 	RegisterHLSatchel();
-	/* idk no precacha
-	g_Game.PrecacheModel( "models/v_satchel.mdl" );
-	g_Game.PrecacheModel( "models/p_satchel.mdl" );
-	g_Game.PrecacheModel( "models/w_satchel.mdl" );
-	g_Game.PrecacheGeneric( "models/v_satchel.mdl" );
-	g_Game.PrecacheGeneric( "models/p_satchel.mdl" );
-	g_Game.PrecacheGeneric( "models/w_satchel.mdl" );
-	g_Game.PrecacheModel( "models/v_satchel_radio.mdl" );
-	g_Game.PrecacheModel( "models/p_satchel_radio.mdl" );
-	g_Game.PrecacheGeneric( "models/v_satchel_radio.mdl" );
-	g_Game.PrecacheGeneric( "models/p_satchel_radio.mdl" );*/
 	// https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
 	
 	// I'm too lazy to change the classname and put the model on it -Pavotherman
+	// Monsters
 	XenCrab::Register();	  
 	ZombieGrunt::Register();
-	Configurations();
 	BabyIcky::Register();
 	AlienWorker::Register();
 	NariGrunt::Register();
 	MonsterZombieHev::Register();
 	g_Game.PrecacheOther( "monster_zombie_hev" );
 	g_Game.PrecacheOther( "monster_headcrab" );
+	// take'd from monster_cleansuit_scientist_dead by Rick 
+	ScientistCivdead::Register();
+	ZombieGruntDead::Register();
+	DeadCivBarney::Register();
+	// https://github.com/RedSprend/svencoop_plugins/blob/master/svencoop/scripts/maps/opfor/monsters/monster_cleansuit_scientist_dead.as
+	
+	Configurations();
 	RegisterAllItems();
 	RegisterAirbubbleCustomEntity();
 	RegisterCheckPointSpawnerEntity();
@@ -79,26 +70,26 @@ void MapInit()
 	
     if( string(g_Engine.mapname) == "rp_c13_m3a" ){
 		ControllerMapInit();
+		g_Scheduler.SetTimeout( "Entitys", 10 ); 
 	}
 }
 
 void MapActivate()
 {
-    if( string(g_Engine.mapname) == "rp_c13_m3a" ) // This is for Limitless potential server
-	{	//  that use this custom keyvalue to prevent DynamicDifficulty change npcs health values
-		CBaseEntity@ pEntity = null;
-		while( ( @pEntity = g_EntityFuncs.FindEntityByClassname( pEntity, "squad*" ) ) !is null ){
-			g_EntityFuncs.DispatchKeyValue( pEntity.edict(), "$i_dyndiff_skip", "1" );
-		}
-		while( ( @pEntity = g_EntityFuncs.FindEntityByClassname( pEntity, "monster_*" ) ) !is null ){
-			g_EntityFuncs.DispatchKeyValue( pEntity.edict(), "$i_dyndiff_skip", "1" );
-		}
-	}
-	
 	if( blSpawnNpcRequired )
 	{
 		NpcRequiredStuff();
 	}
+	
+	if( !bSurvivalEnabled )
+	{
+		if( blSpawnNpcRequired )
+		{
+			UpdateOnRemove();
+		}
+	}
+	
+	Archievemets();
 	
 	if( bSurvivalEnabled )
 	{	/* https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as */
@@ -108,6 +99,15 @@ void MapActivate()
 		g_EngineFuncs.CVarSetFloat( "mp_survival_starton", 0 );
 		g_EngineFuncs.CVarSetFloat( "mp_dropweapons", 0 );
 	}
+}
+
+void UpdateOnRemove()
+{
+    CBaseEntity@ pEntity = null;
+    while((@pEntity = g_EntityFuncs.FindEntityByClassname(pEntity, "trigger_save")) !is null)
+    {
+        g_EntityFuncs.Remove( pEntity );
+    }
 }
 
 void SurvivalModeEnable()

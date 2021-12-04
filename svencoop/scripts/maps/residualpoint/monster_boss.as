@@ -15,6 +15,59 @@ void ControllerMapInit()
 	g_SoundSystem.PrecacheSound("mikk/residualpoint/boss/final_hit.ogg");
 }
 
+const array <string> pMonsters = { "monster_alien_tor", "monster_kingpin", "monster_bigmomma", "player" };
+
+void Entitys()
+{
+	AdjustDifficultyByClassname( pMonsters[0], 5, 0, 15 );
+	AdjustDifficultyByClassname( pMonsters[1], 30, 0, 0  );
+	AdjustDifficultyByClassname( pMonsters[2], 320, 0, 15 );
+	AdjustDifficultyByClassname( pMonsters[3], 1, 5, 15 );
+}
+
+void AdjustDifficultyByClassname( const string sClassName, int MaxLife, int iPerPlayerInc, int iMoreHealth )
+{
+	//If 1 player or less, don't do anything
+	//if( g_PlayerFuncs.GetNumPlayers() <= 1 )
+		//return;
+			
+	if( iPerPlayerInc <= 0 ) 
+		iPerPlayerInc = 1;
+			
+	CBaseEntity@ pEntity = null;
+    while( ( @pEntity = g_EntityFuncs.FindEntityByClassname( pEntity, sClassName ) ) !is null )
+    {
+        if ( pEntity is null || !pEntity.IsAlive() )
+            continue;
+
+        int iSkill = Math.clamp( 1, 3, int( g_EngineFuncs.CVarGetFloat( "skill" ) ) ); // Get current skill level and ensure this is between 1 and 3
+		
+		int iMultiPlayersInGame = g_PlayerFuncs.GetNumPlayers() * iPerPlayerInc;
+
+        int iCalcNewHealth = ( iMultiPlayersInGame * iSkill ) + iMoreHealth;
+		
+		int iNewHealth = Math.clamp( 0, MaxLife, iCalcNewHealth );
+
+		if( pEntity.pev.health == pEntity.pev.max_health )
+		{
+			if( pEntity.pev.health > MaxLife )
+			{
+				pEntity.pev.health = MaxLife;
+				pEntity.pev.max_health = MaxLife;
+			}
+			else
+			{
+				pEntity.pev.health = iNewHealth + pEntity.pev.health;		
+				pEntity.pev.max_health = iNewHealth + pEntity.pev.max_health;
+			}
+			g_PlayerFuncs.ClientPrintAll( HUD_PRINTNOTIFY, "DEBUG: " + pEntity.pev.classname + " health has been set to " + pEntity.pev.health + " for " + g_PlayerFuncs.GetNumPlayers() + " players.\n" );
+		}
+		else
+		{
+			g_PlayerFuncs.ClientPrintAll( HUD_PRINTNOTIFY, "DEBUG: " + pEntity.pev.classname + " health has not been changed, because the entity has received damage before the health change" + "\n" );
+		}
+    }
+}
 
 /* npc_controller
 Controller's psychic attacks

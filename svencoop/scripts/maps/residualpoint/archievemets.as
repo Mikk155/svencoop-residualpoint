@@ -9,6 +9,12 @@ void Archievemets()
 	{
 		TextFormat( "Explorer 1 of 6 paths" );
     }
+    if(string(g_Engine.mapname) == "rp_c05"
+    or string(g_Engine.mapname) == "rp_c08_m2sewer"
+    or string(g_Engine.mapname) == "rp_c08_m3sewer" )
+    {
+        TextFormat( "Fish Diver 1 of 3 maps" );
+    }
 }
 
 void TextFormat( const string mensaje )

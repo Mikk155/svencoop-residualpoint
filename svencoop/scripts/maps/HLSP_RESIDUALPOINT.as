@@ -1,98 +1,58 @@
-#include "residualpoint/monster_xenocrab"
-#include "residualpoint/monster_zgrunt"
-#include "residualpoint/monster_alien_worker"
-#include "residualpoint/monster_nari_grunt"
-#include "residualpoint/monster_baby_ichthyosaur"
-#include "residualpoint/monster_zgrunt_dead"
-#include "residualpoint/monster_civ_barney_dead"
-#include "residualpoint/monster_civ_scientist_dead"
-#include "residualpoint/monster_required"
-#include "residualpoint/weapon_hlsatchel"
-#include "residualpoint/monster_zombie_hev"
-#include "residualpoint/monster_boss"
 #include "residualpoint/archievemets"
+#include "residualpoint/monsters"
 #include "residualpoint/ammo_individual"
+#include "residualpoint/weapon_hlsatchel"
+#include "residualpoint/Difficulty"
 
 #include "residualpoint/checkpoint_spawner"
 #include "beast/teleport_zone"
 
 #include "cubemath/item_airbubble"
 
-bool blSpawnNpcRequired = true; // Change to true = spawn npcs required for the map when they die instead of restart the map NOTE: if enabled. archivemets will be disabled
-bool bSurvivalEnabled = true;	// Change to true = survival mode enabled NOTE: if disabled. archivemets will be disabled
-
-// Take'd from StaticCfg plugin by Outerbeast
-const string configfile = "maps/rp_global_config.cfg";	// a simple configuration cfg file for the whole campaign. made'd for lazy server operators. -microphone
-dictionary dCvars;
-// https://github.com/Outerbeast/Addons/blob/main/StaticCfg.as
-
 float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay" );
+
+bool blSpawnNpcRequired = true; // Change to true = spawn npcs required for the map when they die instead of restart the map NOTE: if enabled, archivemets will be disabled.
+bool bSurvivalEnabled = true;	// Change to true = survival mode enabled NOTE: if disabled, archivemets will be disabled.
 
 void MapInit()
 {
 	// Take'd from weapon_hlsatchel by JulianR0
-	RegisterHLSatchel();
 	// https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
-	
-	// I'm too lazy to change the classname and put the model on it -Pavotherman
-	// Monsters
-	XenCrab::Register();	  
-	ZombieGrunt::Register();
-	BabyIcky::Register();
-	AlienWorker::Register();
-	NariGrunt::Register();
-	MonsterZombieHev::Register();
-	g_Game.PrecacheOther( "monster_zombie_hev" );
-	g_Game.PrecacheOther( "monster_headcrab" );
-	// take'd from monster_cleansuit_scientist_dead by Rick 
-	ScientistCivdead::Register();
-	ZombieGruntDead::Register();
-	DeadCivBarney::Register();
-	// https://github.com/RedSprend/svencoop_plugins/blob/master/svencoop/scripts/maps/opfor/monsters/monster_cleansuit_scientist_dead.as
-	
-	Configurations();
+	RegisterHLSatchel();
+
+	RegisterAllMonsters();
 	RegisterAllItems();
 	RegisterAirbubbleCustomEntity();
 	RegisterCheckPointSpawnerEntity();
-	
-	g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @SpamTime );
-	
-	array<string> @dCvarsKeys = dCvars.getKeys();
-	dCvarsKeys.sortAsc();
-	string CvarValue;
 
-	for( uint i = 0; i < dCvarsKeys.length(); ++i )
-	{
-		dCvars.get( dCvarsKeys[i], CvarValue );
-		g_EngineFuncs.CVarSetFloat( dCvarsKeys[i], atof( CvarValue ) );
-		g_EngineFuncs.ServerPrint( "StaticCfg: Set CVar " + dCvarsKeys[i] + " " + CvarValue + "\n" );
-	}
+	DiffVerify();
 	
-    if( string(g_Engine.mapname) == "rp_c13_m3a" ){
+    if( string(g_Engine.mapname) == "rp_c13_m3a" )
+	{
 		ControllerMapInit();
 		g_Scheduler.SetTimeout( "Entitys", 10 ); 
 	}
+
+	g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @SpamTime );
 }
 
 void MapActivate()
 {
+	Archievemets();
+	
 	if( blSpawnNpcRequired )
 	{
 		NpcRequiredStuff();
 	}
 	
-	if( !bSurvivalEnabled )
+	if( !bSurvivalEnabled && blSpawnNpcRequired)
 	{
-		if( blSpawnNpcRequired )
-		{
-			UpdateOnRemove();
-		}
+		UpdateOnRemove();
 	}
 	
-	Archievemets();
-	
+	// https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as
 	if( bSurvivalEnabled )
-	{	/* https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as */
+	{	
 		g_SurvivalMode.Disable();
 		g_Scheduler.SetTimeout( "SurvivalModeEnable", flSurvivalStartDelay );
 		g_EngineFuncs.CVarSetFloat( "mp_survival_startdelay", 0 );
@@ -117,33 +77,6 @@ void SurvivalModeEnable()
     NetworkMessage message( MSG_ALL, NetworkMessages::SVC_STUFFTEXT );
     message.WriteString( "spk buttons/bell1" );
     message.End();
-}
-
-void Configurations()
-{
-	File@ pFile = g_FileSystem.OpenFile( configfile, OpenFile::READ );
-	if( pFile !is null && pFile.IsOpen() ){
-		while( !pFile.EOFReached() )
-		{
-			string sLine;
-			pFile.ReadLine( sLine );
-			if( sLine.SubString(0,1) == "#" || sLine.IsEmpty() )
-				continue;
-
-			array<string> parsed = sLine.Split( " " );
-			if( parsed.length() < 2 )
-				continue;
-
-			dCvars[parsed[0]] = parsed[1];
-		}
-		
-		pFile.Close();
-	}
-}
-
-void ActivateSurvival(CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useType, float flValue)
-{
-	g_SurvivalMode.Activate();
 }
 
 HookReturnCode SpamTime(CBasePlayer@ pPlayer)

@@ -462,13 +462,13 @@ void CustomAmmoGlock()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "ammo_9mmclip_individual", "ammo_9mmclip_individual" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "ammo_9mmclip_individual", "ammo_9mm_individual" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "ammo_9mmclip_individual", "ammo_9mm_individual" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "ammo_9mmclip_individual", "ammo_glock_individual" );
     g_ItemRegistry.RegisterItem( "ammo_9mmclip_individual", "" );
     g_ItemRegistry.RegisterItem( "ammo_9mm_individual", "" );
     g_ItemRegistry.RegisterItem( "ammo_glock_individual", "" );
 	g_Game.PrecacheOther( "ammo_9mmclip_individual" );
 	g_Game.PrecacheOther( "ammo_9mm_individual" );
-	g_Game.PrecacheOther( "ammo_9mm_individual" );
+	g_Game.PrecacheOther( "ammo_glock_individual" );
 }
 
 void CustomAmmo9mmAR()

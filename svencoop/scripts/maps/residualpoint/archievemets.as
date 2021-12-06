@@ -15,6 +15,14 @@ void Archievemets()
     {
         TextFormat( "Fish Diver 1 of 3 maps" );
     }
+    if(string(g_Engine.mapname) == "rp_c00_m5"
+    or string(g_Engine.mapname) == "rp_c01"
+    or string(g_Engine.mapname) == "rp_c02"
+    or string(g_Engine.mapname) == "rp_c03_m1"
+    or string(g_Engine.mapname) == "rp_c03_m2" )
+    {
+        TextFormat( "Secret hunter: 1 of items" );
+    }
 }
 
 void TextFormat( const string mensaje )

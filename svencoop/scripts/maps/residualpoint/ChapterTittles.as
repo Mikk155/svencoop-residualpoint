@@ -24,7 +24,7 @@ void ChapterTittles()
 		Game_texts( "Chapter 05: Obscure True" );
     }
     if(string(g_Engine.mapname) == "rp_c06"
-	or string(g_Engine.mapname) == "rp_c06pump" ){
+	or string(g_Engine.mapname) == "rp_c06_pump" ){
 		Game_texts( "Chapter 06: Residue Pit" );
     }
     if(string(g_Engine.mapname) == "rp_c07_m1"

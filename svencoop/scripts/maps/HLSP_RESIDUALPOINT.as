@@ -11,7 +11,7 @@
 
 float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay" );
 
-bool blSpawnNpcRequired = true; // Change to true = spawn npcs required for the map when they die instead of restart the map NOTE: if enabled, archivemets will be disabled.
+bool blSpawnNpcRequired = false; // Change to true = spawn npcs required for the map when they die instead of restart the map NOTE: if enabled, archivemets will be disabled.
 bool bSurvivalEnabled = true;	// Change to true = survival mode enabled NOTE: if disabled, archivemets will be disabled.
 
 void MapInit()

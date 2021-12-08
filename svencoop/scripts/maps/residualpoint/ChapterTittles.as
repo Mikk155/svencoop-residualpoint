@@ -1,5 +1,8 @@
 void ChapterTittles()
 {
+    if(string(g_Engine.mapname) == "rp_c00_lobby" ){
+		Game_texts( "Chapter 00: Residual Point Lobby" );
+    }
     if(string(g_Engine.mapname) == "rp_c00_m1"
 	or string(g_Engine.mapname) == "rp_c00_m2"
 	or string(g_Engine.mapname) == "rp_c00_m3"
@@ -81,11 +84,11 @@ void Game_texts( const string mensaje )
     gametext =	{
         {	"y",			"0.05"				},
         {	"x",			"0.05"				},
-        {	"fadein",		"0.02"				},
+        {	"fadein",		"0.05"				},
         {	"fadeout",		"3.5"				},
         {	"holdtime",		"10.0"				},
         {	"color",		"100 100 100"		},
-        {	"fxtime",		"0.02"				},
+        {	"fxtime",		"0.05"				},
         {	"channel",		"7"					},
         {	"message",		"" + mensaje		},
         {	"targetname",	"chapter_tittle_as"	}

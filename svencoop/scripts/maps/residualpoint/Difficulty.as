@@ -1,4 +1,4 @@
-string load_diff_file = "scripts/maps/store/rp_diff.dat";
+string load_diff_file = "scripts/maps/residualpoint/store/rp_diff.dat";
 dictionary dCvars;
 
 void DiffVerify()
@@ -12,23 +12,23 @@ void DiffVerify()
 
         if( fileContent == "easy" )
         {
-            diff_path = "scripts/maps/store/rp_global_config_easy.cfg"; 
+            diff_path = "scripts/maps/residualpoint/store/rp_global_config_easy.cfg"; 
         }
         else if( fileContent == "medium" ) 
         {
-            diff_path = "scripts/maps/store/rp_global_config_medium.cfg"; 
+            diff_path = "scripts/maps/residualpoint/store/rp_global_config_medium.cfg"; 
         }
         else if( fileContent == "hard" ) 
         {
-            diff_path = "scripts/maps/store/rp_global_config_hard.cfg"; 
+            diff_path = "scripts/maps/residualpoint/store/rp_global_config_hard.cfg"; 
         }
         else if( fileContent == "hardcore" ) 
         {
-           diff_path = "scripts/maps/store/rp_global_config_hardcore.cfg";      
+           diff_path = "scripts/maps/residualpoint/store/rp_global_config_hardcore.cfg";      
         }
         else
         {
-            diff_path = "scripts/maps/store/rp_global_config_easy.cfg"; 
+            diff_path = "scripts/maps/residualpoint/store/rp_global_config_easy.cfg"; 
         }
 
         file.Close();    

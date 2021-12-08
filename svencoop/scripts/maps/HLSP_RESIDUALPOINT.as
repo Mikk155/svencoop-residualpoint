@@ -1,4 +1,4 @@
-#include "residualpoint/archievemets"
+#include "residualpoint/ChapterTittles"
 #include "residualpoint/monsters"
 #include "residualpoint/ammo_individual"
 #include "residualpoint/weapon_hlsatchel"
@@ -21,7 +21,7 @@ void MapInit()
 	RegisterHLSatchel();
 
 	RegisterAllMonsters();
-	RegisterAllItems();
+	RegisterAmmoIndividual(); // Ammo for HLSP Campaigns that players can take ammo ONCE per item.
 	RegisterAirbubbleCustomEntity();
 	RegisterCheckPointSpawnerEntity();
 
@@ -38,16 +38,16 @@ void MapInit()
 
 void MapActivate()
 {
-	Archievemets();
+	AmmoIndividualRemap(); // everything are *hardcoded* on the maps but snarks and some items
+	ChapterTittles();	// Can be annoying some times but better to let everyone see the chapter title :)
 	
 	if( blSpawnNpcRequired )
 	{
 		NpcRequiredStuff();
 	}
+	else{
 	
-	if( !bSurvivalEnabled && blSpawnNpcRequired)
-	{
-		UpdateOnRemove();
+	UpdateOnRemove();
 	}
 	
 	// https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as
@@ -58,6 +58,10 @@ void MapActivate()
 		g_EngineFuncs.CVarSetFloat( "mp_survival_startdelay", 0 );
 		g_EngineFuncs.CVarSetFloat( "mp_survival_starton", 0 );
 		g_EngineFuncs.CVarSetFloat( "mp_dropweapons", 0 );
+	}
+	else{
+	
+	UpdateOnRemove();
 	}
 }
 

@@ -37,7 +37,7 @@ void ChapterTittles()
     }
     if(string(g_Engine.mapname) == "rp_c08_m1sewer"
 	or string(g_Engine.mapname) == "rp_c08_m2sewer"
-	or string(g_Engine.mapname) == "rp_c08_m3sewer"
+	or string(g_Engine.mapname) == "rp_c08_m3"
 	or string(g_Engine.mapname) == "rp_c08_m4sewer"
 	or string(g_Engine.mapname) == "rp_c08_m1surface"
 	or string(g_Engine.mapname) == "rp_c08_m2surface"

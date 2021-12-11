@@ -21,7 +21,7 @@ const int MP5_MAX_AMMO2 	= 500;
 const int MP5_MAX_CLIP 		= 50;
 const int MP5_WEIGHT 		= 5;
 
-class weapon_teleporter : ScriptBasePlayerWeaponEntity
+class weapon_hlmp5 : ScriptBasePlayerWeaponEntity
 {
 	private CBasePlayer@ m_pPlayer = null;
 	
@@ -33,7 +33,7 @@ class weapon_teleporter : ScriptBasePlayerWeaponEntity
 	void Spawn()
 	{
 		Precache();
-		g_EntityFuncs.SetModel( self, "models/hl/w_9mmAR.mdl" );
+		g_EntityFuncs.SetModel( self, "models/mikk/weapons/w_teleporter.mdl" );
 
 		self.m_iDefaultAmmo = MP5_DEFAULT_GIVE;
 		self.m_iDefaultSecAmmo = MP5_DEFAULT_GIVE2;
@@ -45,9 +45,9 @@ class weapon_teleporter : ScriptBasePlayerWeaponEntity
 	void Precache()
 	{
 		self.PrecacheCustomModels();
-		g_Game.PrecacheModel( "models/hl/v_9mmAR.mdl" );
-		g_Game.PrecacheModel( "models/hl/w_9mmAR.mdl" );
-		g_Game.PrecacheModel( "models/hl/p_9mmAR.mdl" );
+		g_Game.PrecacheModel( "models/mikk/weapons/v_teleporter.mdl" );
+		g_Game.PrecacheModel( "models/mikk/weapons/w_teleporter.mdl" );
+		g_Game.PrecacheModel( "models/p_displacer.mdl" );
 
 		m_iShell = g_Game.PrecacheModel( "models/shell.mdl" );
 		m_iSprModel = g_Game.PrecacheModel( "sprites/dot.spr" );
@@ -115,7 +115,7 @@ class weapon_teleporter : ScriptBasePlayerWeaponEntity
 
 	bool Deploy()
 	{
-		return self.DefaultDeploy( self.GetV_Model( "models/hl/v_9mmAR.mdl" ), self.GetP_Model( "models/hl/p_9mmAR.mdl" ), MP5_DEPLOY, "mp5" );
+		return self.DefaultDeploy( self.GetV_Model( "models/mikk/weapons/v_teleporter.mdl" ), self.GetP_Model( "models/p_displacer.mdl" ), MP5_DEPLOY, "mp5" );
 	}
 	
 	float WeaponTimeBase()
@@ -325,6 +325,6 @@ string GetHLMP5Name()
 
 void RegisterHLMP5()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_teleporter", GetHLMP5Name() );
+	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_hlmp5", GetHLMP5Name() );
 	g_ItemRegistry.RegisterWeapon( GetHLMP5Name(), "hl_weapons", "9mm", "ARgrenades" );
 }

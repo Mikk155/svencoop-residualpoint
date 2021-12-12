@@ -1,8 +1,8 @@
 #include "residualpoint/ChapterTittles"
 #include "residualpoint/monsters"
 #include "residualpoint/ammo_individual"
-#include "residualpoint/weapon_hlsatchel"
-#include "residualpoint/weapon_teleporter"
+// #include "residualpoint/weapon_hlsatchel"
+// #include "residualpoint/weapon_teleporter"
 #include "residualpoint/Difficulty"
 
 #include "residualpoint/checkpoint_spawner"
@@ -10,30 +10,31 @@
 
 #include "cubemath/item_airbubble"
 
-float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay" );
-
 bool blSpawnNpcRequired = false; // Change to true = spawn npcs required for the map when they die instead of restart the map NOTE: if enabled, archivemets will be disabled.
 bool bSurvivalEnabled = true;	// Change to true = survival mode enabled NOTE: if disabled, archivemets will be disabled.
+
+/*
+	Please don't hack/vandalice this script 
+	to make archievemets enabled without the bools.
+	we want it like this so please. don't.
+*/
+
+float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay" );
 
 void MapInit()
 {
 	// Take'd from weapon_hlsatchel by JulianR0
-	// https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
-	RegisterHLSatchel();
+//	RegisterHLSatchel(); // https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
 	
-	RegisterHLMP5();
-	RegisterAllMonsters();
+//	RegisterHLMP5(); // buggy as hell but well. have fun :)
+	
+	RegisterAllMonsters(); // most of this has been remapped. now just xenocrab are script-side
+	
 	RegisterAmmoIndividual(); // Ammo for HLSP Campaigns. items that can be taked ONCE per player.
-	RegisterAirbubbleCustomEntity();
-	RegisterCheckPointSpawnerEntity();
-
-	DiffVerify();
 	
-    if( string(g_Engine.mapname) == "rp_c13_m3a" )
-	{
-		ControllerMapInit();
-		g_Scheduler.SetTimeout( "Entitys", 10 ); 
-	}
+	RegisterCheckPointSpawnerEntity(); // i am lazy to replace with the new checkpoint. we used this a long ago so zzzzz
+
+	DiffVerify(); // verify the difficulty choosed at lobby then execute things if hardcore
 
 	g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @SpamTime );
 }
@@ -41,12 +42,12 @@ void MapInit()
 void MapActivate()
 {
 	AmmoIndividualRemap(); // everything are *hardcoded* on the maps but snarks and some items
+	
 	ChapterTittles();	// Can be annoying some times but better to let everyone see the chapter title :)
 	
-	if( blSpawnNpcRequired )
-	{
+	if( blSpawnNpcRequired ){
 		NpcRequiredStuff();
-		UpdateOnRemove();
+		UpdateOnRemove(); // >:C
 	}
 	
 	// https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as
@@ -59,7 +60,7 @@ void MapActivate()
 		g_EngineFuncs.CVarSetFloat( "mp_dropweapons", 0 );
 	}
 	else{
-		UpdateOnRemove();
+		UpdateOnRemove(); // >:C
 	}
 }
 
@@ -84,9 +85,12 @@ void SurvivalModeEnable()
 
 HookReturnCode SpamTime(CBasePlayer@ pPlayer)
 {
-	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Residual Point By Mikk & Gaftherman.\n" );
-	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Download this Map-Pack from scmapdb.com\n" );
-	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Open console to copy the link\n" );
-	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "http://scmapdb.com/map:residual-point \n" );
+	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "#=======================================#\n" );
+	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "# http://scmapdb.com/map:residual-point #\n" );
+	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "#=======================================#\n" );
+	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "# Residual Point By Mikk & Gaftherman.  #\n" );
+	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "# Download this Map-Pack from scmapdb   #\n" );
+	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "#    Open console to copy the link      #\n" );
+	g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "#=======================================#\n" );
 	return HOOK_CONTINUE;
 }

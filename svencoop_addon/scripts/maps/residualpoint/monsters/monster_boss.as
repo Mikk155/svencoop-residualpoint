@@ -15,7 +15,7 @@ void ControllerMapInit()
 	g_SoundSystem.PrecacheSound("mikk/residualpoint/boss/final_hit.ogg");
 }
 
-const array <string> pMonsters = { "monster_alien_tor", "monster_kingpin", "monster_bigmomma", "player" };
+/*const array <string> pMonsters = { "monster_zombie_hev", "monster_xenocrab", "monster_headcrab", "monster_human_grunt" };
 
 void Entitys()
 {
@@ -67,7 +67,7 @@ void AdjustDifficultyByClassname( const string sClassName, int MaxLife, int iPer
 			g_PlayerFuncs.ClientPrintAll( HUD_PRINTNOTIFY, "DEBUG: " + pEntity.pev.classname + " health has not been changed, because the entity has received damage before the health change" + "\n" );
 		}
     }
-}
+}*/
 
 /* npc_controller
 Controller's psychic attacks

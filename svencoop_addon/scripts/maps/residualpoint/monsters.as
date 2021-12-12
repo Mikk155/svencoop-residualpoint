@@ -21,7 +21,12 @@ void RegisterAllMonsters()
 //	AlienWorker::Register();
 //	NariGrunt::Register();
 	MonsterZombieHev::Register();
-
+	
+    if( string(g_Engine.mapname) == "rp_c13_m3a" ){	// Precache sound
+		ControllerMapInit();
+	//	g_Scheduler.SetTimeout( "Entitys", 10 ); muy pavo es gafther :turkey:
+	}
+	
 	// take'd from monster_cleansuit_scientist_dead by Rick 
 //	ScientistCivdead::Register();
 //	ZombieGruntDead::Register();

@@ -28,6 +28,8 @@ void DiffVerify()
 		   
            g_Scheduler.SetTimeout( "Execute", 2.0f );
 		   
+		   RegisterAirbubbleCustomEntity();
+		   
 		   g_Hooks.RegisterHook( Hooks::Player::PlayerSpawn, @PlayerSpawn );
         }
         else

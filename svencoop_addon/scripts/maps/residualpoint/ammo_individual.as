@@ -262,7 +262,7 @@ class item_battery_individual : ScriptBasePlayerItemEntity
 		Precache();
 
 		if( self.SetupModel() == false )
-			g_EntityFuncs.SetModel( self, "models/mil_crate.mdl" );
+			g_EntityFuncs.SetModel( self, "models/w_battery.mdl" );
 		else //Custom model
 			g_EntityFuncs.SetModel( self, self.pev.model );
 
@@ -286,7 +286,7 @@ class item_battery_individual : ScriptBasePlayerItemEntity
 		BaseClass.Precache();
 
 		if( string( self.pev.model ).IsEmpty() )
-			g_Game.PrecacheModel("models/mil_crate.mdl");
+			g_Game.PrecacheModel("models/w_battery.mdl");
 		else //Custom model
 			g_Game.PrecacheModel( self.pev.model );
 

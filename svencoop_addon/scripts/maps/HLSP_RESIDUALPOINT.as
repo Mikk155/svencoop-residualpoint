@@ -50,6 +50,8 @@ void MapActivate()
 		UpdateOnRemove(); // >:C
 	}
 	
+	UpdateOnRemove(); // because yes. idk
+	
 	// https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as
 	if( bSurvivalEnabled )
 	{	

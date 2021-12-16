@@ -75,19 +75,25 @@ void ChapterTittles()
 		Game_texts( "Residual-Point \n Secret Chapter: " );
     }
     if(string(g_Engine.mapname) == "rps_c00" ){
-		Game_texts( "Residual-Point: Survivor \n Chapter 00: Security Area" );
+		Game_texts( "Residual-Point: Survivor \n Chapter 'Security Area' " );
     }
     if(string(g_Engine.mapname) == "rps_c01" ){
-		Game_texts( "Residual-Point: Survivor \n Chapter 01: In Security" );
+		Game_texts( "Residual-Point: Survivor \n Chapter 'In Security' " );
     }
     if(string(g_Engine.mapname) == "rps_c02" ){
-		Game_texts( "Residual-Point: Survivor \n Chapter 02: UNFORESEEN CONSEQUENCES" );
+		Game_texts( "Residual-Point: Survivor \n Chapter 'Uforenseen Consequences' " );
     }
     if(string(g_Engine.mapname) == "rps_sewer" ){
-		Game_texts( "Residual-Point: Survivor \n Chapter 03: ON A SEWER" );
+		Game_texts( "Residual-Point: Survivor \n Chapter 'On A Sewer' " );
     }
     if(string(g_Engine.mapname) == "rps_surface" ){
-		Game_texts( "Residual-Point: Survivor \n Chapter 03: INVASER OF ARMY" );
+		Game_texts( "Residual-Point: Survivor \n Chapter 'Invaser Of Army' " );
+    }
+    if(string(g_Engine.mapname) == "rps_rails" ){
+		Game_texts( "Residual-Point: Survivor \n Chapter 'On A Rail' " );
+    }
+    if(string(g_Engine.mapname) == "rps_base" ){
+		Game_texts( "Residual-Point: Survivor \n Chapter 'On A Basement' " );
     }
 }
 

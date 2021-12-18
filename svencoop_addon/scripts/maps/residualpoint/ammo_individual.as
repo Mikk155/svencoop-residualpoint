@@ -14,35 +14,37 @@ void RegisterAmmoIndividual()
 	DefaultRegister( "ammo_rpgclip_individual" );
 	DefaultRegister( "ammo_sporeclip_individual" );
 	DefaultRegister( "ammo_uziclip_individual" );
-	DefaultRegister( "ammo_grenade_individual" );
-	DefaultRegister( "ammo_snarks_individual" );
 	DefaultRegister( "ammo_medkit_individual" );
+	DefaultRegister( "ammo_snarks_individual" );
+	DefaultRegister( "ammo_handgrenade_individual" );
+	DefaultRegister( "ammo_tripmine_individual" );
 	DefaultRegister( "item_battery_individual" );
 	DefaultRegister( "item_healthkit_individual" );
 }
 
 void AmmoIndividualRemap()
 {
-	Reemplazar( "item_healthkit", "item_healthkit_individual");
-	Reemplazar( "weapon_handgrenade", "ammo_grenade_individual");
-	Reemplazar( "ammo_9mmbox", "ammo_9mmbox_individual");
-	Reemplazar( "ammo_glockclip", "ammo_9mmclip_individual");
-	Reemplazar( "ammo_9mmclip", "ammo_9mmclip_individual");
-	Reemplazar( "ammo_9mmAR", "ammo_9mmAR_individual");
-	Reemplazar( "ammo_buckshot", "ammo_buckshot_individual");
-	Reemplazar( "ammo_ARgrenades", "ammo_ARgrenades_individual");
-	Reemplazar( "ammo_357", "ammo_357_individual");
-	Reemplazar( "ammo_762", "ammo_762_individual");
-	Reemplazar( "ammo_556", "ammo_556_individual");
-	Reemplazar( "ammo_556clip", "ammo_556clip_individual");
-	Reemplazar( "ammo_crossbow", "ammo_crossbow_individual");
-	Reemplazar( "ammo_gaussclip", "ammo_gaussclip_individual");
-	Reemplazar( "ammo_rpgclip", "ammo_rpgclip_individual");
-	Reemplazar( "ammo_sporeclip", "ammo_sporeclip_individual");
-	Reemplazar( "ammo_uziclip", "ammo_uziclip_individual");
-	Reemplazar( "weapon_snark", "ammo_snarks_individual");
-	Reemplazar( "ammo_medkit", "ammo_medkit_individual");
-	Reemplazar( "item_battery", "item_battery_individual");
+	Reemplazar( "ammo_9mmbox", "ammo_9mmbox_individual" );
+	Reemplazar( "ammo_glockclip", "ammo_9mmclip_individual" );
+	Reemplazar( "ammo_9mmclip", "ammo_9mmclip_individual" );
+	Reemplazar( "ammo_9mmAR", "ammo_9mmAR_individual" );
+	Reemplazar( "ammo_buckshot", "ammo_buckshot_individual" );
+	Reemplazar( "ammo_ARgrenades", "ammo_ARgrenades_individual" );
+	Reemplazar( "ammo_357", "ammo_357_individual" );
+	Reemplazar( "ammo_762", "ammo_762_individual" );
+	Reemplazar( "ammo_556", "ammo_556_individual" );
+	Reemplazar( "ammo_556clip", "ammo_556clip_individual" );
+	Reemplazar( "ammo_crossbow", "ammo_crossbow_individual" );
+	Reemplazar( "ammo_gaussclip", "ammo_gaussclip_individual" );
+	Reemplazar( "ammo_rpgclip", "ammo_rpgclip_individual" );
+	Reemplazar( "ammo_sporeclip", "ammo_sporeclip_individual" );
+	Reemplazar( "ammo_uziclip", "ammo_uziclip_individual" );
+	Reemplazar( "ammo_medkit", "ammo_medkit_individual" );
+	Reemplazar( "weapon_snark", "ammo_snarks_individual" );
+	Reemplazar( "weapon_handgrenade", "ammo_handgrenade_individual" );
+	Reemplazar( "weapon_tripmine", "ammo_tripmine_individual" );
+	Reemplazar( "item_battery", "item_battery_individual" );
+	Reemplazar( "item_healthkit", "item_healthkit_individual" );
 }
 
 class ammo_9mmclip_individual : ScriptBasePlayerItemEntity, ammo_base
@@ -227,19 +229,6 @@ class ammo_uziclip_individual : ScriptBasePlayerItemEntity, ammo_base
 	}
 }
 
-class ammo_snarks_individual : ScriptBasePlayerItemEntity, ammo_base
-{
-	void Spawn()
-	{
-		SpawnDefault( "models/w_sqknest.mdl" );
-	}
-
-	bool AddAmmo( CBaseEntity@ pOther )
-	{
-		return AddAmmoDefault( cast<CBasePlayer@>( pOther ), 5, "snarks", 15 );
-	}
-}
-
 class ammo_medkit_individual : ScriptBasePlayerItemEntity, ammo_base
 {
 	void Spawn()
@@ -250,6 +239,45 @@ class ammo_medkit_individual : ScriptBasePlayerItemEntity, ammo_base
 	bool AddAmmo( CBaseEntity@ pOther )
 	{
 		return AddAmmoDefault( cast<CBasePlayer@>( pOther ), 50, "health", 100 );
+	}
+}
+
+class ammo_snarks_individual : ScriptBasePlayerItemEntity, ammo_base_c
+{
+	void Spawn()
+	{
+		SpawnDefault( "models/w_sqknest.mdl" );
+	}
+
+	bool AddAmmo( CBaseEntity@ pOther )
+	{
+		return AddAmmoDefault( cast<CBasePlayer@>( pOther ), "weapon_snark", "snarks", 15 );
+	}
+}
+
+class ammo_handgrenade_individual : ScriptBasePlayerItemEntity, ammo_base_c 
+{
+	void Spawn()
+	{
+		SpawnDefault( "models/w_grenade.mdl" );
+	}
+
+	bool AddAmmo( CBaseEntity@ pOther )
+	{
+		return AddAmmoDefault( cast<CBasePlayer@>( pOther ), "weapon_handgrenade", "Hand Grenade", 10 );
+	}
+}
+
+class ammo_tripmine_individual : ScriptBasePlayerItemEntity, ammo_base_c 
+{
+	void Spawn()
+	{
+		SpawnDefault( "models/w_tripmine.mdl" );
+	}
+
+	bool AddAmmo( CBaseEntity@ pOther )
+	{
+		return AddAmmoDefault( cast<CBasePlayer@>( pOther ), "weapon_tripmine", "Trip Mine", 5 );
 	}
 }
 
@@ -265,18 +293,6 @@ class item_battery_individual : ScriptBasePlayerItemEntity
 			g_EntityFuncs.SetModel( self, "models/w_battery.mdl" );
 		else //Custom model
 			g_EntityFuncs.SetModel( self, self.pev.model );
-
-		switch( Math.RandomLong( 0, 2 ) )
-		{
-			case 0: self.pev.body = 7;
-			break;
-
-			case 1: self.pev.body = 8;
-			break;
-
-			case 2: self.pev.body = 11;
-			break;
-		}
 
 		BaseClass.Spawn();
 	}
@@ -376,22 +392,21 @@ class item_healthkit_individual : ScriptBasePlayerItemEntity
 	{	
         string steamId = g_EngineFuncs.GetPlayerAuthId(pPlayer.edict());
 
-		if( pPlayer is null || pPlayer.pev.health >= 100 || g_MaxPlayers.exists(steamId)  )
+		if( pPlayer is null || pPlayer.pev.health == pPlayer.pev.max_health || g_MaxPlayers.exists(steamId)  )
 			return;
-		
-	    if( pPlayer.TakeHealth( int(g_EngineFuncs.CVarGetFloat( "sk_healthkit" )), DMG_GENERIC) )
-		{
-            g_MaxPlayers[steamId] = @pPlayer;
+			
+		pPlayer.TakeHealth( g_EngineFuncs.CVarGetFloat( "sk_healthkit" ), DMG_GENERIC );
 
-			NetworkMessage message( MSG_ONE, NetworkMessages::ItemPickup, pPlayer.edict() );
-				message.WriteString( "item_healthkit" );
-			message.End();
+        g_MaxPlayers[steamId] = @pPlayer;
 
-		    g_SoundSystem.EmitSound( pPlayer.edict(), CHAN_ITEM, "items/smallmedkit1.wav", 1, ATTN_NORM );
+		NetworkMessage message( MSG_ONE, NetworkMessages::ItemPickup, pPlayer.edict() );
+			message.WriteString( "item_healthkit" );
+		message.End();
 
-            // Trigger targets
-            self.SUB_UseTargets( pPlayer, USE_TOGGLE, 0 );
-        }
+		g_SoundSystem.EmitSound( pPlayer.edict(), CHAN_ITEM, "items/smallmedkit1.wav", 1, ATTN_NORM );
+
+        // Trigger targets
+        self.SUB_UseTargets( pPlayer, USE_TOGGLE, 0 );
 	}
 
 	void Touch( CBaseEntity@ pOther )
@@ -448,10 +463,77 @@ mixin class ammo_base
 
 		if( !g_MaxPlayers.exists(steamId) )
 		{
-			g_MaxPlayers[steamId] = @pPlayer;
-
-			if (pPlayer.GiveAmmo( GiveAmmo, Type, MaxAmmo ) != -1)
+			if( pPlayer.GiveAmmo( GiveAmmo, Type, MaxAmmo ) != -1 )
 			{
+				g_MaxPlayers[steamId] = @pPlayer;
+
+				g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void Touch( CBaseEntity@ pOther )
+	{
+		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() )
+			return;
+				
+		AddAmmo( cast<CBasePlayer@>( pOther ));
+	}
+		
+	void Use( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue )
+	{
+		if (pActivator.IsPlayer())
+		{
+			AddAmmo( cast<CBasePlayer@>( pActivator ));
+		}
+	}	
+}
+
+mixin class ammo_base_c
+{
+	dictionary g_MaxPlayers;
+
+	void SpawnDefault( string ammo_model )
+	{ 
+		PrecacheDefault( ammo_model );
+
+		if( self.SetupModel() == false )
+			g_EntityFuncs.SetModel( self, ammo_model );
+		else //Custom model
+			g_EntityFuncs.SetModel( self, self.pev.model );
+
+		BaseClass.Spawn();
+	}
+
+	void PrecacheDefault( string ammo_model )
+	{
+		BaseClass.Precache();
+
+		if( string( self.pev.model ).IsEmpty() )
+			g_Game.PrecacheModel( ammo_model );
+		else //Custom model
+			g_Game.PrecacheModel( self.pev.model );
+
+		g_SoundSystem.PrecacheSound( "items/9mmclip1.wav" );
+	}
+
+	bool AddAmmoDefault( CBasePlayer@ pPlayer, string& in Type2, string& in Type, int& in MaxAmmo  ) 
+	{ 
+        string steamId = g_EngineFuncs.GetPlayerAuthId(pPlayer.edict());
+
+		if( pPlayer is null  )
+			return false;
+
+		if( !g_MaxPlayers.exists(steamId) )
+		{
+			if( pPlayer.GiveAmmo( 0, Type, MaxAmmo ) != -1 )
+			{
+				g_MaxPlayers[steamId] = @pPlayer;
+
+				pPlayer.GiveNamedItem( Type2 );
+
 				g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);
 				return true;
 			}

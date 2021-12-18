@@ -45,7 +45,7 @@ class CSatchelCharge : ScriptBaseEntity
 		self.pev.gravity = 0.5;
 		self.pev.friction = 0.8;
 		
-		self.pev.dmg = 120;
+		self.pev.dmg = 180;
 		self.pev.sequence = 1;
 	}
 	
@@ -169,14 +169,14 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 	
 	void Precache()
 	{
-		g_Game.PrecacheModel( "models/v_satchel.mdl" );
+		g_Game.PrecacheOther( "monster_hlsatchel" );
+
+		g_Game.PrecacheModel( "models/mikk/residualpoint/v_satchel.mdl" );
 		g_Game.PrecacheModel( "models/w_satchel.mdl" );
 		g_Game.PrecacheModel( "models/p_satchel.mdl" );
 		
 		g_Game.PrecacheModel( "models/mikk/residualpoint/v_satchel_radio.mdl" );
 		g_Game.PrecacheModel( "models/p_satchel_radio.mdl" );
-		
-		g_Game.PrecacheOther( "monster_hlsatchel" );
 		
 		g_Game.PrecacheGeneric( "sprites/hl_weapons/weapon_hlsatchel.txt" );
 	}
@@ -270,7 +270,7 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 		if ( self.pev.iuser1 > 0 )
 			return self.DefaultDeploy( self.GetV_Model( "models/mikk/residualpoint/v_satchel_radio.mdl" ), self.GetP_Model( "models/p_satchel_radio.mdl" ), SATCHEL_RADIO_DRAW, "hive" );
 		else
-			return self.DefaultDeploy( self.GetV_Model( "models/v_satchel.mdl" ), self.GetP_Model( "models/p_satchel.mdl" ), SATCHEL_DRAW, "trip" );
+			return self.DefaultDeploy( self.GetV_Model( "models/mikk/residualpoint/v_satchel.mdl" ), self.GetP_Model( "models/p_satchel.mdl" ), SATCHEL_DRAW, "trip" );
 	}
 	
 	void Holster( int skiplocal /* = 0 */ )
@@ -409,7 +409,7 @@ class weapon_hlsatchel : ScriptBasePlayerWeaponEntity
 					return;
 				}
 				
-				m_pPlayer.pev.viewmodel = string( "models/v_satchel.mdl" );
+				m_pPlayer.pev.viewmodel = string( "models/mikk/residualpoint/v_satchel.mdl" );
 				m_pPlayer.pev.weaponmodel = string( "models/p_satchel.mdl" );
 				
 				self.SendWeaponAnim( SATCHEL_DRAW );
@@ -451,14 +451,9 @@ void DeactivateSatchels( CBasePlayer@ pOwner )
 	}
 }
 
-string GetHLSatchelName()
-{
-	return "weapon_hlsatchel";
-}
-
 void RegisterHLSatchel()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "CSatchelCharge", "monster_hlsatchel" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_hlsatchel", GetHLSatchelName() );
-	g_ItemRegistry.RegisterWeapon( GetHLSatchelName(), "hl_weapons", "Satchel Charge" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_hlsatchel", "weapon_hlsatchel" );
+	g_ItemRegistry.RegisterWeapon( "weapon_hlsatchel", "hl_weapons", "Satchel Charge" );
 }

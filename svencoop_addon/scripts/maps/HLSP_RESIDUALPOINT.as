@@ -1,8 +1,8 @@
 #include "residualpoint/ChapterTittles"
 #include "residualpoint/monsters"
 #include "residualpoint/ammo_individual"
-// #include "residualpoint/weapon_hlsatchel"
-// #include "residualpoint/weapon_teleporter"
+#include "residualpoint/weapon_hlsatchel"
+#include "residualpoint/weapon_teleporter"
 #include "residualpoint/Difficulty"
 
 #include "residualpoint/checkpoint_spawner"
@@ -24,33 +24,32 @@ float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay
 void MapInit()
 {
 	// Take'd from weapon_hlsatchel by JulianR0
-//	RegisterHLSatchel(); // https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
+	RegisterHLSatchel(); // https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
 	
-//	RegisterHLMP5(); // buggy as hell but well. have fun :)
+	RegisterHLMP5(); // buggy as hell but well. have fun :)
 	
 	RegisterAllMonsters(); // most of this has been remapped. now just xenocrab are script-side
 	
 	RegisterAmmoIndividual(); // Ammo for HLSP Campaigns. items that can be taked ONCE per player.
 	
-	RegisterCheckPointSpawnerEntity(); // i am lazy to replace with the new checkpoint. we used this a long ago so zzzzz
+	RegisterCheckPointSpawnerEntity(); // i'm lazy to replace with the new checkpoint. we used this a long ago so zzzzz
 
-	DiffVerify(); // verify the difficulty choosed at lobby then execute things if hardcore
+	DiffVerify(); // Verify the difficulty choosed at lobby then execute things if hardcore
 
 	g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @SpamTime );
 }
 
 void MapActivate()
 {
-	AmmoIndividualRemap(); // everything are *hardcoded* on the maps but snarks and some items
+	AmmoIndividualRemap(); // Everything are *hardcoded* on the maps but snarks and some items
 	
-	ChapterTittles();	// Can be annoying some times but better to let everyone see the chapter title :)
+	ChapterTittles(); // Can be annoying some times but better to let everyone see the chapter title :)
 	
-	if( blSpawnNpcRequired ){
+	if( blSpawnNpcRequired )
+	{
 		NpcRequiredStuff();
 		UpdateOnRemove(); // >:C
 	}
-	
-	UpdateOnRemove(); // because yes. idk
 	
 	// https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as
 	if( bSurvivalEnabled )
@@ -61,7 +60,8 @@ void MapActivate()
 		g_EngineFuncs.CVarSetFloat( "mp_survival_starton", 0 );
 		g_EngineFuncs.CVarSetFloat( "mp_dropweapons", 0 );
 	}
-	else{
+	else
+	{
 		UpdateOnRemove(); // >:C
 	}
 }
@@ -69,10 +69,12 @@ void MapActivate()
 void UpdateOnRemove()
 {
     CBaseEntity@ pEntity = null;
+
     while((@pEntity = g_EntityFuncs.FindEntityByClassname(pEntity, "trigger_save")) !is null)
     {
         g_EntityFuncs.Remove( pEntity );
     }
+
 	g_PlayerFuncs.ClientPrintAll( HUD_PRINTTALK, "Archievemets Disabled.\n" );
 }
 
@@ -80,8 +82,9 @@ void SurvivalModeEnable()
 {
     g_SurvivalMode.Activate( true );
     g_EngineFuncs.CVarSetFloat( "mp_dropweapons", 1 );
+	
     NetworkMessage message( MSG_ALL, NetworkMessages::SVC_STUFFTEXT );
-    message.WriteString( "spk buttons/bell1" );
+    	message.WriteString( "spk buttons/bell1" );
     message.End();
 }
 

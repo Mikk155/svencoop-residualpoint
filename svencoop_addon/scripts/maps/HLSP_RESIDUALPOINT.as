@@ -5,8 +5,8 @@
 #include "residualpoint/weapon_teleporter"
 #include "residualpoint/Difficulty"
 #include "residualpoint/monster_lasertripmine"
-
 #include "residualpoint/checkpoint_spawner"
+
 #include "beast/teleport_zone"
 
 #include "cubemath/item_airbubble"
@@ -27,16 +27,22 @@ void MapInit()
 	// Take'd from weapon_hlsatchel by JulianR0
 	RegisterHLSatchel(); // https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
 	
-	RegisterHLMP5(); // buggy as hell but well. have fun :)
+	// buggy as hell but well. have fun :)
+	RegisterHLMP5(); 
 	
-	RegisterAllMonsters(); // most of this has been remapped. now just xenocrab are script-side
+	// most of this has been remapped. now just xenocrab are script-side
+	RegisterAllMonsters(); 
 	
-	RegisterAmmoIndividual(); // Ammo for HLSP Campaigns. items that can be taked ONCE per player.
+	// Ammo for HLSP Campaigns. items that can be taked ONCE per player.
+	RegisterAmmoIndividual(); 
 	
-	RegisterCheckPointSpawnerEntity(); // i'm lazy to replace with the new checkpoint. we used this a long ago so zzzzz
+	// i'm lazy to replace with the new checkpoint. we used this a long ago so zzzzz
+	RegisterCheckPointSpawnerEntity(); 
 
-	DiffVerify(); // Verify the difficulty choosed at lobby then execute things if hardcore
+	// Verify the difficulty choosed at lobby
+	DiffVerify(); 
 	
+	// New tripmine for certain maps that should restart the map when explode one of them
 	if( string(g_Engine.mapname) == "rps_surface" ){
 		RegisterLaserMine();
 		g_Game.PrecacheOther( "monster_lasertripmine" );
@@ -47,9 +53,11 @@ void MapInit()
 
 void MapActivate()
 {
-	AmmoIndividualRemap(); // Everything are *hardcoded* on the maps but snarks and some items
+	// Everything are *hardcoded* on the maps but snarks and some items
+	AmmoIndividualRemap(); 
 	
-	ChapterTittles(); // Can be annoying some times but better to let everyone see the chapter title :)
+	// Can be annoying some times but better to let everyone see the chapter title :)
+	ChapterTittles(); 
 	
 	if( blSpawnNpcRequired )
 	{
@@ -57,7 +65,8 @@ void MapActivate()
 		UpdateOnRemove(); // >:C
 	}
 	
-	// https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as
+	// Custom survival mode without survival count-down messages and fixed the Dupe aka "ammo duplication" when survival is off
+	// take'd from https://github.com/Mikk155/angelscript/blob/main/plugins/SurvivalDeluxe.as
 	if( bSurvivalEnabled )
 	{	
 		g_SurvivalMode.Disable();

@@ -2,67 +2,67 @@ void ChapterTittles()
 {
     if( string(g_Engine.mapname) == "residual_point_lobby" )
     {
-		Game_texts( "Chapter 00: Residual Point Lobby" );
+		Game_texts( "Half-Life Residual-Point Lobby" );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c00", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 00: Black Mesa Inbound" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 00: 'Black Mesa Inbound' " );
     }
     else if( string(g_Engine.mapname) == "rp_c01" )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 01: In Security" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 01: 'In Security' " );
     }
     else if( string(g_Engine.mapname) == "rp_c02" )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 02: Incoming" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 02: 'Incoming' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c03", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 03: Among The Ruins" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 03: 'Among The Ruins' " );
     }
     else if( string(g_Engine.mapname) == "rp_c04" )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 04: Office Facility" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 04: 'Office Facility' " );
     }
     else if( string(g_Engine.mapname) == "rp_c05" )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 05: Obscure True" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 05: 'Obscure True' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c06", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 06: Residue Pit" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 06: 'Residue Pit' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c07", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 07: Bombing Surface" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 07: 'Bombing Surface' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c08", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 08: Recession" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 08: 'Recession' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c09", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 09: Distortion" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 09: 'Distortion' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c10", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 10: Upper Yard" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 10: 'Upper Yard' " );
     }
     else if( string(g_Engine.mapname) == "rp_c11" )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 11: Course to Lambda" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 11: 'Course to Lambda' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c12", String::DEFAULT_COMPARE ) )
     {
-		Game_texts( "Half-Life Residual-Point \n Chapter 12: Into the portal" );
+		Game_texts( "Half-Life Residual-Point \n Chapter 12: 'Into the portal' " );
     }
     else if( string(g_Engine.mapname).StartsWith( "rp_c13", String::DEFAULT_COMPARE ) )
     {
-		  Game_texts( "Half-Life Residual-Point \n Chapter 13: Dread Plot" );
+		  Game_texts( "Half-Life Residual-Point \n Chapter 13: 'Dread Plot' " );
     }
     else if( string(g_Engine.mapname) == "rp_c14")
     {
-		Game_texts( "Half-Life \n Residual-Point \n Secret Chapter " );
+		Game_texts( "Half-Life \n Residual-Point \n 'Secret Chapter' " );
     }
     else if( string(g_Engine.mapname) == "rps_c00" )
     {
@@ -89,6 +89,10 @@ void ChapterTittles()
 		Game_texts( "Residual-Point: Survivor \n Chapter 'On A Rail' " );
     }
     else if( string(g_Engine.mapname) == "rps_base" )
+    {
+		Game_texts( "Residual-Point: Survivor \n Chapter 'On A Basement' " );
+    }
+    else if( string(g_Engine.mapname) == "rps_final" )
     {
 		Game_texts( "Residual-Point: Survivor \n Chapter 'On A Basement' " );
     }

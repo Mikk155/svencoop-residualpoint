@@ -23,6 +23,7 @@ models/mikk/residualpoint/v_handgrenade.mdl
 models/mikk/residualpoint/v_m16a2.mdl
 models/mikk/residualpoint/v_m40a1.mdl
 models/mikk/residualpoint/v_medkit.mdl
+models/mikk/residualpoint/v_pipe_wrench.mdl
 models/mikk/residualpoint/v_rpg.mdl
 models/mikk/residualpoint/v_satchel.mdl
 models/mikk/residualpoint/v_satchel_radio.mdl
@@ -35,9 +36,13 @@ models/mikk/residualpoint/w_suit.mdl
 models/mikk/residualpoint/xenocrab.mdl
 models/mikk/weapons/v_teleporter.mdl
 models/mikk/weapons/w_teleporter.mdl
+models/player/cl_scientist1/cl_scientist1.bmp
 models/player/cl_scientist1/cl_scientist1.mdl
+models/player/cl_scientist2/cl_scientist2.bmp
 models/player/cl_scientist2/cl_scientist2.mdl
+models/player/cl_scientist3/cl_scientist3.bmp
 models/player/cl_scientist3/cl_scientist3.mdl
+models/player/cl_scientist4/cl_scientist4.bmp
 models/player/cl_scientist4/cl_scientist4.mdl
 residualpoint.wad
 sound/mikk/residualpoint/barney/ba_late.wav

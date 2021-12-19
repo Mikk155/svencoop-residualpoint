@@ -21,6 +21,7 @@ models/mikk/residualpoint/v_handgrenade.mdl
 models/mikk/residualpoint/v_m16a2.mdl
 models/mikk/residualpoint/v_m40a1.mdl
 models/mikk/residualpoint/v_medkit.mdl
+models/mikk/residualpoint/v_pipe_wrench.mdl
 models/mikk/residualpoint/v_rpg.mdl
 models/mikk/residualpoint/v_satchel.mdl
 models/mikk/residualpoint/v_satchel_radio.mdl

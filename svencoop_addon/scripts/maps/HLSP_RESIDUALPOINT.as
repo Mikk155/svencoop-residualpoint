@@ -4,6 +4,7 @@
 #include "residualpoint/weapon_hlsatchel"
 #include "residualpoint/weapon_teleporter"
 #include "residualpoint/Difficulty"
+#include "residualpoint/monster_lasertripmine"
 
 #include "residualpoint/checkpoint_spawner"
 #include "beast/teleport_zone"
@@ -35,7 +36,12 @@ void MapInit()
 	RegisterCheckPointSpawnerEntity(); // i'm lazy to replace with the new checkpoint. we used this a long ago so zzzzz
 
 	DiffVerify(); // Verify the difficulty choosed at lobby then execute things if hardcore
-
+	
+	if( string(g_Engine.mapname) == "rps_surface" ){
+		RegisterLaserMine();
+		g_Game.PrecacheOther( "monster_lasertripmine" );
+	}
+	
 	g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @SpamTime );
 }
 

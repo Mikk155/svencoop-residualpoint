@@ -10,6 +10,7 @@ models/mikk/residualpoint/hgrunt.mdl
 models/mikk/residualpoint/hgrunt_opfor.mdl
 models/mikk/residualpoint/lambda.mdl
 models/mikk/residualpoint/level_change.spr
+models/mikk/residualpoint/limitless_potential.mdl
 models/mikk/residualpoint/otis.mdl
 models/mikk/residualpoint/v_357.mdl
 models/mikk/residualpoint/v_9mmar.mdl

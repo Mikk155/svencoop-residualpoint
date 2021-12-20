@@ -56,7 +56,7 @@
 "hgrunt/gr_step2.wav" "agrunt/ag_pain5.wav"
 "hgrunt/gr_step3.wav" "agrunt/ag_idle5.wav"
 "hgrunt/gr_step4.wav" "zombie/zo_attack1.wav"
-"hgrunt/guard!.wav" "zombie/ag_idle5.wav"
+"hgrunt/guard!.wav" "agrunt/ag_idle5.wav"
 "hgrunt/guard.wav" "zombie/zo_attack1.wav"
 "hgrunt/have!.wav" "zombie/zo_attack1.wav"
 "hgrunt/have.wav" "zombie/zo_attack1.wav"

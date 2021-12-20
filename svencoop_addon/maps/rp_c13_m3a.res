@@ -49,6 +49,7 @@ models/player/cl_scientist3/cl_scientist3.bmp
 models/player/cl_scientist3/cl_scientist3.mdl
 models/player/cl_scientist4/cl_scientist4.bmp
 models/player/cl_scientist4/cl_scientist4.mdl
+sound/mikk/music/hla_acremix.mp3
 sound/mikk/residualpoint/barney/ba_late.wav
 sound/mikk/residualpoint/barney/ba_security2_desk0.wav
 sound/mikk/residualpoint/barney/ok03x_ba_topside.wav
@@ -59,6 +60,7 @@ sound/mikk/residualpoint/boss/final_hit.ogg
 sound/mikk/residualpoint/boss/first_hit.ogg
 sound/mikk/residualpoint/boss/tube_prepare.ogg
 sound/mikk/residualpoint/fgrunt/ok03b_fg01.wav
+sound/mikk/residualpoint/music/stealth_loop.mp3
 sound/mikk/residualpoint/otis/of1a1_ot0.wav
 sound/mikk/residualpoint/otis/of1a1_ot2.wav
 sound/mikk/residualpoint/scientist/dk01_sci_talk.wav

@@ -326,5 +326,5 @@ string GetHLMP5Name()
 void RegisterHLMP5()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_hlmp5", GetHLMP5Name() );
-	g_ItemRegistry.RegisterWeapon( GetHLMP5Name(), "hl_weapons", "9mm", "ARgrenades" );
+	g_ItemRegistry.RegisterWeapon( GetHLMP5Name(), "hl_weapons", "municion imaginaria", "granadas imaginarias" );
 }

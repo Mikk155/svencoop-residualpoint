@@ -7,8 +7,6 @@
 #include "residualpoint/monster_lasertripmine"
 #include "residualpoint/checkpoint_spawner"
 
-#include "rick/trigger_teleport_mp"
-
 #include "beast/teleport_zone"
 
 #include "cubemath/item_airbubble"
@@ -26,15 +24,12 @@ float flSurvivalStartDelay = g_EngineFuncs.CVarGetFloat( "mp_survival_startdelay
 
 void MapInit()
 {
-	// Take'd from weapon_hlsatchel by JulianR0
+	// Take'd from weapon_hlsatchel by JulianR0 IMPORTAN NOTE: This could crash Linux servers. I had problems there
 	RegisterHLSatchel(); // https://github.com/JulianR0/TPvP/blob/master/src/map_scripts/hl_weapons/weapon_hlsatchel.as
 	
 	// buggy as hell but well. have fun :)
 	RegisterHLMP5(); 
-	
-	// prevent people from getting out the maps. Take'd from Rick
-	RegisterTriggerTeleportMp(); // https://github.com/RedSprend/svencoop_plugins/blob/master/svencoop/scripts/maps/triggers/trigger_teleport_mp.as
-	
+
 	// most of this has been remapped. now just xenocrab are script-side
 	RegisterAllMonsters(); 
 	

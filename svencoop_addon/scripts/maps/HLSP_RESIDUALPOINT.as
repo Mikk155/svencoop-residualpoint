@@ -7,6 +7,8 @@
 #include "residualpoint/monster_lasertripmine"
 #include "residualpoint/checkpoint_spawner"
 
+#include "rick/trigger_teleport_mp"
+
 #include "beast/teleport_zone"
 
 #include "cubemath/item_airbubble"
@@ -29,6 +31,9 @@ void MapInit()
 	
 	// buggy as hell but well. have fun :)
 	RegisterHLMP5(); 
+
+	// prevent people from getting out the maps. Take'd from Rick
+	RegisterTriggerTeleportMp(); // https://github.com/RedSprend/svencoop_plugins/blob/master/svencoop/scripts/maps/triggers/trigger_teleport_mp.as
 
 	// most of this has been remapped. now just xenocrab are script-side
 	RegisterAllMonsters(); 

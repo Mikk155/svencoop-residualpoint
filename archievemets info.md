@@ -22,7 +22,7 @@ rp_c08_m3sewer | fisherman | kill 18 ichktyosaurs | $s_fishdiver03
 rp_c08_m3surface | explorer | reach the map FROM sewer | $s_explorer03
 ^ | bodyguard | protect 1 scientist or cleansuit | $s_bodyguard_08
 rp_c08_m4 | bodyguard | protect 1 barney npc | $s_bodyguard_09
-^ | random | carry barney near the map-change | $s_saveweapons
+^ | random | carry barney to open a secret door | $s_saveweapons
 rp_c09_m1 | bodyguard | protect 1 barney npc | $s_bodyguard_10
 rp_c10_m1 | bodyguard | protect 1 barney, 1 scientist npc | $s_bodyguard_11
 rp_c11 | bodyguard | protect 1 barney npc | $s_bodyguard_12

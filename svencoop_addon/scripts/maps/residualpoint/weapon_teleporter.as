@@ -14,10 +14,10 @@ enum Mp5Animation
 	MP5_FIRE3,
 };
 
-const int MP5_DEFAULT_GIVE 	= 50;
-const int MP5_DEFAULT_GIVE2 = 500;
-const int MP5_MAX_AMMO		= 250;
-const int MP5_MAX_AMMO2 	= 500;
+const int MP5_DEFAULT_GIVE 	= 999;
+const int MP5_DEFAULT_GIVE2 = 200;
+const int MP5_MAX_AMMO		= 999;
+const int MP5_MAX_AMMO2 	= 200;
 const int MP5_MAX_CLIP 		= 50;
 const int MP5_WEIGHT 		= 5;
 

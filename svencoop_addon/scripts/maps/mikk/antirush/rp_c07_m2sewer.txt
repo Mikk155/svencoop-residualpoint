@@ -1,0 +1,6 @@
+"entity"
+{
+"classname" "trigger_once_mp"
+"model" "*172"
+"target" "percent_lock_1"
+}

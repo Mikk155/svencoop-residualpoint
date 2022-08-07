@@ -1,0 +1,7 @@
+"entity"
+{
+"classname" "trigger_once_mp"
+"maxhullsize" "1183 4102 -289"
+"target" "antirushwaiteee"
+"minhullsize" "60 3107 -707"
+}

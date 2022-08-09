@@ -7,10 +7,6 @@
 }
 "entity"
 {
-"classname" "trigger_once_mp"
-"spawnflags" "1"
+"classname" "multisource"
 "targetname" "Nosuittemaster"
-"target" "Nosuittemaster2"
-"maxhullsize" "2308 -1426 -2098"
-"minhullsize" "1342 -1905 -2327"
 }

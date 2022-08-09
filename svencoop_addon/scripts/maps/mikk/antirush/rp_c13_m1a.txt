@@ -7,3 +7,8 @@
 "health" "10"
 "minhullsize" "2200 -5898 -3264"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}

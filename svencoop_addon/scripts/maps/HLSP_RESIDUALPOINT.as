@@ -51,7 +51,8 @@ int DiffMode = 0; //Default DO NOT CHANGE HERE. this will be updated via mapping
 
 bool ShouldRestartResidualPoint(const string& in szMapName){return szMapName != "rp_c00_lobby";}
 
-void MapInit(){
+void MapInit()
+{
 	MultiLanguageInit();
 	RegisterHLMP5(); 
 	RegisterAmmoIndividual();
@@ -63,46 +64,45 @@ void MapInit(){
 	RegisterClassicWeapons();
 	g_ClassicMode.SetItemMappings( @g_ClassicWeapons );
 	if( !ShouldRestartResidualPoint( g_Engine.mapname ) ) { g_ClassicMode.SetShouldRestartOnChange( false ); }
-	g_Scheduler.SetInterval( "ReloadModelsClassicMode", 0.1f, g_Scheduler.REPEAT_INFINITE_TIMES );	// Cuz squadmakers x[
+	if( g_ClassicMode.IsEnabled() ) { Precacheclassic(); g_Scheduler.SetInterval( "ReloadModelsClassicMode", 0.1f, g_Scheduler.REPEAT_INFINITE_TIMES ); }	// Cuz squadmakers x[
 	
+	// Item airbubble tank for oxygen.
 	if(string(g_Engine.mapname) == "rp_c08_m3" or string(g_Engine.mapname) == "rps_sewer" ){RegisterAirbubbleCustomEntity();}
 	
 	// We want to check if the map supports survival before registering game_save.
 	const bool IsSurvivalEnabled = g_EngineFuncs.CVarGetFloat("mp_survival_supported") == 1;
-	
-	if( IsSurvivalEnabled and blWeWantSurvival ){
+	if( IsSurvivalEnabled and blWeWantSurvival )
+	{
 		g_EngineFuncs.CVarSetFloat( "mp_survival_starton", 1 );
-		g_EngineFuncs.CVarSetFloat( "mp_survival_startdelay", 10 );
-		// Choose a default delay by your choice.
-		// BUT game_save actually revives any new players that joins the server
-		// So there isn't a reason to update it more than 10 seconds unless you really love everyone rushing maps -Mikk
-		RegisterGameSave();
+		g_EngineFuncs.CVarSetFloat( "mp_survival_startdelay", 10 ); // Choose a default delay by your choice. BUT game_save actually revives any new players that joins the server
+		RegisterGameSave(); // So there isn't a reason to update it more than 10 seconds unless you really love everyone rushing maps -Mikk
 	}
 	
 	// Just in case...
 	g_EngineFuncs.CVarSetFloat( "mp_npckill", 2 );
 	g_EngineFuncs.CVarSetFloat( "mp_weapon_droprules", 0 );
 
+	// Register antirush entity.
 	if( blIsAntiRushEnable ) { RegisterAntiRushEntity(); }
-	
-	if( g_ClassicMode.IsEnabled() ) { Precacheclassic(); }
 }
 
 void MapStart()
 {
-	if( !blIsAntiRushEnable ) { return; }
+	if( !blIsAntiRushEnable )
+		return;
 
-	const string JsFileLoad = "mikk/antirush/" + string( g_Engine.mapname ) + ".txt";
-	
-	if(!g_EntityLoader.LoadFromFile(JsFileLoad)){g_EngineFuncs.ServerPrint("Can't open antirush script file "+JsFileLoad+"\n" );}
+	LoadFileFromAntiRush();
 }
 
 void MapActivate()
 {
-	if( string(g_Engine.mapname) == "rp_c00_lobby" ){
+	// We want to customize votes by bools choices.
+	if( string(g_Engine.mapname) == "rp_c00_lobby" )
+	{
 		CBaseEntity@ pVotes = null;
 		if( !blClassicModeChoos ){
-			while((@pVotes = g_EntityFuncs.FindEntityByTargetname(pVotes, "classic_mode_button")) !is null){
+			while((@pVotes = g_EntityFuncs.FindEntityByTargetname(pVotes, "classic_mode_button")) !is null)
+			{
 				edict_t@ pEdict = pVotes.edict();
 				g_EntityFuncs.DispatchKeyValue( pEdict, "target", "vote_disabled_msg" );
 				g_EntityFuncs.DispatchKeyValue( pEdict, "targetname", "Please.Dont." );
@@ -127,6 +127,7 @@ void MapActivate()
 		}
 	}
 	
+	// We want to Respawn Required-for-progress npcs if they die instead of restart the map.
 	if( blSpawnNpcRequired ){
 		if(string(g_Engine.mapname) == "rp_c08_m1sewer"		)	{ KillThisNpc( "z3f_sci_03"			);										}
 		if(string(g_Engine.mapname) == "rp_c08_m2surface"	)	{ KillThisNpc( "p03_scientist_b"	); KillThisNpc( "p03_scientist_a"	);	}
@@ -136,8 +137,8 @@ void MapActivate()
 		if(string(g_Engine.mapname) == "rps_surface"		)	{ KillThisNpc( "bar01_friend"		);										}
 	}
 
-	if( !g_EntityLoader.LoadFromFile( EntFileLoad ) )
-		g_EngineFuncs.ServerPrint( "Can't open multi-language script file " + EntFileLoad + " No messages will be shown.\n" );
+	// Just a debug.
+	if( !g_EntityLoader.LoadFromFile( EntFileLoad ) ) { g_EngineFuncs.ServerPrint( "Can't open multi-language script file " + EntFileLoad + " No messages will be shown.\n" ); }
 }
 
 void KillThisNpc( const string targetname ){
@@ -151,39 +152,39 @@ void ReloadModelsClassicMode(){
 	// For classic model SetUp models.
 	// i know this method is kinda of "Why you do this?"
 	// but as long as it works i won't be reworkin the system for 46 maps. -Mikk
-	CBaseEntity@ pReplacemets = null;
-	while((@pReplacemets = g_EntityFuncs.FindEntityByClassname(pReplacemets, "*")) !is null){
-		if( g_ClassicMode.IsEnabled() ){
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/w_bloodly_shotgun.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_w_bloodly_shotgun", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/w_bloodly_9mmar.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_w_bloodly_9mmar", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/zgrunt.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_zgrunt", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/xenocrab.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_xenocrab", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/ngrunt.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_ngrunt", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/civ_scientist.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_civ_scientist", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/hgrunt_opfor.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_hgrunt_opfor", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.model == "models/mikk/residualpoint/aworker.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_aworker", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.classname == "monster_male_assassin" and pReplacemets.pev.model != "models/mikk/hlclassic/massn.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_massn", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.classname == "monster_otis" and pReplacemets.pev.model != "models/cm_v3/otis.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_otis", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.classname == "monster_zombie_soldier" and pReplacemets.pev.model != "models/cm_v3/zombie_soldier.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_zombie_soldier", pReplacemets, pReplacemets, USE_TOGGLE );
-			if( pReplacemets.pev.classname == "monster_zombie_barney" and pReplacemets.pev.model != "models/cm_v3/zombie_barney.mdl" )
-				g_EntityFuncs.FireTargets( "ClassicMode_zombie_barney", pReplacemets, pReplacemets, USE_TOGGLE );
-		}
+	CBaseEntity@ pCM = null;
+	while((@pCM = g_EntityFuncs.FindEntityByClassname(pCM, "*")) !is null)
+	{
+		if( pCM.pev.model == "models/mikk/residualpoint/w_bloodly_shotgun.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_w_bloodly_shotgun", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.model == "models/mikk/residualpoint/w_bloodly_9mmar.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_w_bloodly_9mmar", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.model == "models/mikk/residualpoint/zgrunt.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_zgrunt", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.model == "models/mikk/residualpoint/xenocrab.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_xenocrab", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.model == "models/mikk/residualpoint/ngrunt.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_ngrunt", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.model == "models/mikk/residualpoint/civ_scientist.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_civ_scientist", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.model == "models/mikk/residualpoint/hgrunt_opfor.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_hgrunt_opfor", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.model == "models/mikk/residualpoint/aworker.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_aworker", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.classname == "monster_male_assassin" and pCM.pev.model != "models/mikk/hlclassic/massn.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_massn", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.classname == "monster_otis" and pCM.pev.model != "models/cm_v3/otis.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_otis", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.classname == "monster_zombie_soldier" and pCM.pev.model != "models/cm_v3/zombie_soldier.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_zombie_soldier", pCM, pCM, USE_TOGGLE );
+		if( pCM.pev.classname == "monster_zombie_barney" and pCM.pev.model != "models/cm_v3/zombie_barney.mdl" )
+			g_EntityFuncs.FireTargets( "ClassicMode_zombie_barney", pCM, pCM, USE_TOGGLE );
 	}
 }
 
 // CallBack for rp_c00_lobby
-void ButtonsTargets( CBaseEntity@ pTriggerScript ){
+void ButtonsTargets( CBaseEntity@ pTriggerScript )
+{
 	CBaseEntity@ pButtons = null;
 	while((@pButtons = g_EntityFuncs.FindEntityByClassname(pButtons, "func_button")) !is null){
 		if( g_Utility.VoteActive() ){
@@ -369,9 +370,8 @@ void SetOriginPlease( CBaseEntity@ pTriggerScript ){
 
             pPlayer.SetOrigin( pTrain.Center() + Vector( 0, -24, 16 ) );
             pPlayer.pev.solid = SOLID_NOT;
-            pPlayer.pev.flags |= FL_FROZEN | FL_NOTARGET;
-            pPlayer.pev.rendermode = kRenderTransAlpha;
-            pPlayer.pev.renderamt = 0;
+            pPlayer.pev.flags |= FL_DUCKING | FL_NOTARGET;
+			pPlayer.pev.flDuckTime = 26;
             pPlayer.BlockWeapons( pTrain );
         }
     }

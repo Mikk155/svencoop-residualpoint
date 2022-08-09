@@ -19,6 +19,8 @@
 "models/v_squeak.mdl" "models/mikk/residualpoint/v_squeak.mdl"
 "models/v_tripmine.mdl" "models/mikk/residualpoint/v_tripmine.mdl"
 "models/v_desert_eagle.mdl" "models/mikk/residualpoint/v_desert_eagle.mdl"
+"models/v_satchel.mdl" "models/mikk/residualpoint/v_satchel.mdl"
+"models/v_satchel_radio.mdl" "models/mikk/residualpoint/v_satchel_radio.mdl"
 
 "models/hlclassic/hgrunt.mdl" "models/mikk/residualpoint/hlclassic/hgrunt.mdl"
 "models/hlclassic/v_9mmAR.mdl" "models/mikk/residualpoint/hlclassic/v_9mmar.mdl"
@@ -37,3 +39,5 @@
 "models/hlclassic/v_desert_eagle.mdl" "models/mikk/residualpoint/hlclassic/v_desert_eagle.mdl"
 "models/hlclassic/v_m40a1.mdl" "models/mikk/residualpoint/hlclassic/v_m40a1.mdl"
 "models/hlclassic/v_saw.mdl" "models/mikk/residualpoint/hlclassic/v_saw.mdl"
+"models/hlclassic/v_satchel.mdl" "models/mikk/residualpoint/hlclassic/v_satchel.mdl"
+"models/hlclassic/v_satchel_radio.mdl" "models/mikk/residualpoint/hlclassic/v_satchel_radio.mdl"

@@ -14,3 +14,13 @@
 "model" "*209"
 "health" "3"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_2"
+}

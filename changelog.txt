@@ -1,0 +1,57 @@
+
+[[include changelog version=v1.0]]
+
+Global changes -
+* Removed force player models after chapter 2
+* Added ammo_individual
+* Added new feature to the checkpoints for saving All player's life even living ones.
+* Added monsterclip for prevent npcs camping at teleport zones.
+* Added new logics for lift so it is more suitable for MP.
+* Added antirush
+* Added multi language support
+* Added stock music. why not.
+* Added a better system for not solid at tram-ride maps.
+* Added Classic-Mode supports for non-classic monsters and vote-able via lobby.
+* Added classic weapons for classic mode.
+* Removed some files that was renamed but actually exist in SC.
+* Replaced monster_xenocrab script with stock monster_headcrab with custom model.
+
+Lobby changes -
+* added clip to the train door.
+* Reworked difficulty system.
+* a vote for choose the chapters was added. they're blocked until reach.
+* A vote for toggle classic mode has been added.
+* Released lobby source file
+* env_global states was wiped. Now the credits starts ON always.
+
+rp_c00 -
+* All the 5 tram ride maps has been merged into one.
+
+rp_c05 -
+* fixed a problem that where players can get stuck behind some doors
+
+rp_c06 -
+* Changed env_global logics to trigger_save/load. for unknown reason env_global state was wiped on UHS servers (Linux)
+
+rp_c08_m2surface -
+* Fixed entity logics being looped causing massive lag if certain conditions happen.
+* fixed a bug that where Donors can skip the whole map by spawning a chumtoad on the map start lift.
+
+rp_c09_m2 -
+* Added a logic for "protect the train" since not-solid players can't receive damage from monsters. 
+
+rp_c13_m1a -
+* Added a vote instead because people don't know or don't give time to take portal's route.
+
+rp_c13_m3a-
+* Added a vote for toggle survival mode.
+* Added rp_c13_m3a_skl.cfg to prevent default/custom-plugins skills.
+
+rp_c14 -
+* Added a cinematic so everyone is on the truck.
+
+Survivor campaign -
+* Removed monster_lasermine. it now uses stock entities.
+* Added global states depending the path that the players choose.
+
+[[include changelog-end]]

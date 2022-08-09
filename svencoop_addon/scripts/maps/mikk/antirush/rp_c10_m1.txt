@@ -41,3 +41,18 @@
 "target" "percent_lock_4"
 "minhullsize" "3024 -8 -1401"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_2"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_3"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_4"
+}

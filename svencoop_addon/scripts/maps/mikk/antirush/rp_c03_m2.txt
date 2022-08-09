@@ -9,6 +9,36 @@
 }
 "entity"
 {
+"classname" "multisource"
+"targetname" "antirush_count_1_door"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_4"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_5"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_6"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_7"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_8"
+}
+"entity"
+{
 "classname" "trigger_once_mp"
 "maxhullsize" "-10822 -3855 -470"
 "targetname" "spawn_cp"

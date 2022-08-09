@@ -438,7 +438,7 @@ class game_save : ScriptBaseEntity
 		SpawnCountHudText.fadeoutTime = 0.25;
 		SpawnCountHudText.holdTime = 0.2;
 		SpawnCountHudText.fxTime = 0;
-		SpawnCountHudText.channel = 8;
+		SpawnCountHudText.channel = 6;
 
 		g_PlayerFuncs.HudMessage(pPlayer, SpawnCountHudText, "Spawns: " + (pData.touched-(pData.spawned-1)));
 	}

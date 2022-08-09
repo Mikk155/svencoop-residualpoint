@@ -7,6 +7,21 @@
 }
 "entity"
 {
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_3"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_4"
+}
+"entity"
+{
 "classname" "func_wall_toggle"
 "targetname" "percent_lock_2"
 "origin" "-4048 -4048 -1344"

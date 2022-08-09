@@ -20,3 +20,18 @@
 "frags" "20"
 "maxhullsize" "-4358 -4735 -354"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_2"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "NoRushIntro"
+}

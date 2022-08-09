@@ -45,7 +45,7 @@ class tram_ride_train : ScriptBaseEntity
 		else
 		{
 			SetThink( null );
-			g_Scheduler.SetTimeout( this, "ResetValues", 0.25 );
+			ResetValues();
 		}
 
 		toggle = !toggle;
@@ -53,7 +53,8 @@ class tram_ride_train : ScriptBaseEntity
 
     void UpdateOnRemove()
     {
-		g_Scheduler.SetTimeout( this, "ResetValues", 0.25 );
+		ResetValues();
+		
         BaseClass.UpdateOnRemove();
     }
 
@@ -67,7 +68,9 @@ class tram_ride_train : ScriptBaseEntity
 				continue;
 
 			pPlayer.pev.rendermode  = kRenderNormal;
-			pPlayer.pev.renderamt   = 255;
+			pPlayer.pev.renderamt = 255;
+			pPlayer.pev.flags &= ~FL_NOTARGET;
+			pPlayer.pev.solid = SOLID_SLIDEBOX;
 		}
 	}
 	
@@ -87,8 +90,8 @@ class tram_ride_train : ScriptBaseEntity
 			if( ( self.pev.origin - pPlayer.pev.origin ).Length() <= 200 ) // 200 units aprox.
 			{
 				pPlayer.pev.solid = SOLID_NOT;
-				pPlayer.pev.flags |= FL_NOTARGET;
 				pPlayer.pev.rendermode = kRenderTransAlpha;
+				pPlayer.pev.flags |= FL_NOTARGET;
 				pPlayer.pev.renderamt = 0;
 			}else{ // Respawn players that somehow get out of the train.
 				g_PlayerFuncs.RespawnPlayer(pPlayer, true, true);

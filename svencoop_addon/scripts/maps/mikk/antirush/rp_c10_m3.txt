@@ -52,3 +52,13 @@
 "health" "14"
 "minhullsize" "3967 -5936 -2736"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_3"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_4"
+}

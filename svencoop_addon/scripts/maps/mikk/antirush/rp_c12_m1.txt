@@ -31,3 +31,23 @@
 "target" "percent_lock_4"
 "minhullsize" "-3308 2411 -2165"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "norushintro"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_3"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_4"
+}

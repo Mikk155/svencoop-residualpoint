@@ -32,3 +32,27 @@
 "target" "lvllchangeantirush"
 "minhullsize" "-1600 6 -1338"
 }
+"entity"
+{
+"classname" "func_wall_toggle"
+"model" "*185"
+"origin" "-2868 -1526 64"
+"rendermode" "4"
+"renderamt" "0"
+"targetname" "lvllchangeantirush"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_3"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "antirush_skull_4"
+}

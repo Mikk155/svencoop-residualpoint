@@ -33,16 +33,11 @@
 *	    -Idea Sparks
 *
 *	"netname" must be a brush model value i.e "*255" for lock doors, butons, or anything with "master" keyvalue.
+*	  This work for func_door. need more testing in other entities -Mikk
+*
+*	A vote for toggle anti rush has been added. "say /antirush" Code taked from Duk0, we need to simplify it -Mikk
+*	  Idea -Sparks
 */
-
-void RegisterAntiRushEntity() 
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "trigger_once_mp", "trigger_once_mp" );
-	
-	// Cuz spawned via MapStart x[
-	g_SoundSystem.PrecacheSound( "buttons/bell1.wav" );
-	g_Game.PrecacheGeneric( "sound/buttons/bell1.wav" );
-}
 
 /*
 	Suggestions:
@@ -50,21 +45,241 @@ void RegisterAntiRushEntity()
 	
 	Place here your suggestions
 	-
-	
-	a vote for toggle antirush- 
-	if antirush is disabled use function Touch() for trigger its target and self-remove. 
-	so when it gets ON via vote only non-reached entities are functional.
 */
 
+/*
+	SOURCES:
+	
+	Cubemath:		https://github.com/CubeMath/UCHFastDL2/blob/master/svencoop/scripts/maps/cubemath/trigger_once_mp.as
+	
+	Duk0:			https://github.com/Duk0/AngelScript-SvenCoop/blob/master/plugins/VoteRestart.as
+	
+	Gaftherman:		https://github.com/Gaftherman
+	
+	MultiLanguage: https://github.com/Mikk155/multi_language
+*/
+
+const Cvar@ g_pCvarVoteAllow, g_pCvarVoteTimeCheck, g_pCvarVoteMapRequired;
+string g_szPlayerName;
+bool IsDisabledByVoted = false;
+
+/*
+	INSTALLATION:
+*/
+
+// At MapInit()
+void RegisterAntiRushEntity() 
+{
+	// Register the entity
+	g_CustomEntityFuncs.RegisterCustomEntity( "trigger_once_mp", "trigger_once_mp" );
+	
+	// Create/modify language support.
+	CBaseEntity@ pFindTarget = null;
+	while((@pFindTarget = g_EntityFuncs.FindEntityByClassname(pFindTarget, "info_target")) !is null)
+	{
+		if( pFindTarget.pev.targetname == "language" )
+		{
+			edict_t@ pEdict = pFindTarget.edict();
+			g_EntityFuncs.DispatchKeyValue( pEdict, "$i_message_spanish", "1" );
+			g_EntityFuncs.DispatchKeyValue( pEdict, "$i_message_portuguese", "1" );
+			g_EntityFuncs.DispatchKeyValue( pEdict, "$i_message_portuguese", "1" );
+			g_EntityFuncs.DispatchKeyValue( pEdict, "$i_message_german", "1" );
+			g_EntityFuncs.DispatchKeyValue( pEdict, "$i_message_french", "1" );
+			g_EntityFuncs.DispatchKeyValue( pEdict, "$i_message_italian", "1" );
+			g_EntityFuncs.DispatchKeyValue( pEdict, "$i_message_esperanto", "1" );
+		}
+		else
+		{
+			dictionary language;
+			language ["$i_message"] = "1";
+			language ["$i_message_spanish"] = "1";
+			language ["$i_message_portuguese"] = "1";
+			language ["$i_message_german"] = "1";
+			language ["$i_message_french"] = "1";
+			language ["$i_message_italian"] = "1";
+			language ["$i_message_esperanto"] = "1";
+			language ["targetname"] = "language";
+			g_EntityFuncs.CreateEntity( "info_target", language, true );
+		}
+	}
+	
+	// Pre-Precache cuz spawned via MapStart x[
+	g_SoundSystem.PrecacheSound( "buttons/bell1.wav" );
+	g_Game.PrecacheGeneric( "sound/buttons/bell1.wav" );
+	
+	// Hook and vote things.
+	g_Hooks.RegisterHook( Hooks::Player::ClientSay, @ClientSay );
+	@g_pCvarVoteAllow = g_EngineFuncs.CVarGetPointer( "mp_voteallow" );
+	@g_pCvarVoteTimeCheck = g_EngineFuncs.CVarGetPointer( "mp_votetimecheck" );
+	@g_pCvarVoteMapRequired = g_EngineFuncs.CVarGetPointer( "mp_votemaprequired" );
+
+	// Tell people that antirush vote exist.
+	if ( g_pCvarVoteAllow !is null && g_pCvarVoteAllow.value < 1 or g_pCvarVoteMapRequired.value < 0 )
+		return;
+		
+	dictionary keyvalues;
+	keyvalues =	
+	{
+		{ "message", ""},
+		{ "message_spanish", ""},
+		{ "message_portuguese", ""},
+		{ "message_german", ""},
+		{ "message_french", ""},
+		{ "message_italian", ""},
+		{ "message_esperanto", ""},
+		{ "x", "-1"},
+		{ "y", "0.90"},
+		{ "effect", "0"},
+		{ "holdtime", "1"},
+		{ "fadeout", "0"},
+		{ "fadein", "0"},
+		{ "channel", "8"},
+		{ "fxtime", "0"},
+		{ "color", "255 0 0"},
+		{ "spawnflags", "1"}, // No echo console + activator only
+		{ "targetname", "game_playerspawn" }
+	};
+	if( g_CustomEntityFuncs.IsCustomEntity( "game_text_custom" ) ) 
+		g_EntityFuncs.CreateEntity( "game_text_custom", keyvalues, true );
+	else 
+		g_EntityFuncs.CreateEntity( "game_text", keyvalues, true );
+}
+
+// At MapStart()
+void LoadFileFromAntiRush()
+{
+	const string JsFileLoad = "mikk/antirush/" + string( g_Engine.mapname ) + ".txt";
+	
+	if(!g_EntityLoader.LoadFromFile(JsFileLoad)){g_EngineFuncs.ServerPrint("Can't open antirush script file "+JsFileLoad+"\n" );}
+}
+
+
+// Code taked from Duk0
+HookReturnCode MapChange()
+{
+	g_Scheduler.ClearTimerList();
+
+	return HOOK_CONTINUE;
+}
+
+HookReturnCode ClientSay( SayParameters@ pParams )
+{
+	const CCommand@ pArguments = pParams.GetArguments();
+
+	if ( pArguments.ArgC() >= 1 )
+	{
+		string szArg = pArguments.Arg( 0 );
+		szArg.Trim();
+		if ( szArg.ICompare( "/antirush" ) == 0 )
+		{
+			CBasePlayer@ pPlayer = pParams.GetPlayer();
+
+			if ( pPlayer is null || !pPlayer.IsConnected() )
+				return HOOK_CONTINUE;
+
+			RestartVote( pPlayer );
+		}
+	}
+	return HOOK_CONTINUE;
+}
+
+void RestartVote( CBasePlayer@ pPlayer )
+{
+	if ( g_pCvarVoteAllow !is null && g_pCvarVoteAllow.value < 1 )
+	{
+		g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTCENTER, "Voting not allowed on server.\n" );
+		return;
+	}
+
+	if ( g_pCvarVoteMapRequired.value < 0 )
+	{
+		g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTCENTER, "This type of vote is disabled.\n" );
+		return;
+	}
+
+	if ( g_Utility.VoteActive() )
+	{
+		g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTCENTER, "Can't start vote. Other vote in progress.\n" );
+		return;
+	}
+	
+	g_szPlayerName = pPlayer.pev.netname;
+	
+	StartMapRestartVote();
+}
+
+void StartMapRestartVote()
+{
+	string AntiRushState = "Disable";
+	
+	float flVoteTime = g_pCvarVoteTimeCheck.value;
+	
+	if ( flVoteTime <= 0 )
+		flVoteTime = 16;
+		
+	float flPercentage = g_pCvarVoteMapRequired.value;
+	
+	if ( flPercentage <= 0 )
+		flPercentage = 66;
+
+	if( IsDisabledByVoted == true )
+	{
+		AntiRushState = "Enable";
+	}
+	else if( IsDisabledByVoted == false )
+	{
+		AntiRushState = "Disable";
+	}
+	
+	Vote vote( ""+AntiRushState+" Anti-Rush vote", ""+AntiRushState+" Anti-Rush?", flVoteTime, flPercentage );
+	
+	vote.SetVoteBlockedCallback( @RestartMapVoteBlocked );
+	vote.SetVoteEndCallback( @RestartMapVoteEnd );
+	
+	vote.Start();
+
+	if ( g_szPlayerName.IsEmpty() )
+		g_szPlayerName = "*Empty*";
+
+	g_PlayerFuncs.ClientPrintAll( HUD_PRINTNOTIFY, vote.GetName() + " started by " + g_szPlayerName + "\n" );
+}
+
+void RestartMapVoteBlocked( Vote@ pVote, float flTime )
+{
+	//Try again later
+	g_Scheduler.SetTimeout( "StartMapRestartVote", flTime );
+}
+
+void RestartMapVoteEnd( Vote@ pVote, bool bResult, int iVoters )
+{
+	if ( !bResult )
+	{
+		g_PlayerFuncs.ClientPrintAll( HUD_PRINTNOTIFY, "Vote for Toggle anti-rush failed\n" );
+		return;
+	}
+	
+	
+	if( IsDisabledByVoted == true )
+	{
+		IsDisabledByVoted = false;
+		g_PlayerFuncs.ClientPrintAll( HUD_PRINTNOTIFY, "Vote for Disable Anti-Rush passed\n" );
+	}
+	else if( IsDisabledByVoted == false )
+	{
+		IsDisabledByVoted = true;
+		g_PlayerFuncs.ClientPrintAll( HUD_PRINTNOTIFY, "Vote for Enable Anti-Rush passed\n" );
+	}
+}
 
 enum trigger_once_flag
 {
-    SF_AR_START_OFF = 1 << 0
+    SF_AR_IS_OFF = 1 << 0,
+	SF_AR_NOTEXT = 1 << 1,
+	SF_AR_NOSOUN = 1 << 2
 }
-
+// No dejar mensajes subliminales que inciten al sexo -Gaf el hombre turkey
 class trigger_once_mp : ScriptBaseEntity 
 {
-	private float frags = 0.0;
 	private float m_flPercentage = 0.66; //Percentage of living people to be inside trigger to trigger
 	private string killtarget	= "";
 	private string strSound = "buttons/bell1.wav";
@@ -73,7 +288,7 @@ class trigger_once_mp : ScriptBaseEntity
 	
 	bool KeyValue( const string& in szKey, const string& in szValue ) 
 	{
-		if( szKey == "percent" || szKey == "m_flPercentage" ) 
+		if( szKey == "percent" || szKey == "m_flPercentage" ) // Second one is only for legacy.
 		{
 			m_flPercentage = atof( szValue );
 			return true;
@@ -117,8 +332,9 @@ class trigger_once_mp : ScriptBaseEntity
 
         self.pev.movetype = MOVETYPE_NONE;
         self.pev.solid = SOLID_NOT;
-		self.pev.effects = EF_NODRAW;
-
+//		self.pev.effects != EF_NODRAW;
+		self.pev.dmg = 9;
+			
         if( self.GetClassname() == "trigger_once_mp" && string( self.pev.model )[0] == "*" && self.IsBSPModel() )
         {
             g_EntityFuncs.SetModel( self, self.pev.model );
@@ -136,23 +352,33 @@ class trigger_once_mp : ScriptBaseEntity
 			BlIsEnabled = false;
 		}
 
-        if( !self.pev.SpawnFlagBitSet( SF_AR_START_OFF ) )
+        if( !self.pev.SpawnFlagBitSet( SF_AR_IS_OFF ) )
 		{
 			SetThink( ThinkFunction( this.TriggerThink ) );
 			self.pev.nextthink = g_Engine.time + 0.1f;
 		}
 
-		CreateMasterTarget();
 		CreateFXIndividual();
-		CreateGameTextMLan();
-		CreateLockerForMMS();
 		
+		if( !self.pev.SpawnFlagBitSet( SF_AR_NOTEXT ))
+		{
+			CreateGameTextMLan();
+		}
+
         BaseClass.Spawn();
 	}
 
+    void UpdateOnRemove()
+    {
+		do g_EntityFuncs.Remove( g_EntityFuncs.FindEntityByTargetname( null, "" + self.pev.target + "_FX" ) );
+		while( g_EntityFuncs.FindEntityByTargetname( null, "" + self.pev.target + "_FX" ) !is null );
+
+        BaseClass.UpdateOnRemove();
+    }
+
     void Use(CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float value)
     {
-        if( self.pev.SpawnFlagBitSet( SF_AR_START_OFF ) )
+        if( self.pev.SpawnFlagBitSet( SF_AR_IS_OFF ) )
 		{	
 			SetThink( ThinkFunction( this.TriggerThink ) );
 			self.pev.nextthink = g_Engine.time + 0.1f;
@@ -162,10 +388,6 @@ class trigger_once_mp : ScriptBaseEntity
 			self.pev.health -= 1;
 		}
 	}
-
-/*	void Touch( CBaseEntity@ pOther )
-	{
-	}*/
 	
 	void TriggerThink() 
 	{
@@ -174,13 +396,13 @@ class trigger_once_mp : ScriptBaseEntity
 		for( int iPlayer = 1; iPlayer <= g_PlayerFuncs.GetNumPlayers(); ++iPlayer )
 		{
 			CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( iPlayer );
-				
+					
 			if( pPlayer is null || !pPlayer.IsConnected() || !pPlayer.IsAlive() )
 				continue;
 
 			if( Inside( pPlayer ) )
 				PlayersTrigger = PlayersTrigger + 1.0f;
-					
+
 			TotalPlayers = TotalPlayers + 1.0f;	
 		}
 
@@ -189,19 +411,29 @@ class trigger_once_mp : ScriptBaseEntity
 			CurrentPercentage = PlayersTrigger / TotalPlayers + 0.00001f;
 
 			CBaseEntity@ pText = null;
-			
+
 			for( int iPlayer = 1; iPlayer <= g_PlayerFuncs.GetNumPlayers(); ++iPlayer )
 			{
 				CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( iPlayer );
 
 				if( pPlayer is null || !pPlayer.IsConnected() || !pPlayer.IsAlive() )
 					continue;
-
+					
 				if( Inside( pPlayer ) )
 				{
-					g_EntityFuncs.FireTargets( ""+self.pev.target+"_TEXT", pPlayer, pPlayer, USE_TOGGLE ); // Multi language message -mikk
-					g_EntityFuncs.FireTargets( "FX_" + self.pev.target, pPlayer, pPlayer, USE_TOGGLE ); // Don't spoiler outside people
-					
+					if( IsDisabledByVoted )
+					{
+						do g_EntityFuncs.Remove( g_EntityFuncs.FindEntityByTargetname( null, "" + self.pev.target + "_FX" ) );
+						while( g_EntityFuncs.FindEntityByTargetname( null, "" + self.pev.target + "_FX" ) !is null );
+
+						self.SUB_UseTargets( @self, USE_TOGGLE, 0 );
+
+						g_EntityFuncs.Remove( self );
+					}
+		
+					g_EntityFuncs.FireTargets( ""+self.pev.target+"_TEXT", pPlayer, pPlayer, USE_ON ); // Multi language message -mikk
+					g_EntityFuncs.FireTargets( "FX_" + self.pev.target, pPlayer, pPlayer, USE_ON ); // Don't spoiler outside people
+
 					if( BlIsEnabled and CurrentPercentage <= m_flPercentage and self.pev.health <= 0 )
 					{
 						while((@pText = g_EntityFuncs.FindEntityByTargetname(pText, ""+self.pev.target+"_TEXT")) !is null)
@@ -210,9 +442,13 @@ class trigger_once_mp : ScriptBaseEntity
 							g_EntityFuncs.DispatchKeyValue( pEdict, "message", "ANTI-RUSH: " + int(m_flPercentage*100) + "% Of players needed to continue. Current: "+ int(CurrentPercentage*100) + "%\n" );
 							g_EntityFuncs.DispatchKeyValue( pEdict, "message_spanish", "ANTI-RUSH: " + int(m_flPercentage*100) + "% De jugadores necesario para continuar. Actual: "+ int(CurrentPercentage*100) + "%\n" );
 							g_EntityFuncs.DispatchKeyValue( pEdict, "message_portuguese", "ANTI-RUSH: " + int(m_flPercentage*100) + "% De jogadores necessarios para continuar. Atual: "+ int(CurrentPercentage*100) + "%\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_french", "ANTI-RUSH: " + int(m_flPercentage*100) + "% Des joueurs necessaires pour continuer. Courant: "+ int(CurrentPercentage*100) + "%\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_italian", "ANTI-RUSH: " + int(m_flPercentage*100) + "% Dei giocatori necessari per continuare. Attuale: "+ int(CurrentPercentage*100) + "%\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_esperanto", "ANTI-RUSH: " + int(m_flPercentage*100) + "% De ludantoj bezonis daurigi. Nuna: "+ int(CurrentPercentage*100) + "%\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_german", "ANTI-RUSH: " + int(m_flPercentage*100) + "% Von Spielern, die benotigt werden, um fortzufahren. Aktuell: "+ int(CurrentPercentage*100) + "%\n" );
 						}
 					}
-					
+
 					if( self.pev.health != 0 and self.pev.message == "" )
 					{
 						while((@pText = g_EntityFuncs.FindEntityByTargetname(pText, ""+self.pev.target+"_TEXT")) !is null)
@@ -221,15 +457,19 @@ class trigger_once_mp : ScriptBaseEntity
 							g_EntityFuncs.DispatchKeyValue( pEdict, "message", "ANTI-RUSH: Kill remaining " + self.pev.health + " enemies for progress.\n" );
 							g_EntityFuncs.DispatchKeyValue( pEdict, "message_spanish", "ANTI-RUSH: Elimina los " + self.pev.health + " enemigos restantes para continuar.\n" );
 							g_EntityFuncs.DispatchKeyValue( pEdict, "message_portuguese", "ANTI-RUSH: Mate " + self.pev.health + " inimigos restantes para continuar.\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_french", "ANTI-RUSH: Tuez les " + self.pev.health + " ennemis restants pour progresser.\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_italian", "ANTI-RUSH: Uccidi i restanti " + self.pev.health + " nemici per progredire.\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_esperanto", "ANTI-RUSH: Mortigu " + self.pev.health + " ceterajn malamikojn por progreso.\n" );
+							g_EntityFuncs.DispatchKeyValue( pEdict, "message_german", "ANTI-RUSH: Tote die verbleibenden " + self.pev.health + " Feinde, um voranzukommen.\n" );
 						}
 					}
 				}
 				else{
-					g_EntityFuncs.FireTargets( "FX_RETURN_" + self.pev.target, pPlayer, pPlayer, USE_TOGGLE ); // Don't spoiler outside people
+					g_EntityFuncs.FireTargets( "FX_" + self.pev.target, pPlayer, pPlayer, USE_OFF ); // Don't spoiler outside people
 				}
 			}
-			
-			
+				
+				
 			if( BlIsEnabled and CurrentPercentage >= m_flPercentage ) 
 			{
 				if( self.pev.frags > 0 )
@@ -237,32 +477,48 @@ class trigger_once_mp : ScriptBaseEntity
 					while((@pText = g_EntityFuncs.FindEntityByTargetname(pText, ""+self.pev.target+"_TEXT")) !is null)
 					{
 						edict_t@ pEdict = pText.edict();
-						g_EntityFuncs.DispatchKeyValue( pEdict, "message", "ANTI-RUSH: Count-down: " + self.pev.frags );
-						g_EntityFuncs.DispatchKeyValue( pEdict, "message_spanish", "ANTI-RUSH: Cuenta-regresiva: " + self.pev.frags );
-						g_EntityFuncs.DispatchKeyValue( pEdict, "message_portuguese", "ANTI-RUSH: Contagem-regressiva: " + self.pev.frags );
+						
+						g_EntityFuncs.DispatchKeyValue( pEdict, "message", "ANTI-RUSH: Count-down: "+int(self.pev.frags)+"."+int(self.pev.dmg)+"0" );
+						g_EntityFuncs.DispatchKeyValue( pEdict, "message_spanish", "ANTI-RUSH: Cuenta-regresiva: "+int(self.pev.frags)+"."+int(self.pev.dmg)+"0" );
+						g_EntityFuncs.DispatchKeyValue( pEdict, "message_portuguese", "ANTI-RUSH: Contagem-regressiva: "+int(self.pev.frags)+"."+int(self.pev.dmg)+"0" );
+						g_EntityFuncs.DispatchKeyValue( pEdict, "message_french", "ANTI-RUSH: Compte a rebours: "+int(self.pev.frags)+"."+int(self.pev.dmg)+"0" );
+						g_EntityFuncs.DispatchKeyValue( pEdict, "message_italian", "ANTI-RUSH: Conto alla rovescia: "+int(self.pev.frags)+"."+int(self.pev.dmg)+"0" );
+						g_EntityFuncs.DispatchKeyValue( pEdict, "message_esperanto", "ANTI-RUSH: Retronombrado: "+int(self.pev.frags)+"."+int(self.pev.dmg)+"0" );
+						g_EntityFuncs.DispatchKeyValue( pEdict, "message_german", "ANTI-RUSH: Countdown: "+int(self.pev.frags)+"."+int(self.pev.dmg)+"0" );
 					}
-					self.pev.frags -= 0.1;
+					self.pev.dmg = self.pev.dmg - 1;
+					if( self.pev.dmg == 0 )
+					{
+						self.pev.dmg = 9;
+						self.pev.frags = self.pev.frags - 1;
+					}
 				}
 				else
 				{
-					g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, strSound, 1.0f, ATTN_NORM );
+					if( !self.pev.SpawnFlagBitSet( SF_AR_NOSOUN ) )
+					{
+						g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, strSound, 1.0f, ATTN_NORM );
+					}
 						
 					if( killtarget != "" && killtarget != self.GetTargetname() )
 					{
 						do g_EntityFuncs.Remove( g_EntityFuncs.FindEntityByTargetname( null, killtarget ) );
 						while( g_EntityFuncs.FindEntityByTargetname( null, killtarget ) !is null );
 					}
+				
+					do g_EntityFuncs.Remove( g_EntityFuncs.FindEntityByTargetname( null, "" + self.pev.target + "_FX" ) );
+					while( g_EntityFuncs.FindEntityByTargetname( null, "" + self.pev.target + "_FX" ) !is null );
 
 					self.SUB_UseTargets( @self, USE_TOGGLE, 0 );
 
 					g_EntityFuncs.Remove( self );
 				}
 			}
-			
+
 			if( self.pev.health <= 0 )
 				BlIsEnabled = true;
 		}
-		
+	
 		self.pev.nextthink = g_Engine.time + 0.1f;
 	}
 	
@@ -275,83 +531,38 @@ class trigger_once_mp : ScriptBaseEntity
 		myFXs ["renderamt"] = "255";
 		myFXs ["target"] = "" + self.pev.target + "_FX";
 		g_EntityFuncs.CreateEntity( "env_render_individual", myFXs, true );
-		
-		
-		myFXs ["targetname"] = "FX_RETURN_" + self.pev.target;
-		myFXs ["spawnflags"] = "64";
-		myFXs ["rendermode"] = "4";
-		myFXs ["renderamt"] = "0";
-		myFXs ["target"] = "" + self.pev.target + "_FX";
-		g_EntityFuncs.CreateEntity( "env_render_individual", myFXs, true );
 	}
 
 	void CreateGameTextMLan()
 	{
-		CBaseEntity@ pTextos = null;
 		dictionary keyvalues;
+		keyvalues =	
+		{
+			{ "message", ""},
+			{ "message_spanish", ""},
+			{ "message_portuguese", ""},
+			{ "message_german", ""},
+			{ "message_french", ""},
+			{ "message_italian", ""},
+			{ "message_esperanto", ""},
+			{ "x", "-1"},
+			{ "y", "0.90"},
+			{ "effect", "0"},
+			{ "holdtime", "1"},
+			{ "fadeout", "0"},
+			{ "fadein", "0"},
+			{ "channel", "8"},
+			{ "fxtime", "0"},
+			{ "color", "255 0 0"},
+			{ "spawnflags", "2"}, // No echo console + activator only
+			{ "targetname", "" + self.pev.target + "_TEXT" }
+		};
+		if( g_CustomEntityFuncs.IsCustomEntity( "game_text_custom" ) ) 
+			g_EntityFuncs.CreateEntity( "game_text_custom", keyvalues, true );
+		else 
+			g_EntityFuncs.CreateEntity( "game_text", keyvalues, true );
+	}
 
-		if( g_CustomEntityFuncs.IsCustomEntity( "game_text_custom" ) )
-		{
-			keyvalues =	
-			{
-				{ "message", ""},
-				{ "message_spanish", ""},
-				{ "message_portuguese", ""},
-				{ "x", "-1"},
-				{ "y", "0.90"},
-				{ "effect", "0"},
-				{ "holdtime", "1"},
-				{ "fadeout", "0"},
-				{ "fadein", "0"},
-				{ "channel", "6"},
-				{ "fxtime", "0"},
-				{ "color", "255 0 0"},
-				{ "spawnflags", "2"}, // No echo console + activator only
-				{ "targetname", "" + self.pev.target + "_TEXT" }
-			};
-			@pTextos = g_EntityFuncs.CreateEntity( "game_text_custom", keyvalues, true );
-		}
-		else
-		{
-			keyvalues =	
-			{
-				{ "message", ""},
-				{ "x", "-1"},
-				{ "y", "0.90"},
-				{ "effect", "0"},
-				{ "holdtime", "1"},
-				{ "fadeout", "0"},
-				{ "fadein", "0"},
-				{ "channel", "6"},
-				{ "fxtime", "0"},
-				{ "color", "255 0 0"},
-				{ "spawnflags", "2"}, // No echo console + activator only
-				{ "targetname", "" + self.pev.target + "_TEXT" }
-			};
-			@pTextos = g_EntityFuncs.CreateEntity( "game_text", keyvalues, true );
-		}
-	}
-	
-	void CreateMasterTarget()
-	{
-		dictionary mymaster;
-		mymaster ["targetname"] = "" + self.pev.target;
-		g_EntityFuncs.CreateEntity( "multisource", mymaster, true );
-	}
-	
-	void CreateLockerForMMS()
-	{
-		CBaseEntity@ pLock = null;
-		while((@pLock = g_EntityFuncs.FindEntityByClassname(pLock, "*")) !is null)
-		{
-			if( pLock.pev.model == ""+self.pev.netname+"" )
-			{
-				edict_t@ pEdict = pLock.edict();
-				g_EntityFuncs.DispatchKeyValue( pEdict, "master", ""+self.pev.target+"" );
-			}
-		}
-	}
-	
 	bool Inside(CBasePlayer@ pPlayer)
 	{
 		bool a = true;
@@ -362,9 +573,6 @@ class trigger_once_mp : ScriptBaseEntity
 		a = a && pPlayer.pev.origin.y + pPlayer.pev.mins.y <= self.pev.origin.y + self.pev.maxs.y;
 		a = a && pPlayer.pev.origin.z + pPlayer.pev.mins.z <= self.pev.origin.z + self.pev.maxs.z;
 
-		if(a)
-			return true;
-		else
-			return false;
+		return a;
 	}
 }

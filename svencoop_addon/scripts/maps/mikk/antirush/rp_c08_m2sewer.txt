@@ -12,3 +12,13 @@
 "origin" "872 3296 -2249"
 "model" "*197"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_2"
+}

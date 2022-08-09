@@ -1,5 +1,35 @@
 "entity"
 {
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_2"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_3"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_4"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_5"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_6"
+}
+"entity"
+{
 "classname" "trigger_once_mp"
 "maxhullsize" "-1784 -2870 -999"
 "targetname" "monster_2_count"

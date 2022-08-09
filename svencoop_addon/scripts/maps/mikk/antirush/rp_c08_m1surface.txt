@@ -5,3 +5,8 @@
 "origin" "1303 -1833 -230"
 "model" "*116"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}

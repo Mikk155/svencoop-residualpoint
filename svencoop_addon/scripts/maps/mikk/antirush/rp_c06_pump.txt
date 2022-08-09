@@ -14,3 +14,13 @@
 "origin" "1177 -1872 -2553"
 "model" "*84"
 }
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_1"
+}
+"entity"
+{
+"classname" "multisource"
+"targetname" "percent_lock_2"
+}

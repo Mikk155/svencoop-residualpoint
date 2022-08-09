@@ -11,7 +11,7 @@
 #include "residualpoint/game_save"
 
 // Modify code bellow for Server operator's choices. -Mikk
-bool blSpawnNpcRequired = false;
+bool blSpawnNpcRequired = true;
 /*
 	Change to true = npcs required for progress Respawn if they die instead of restart the map.
 */
@@ -21,7 +21,7 @@ bool blIsAntiRushEnable = true;
 	Change to false = antirush is disabled.
 */
 
-bool blClassicModeChoos = true;
+bool blClassicModeChoos = false;
 /*
 	Change to false = Vote for Classic mode is disabled.
 */
@@ -31,7 +31,7 @@ bool blWeWantSurvival = true;
 	Change to false = Survival mode is disabled.
 */
 
-bool blDifficultyChoose = true;
+bool blDifficultyChoose = false;
 /*
 	Change to false = Vote for difficulty is disabled.
 */
@@ -436,9 +436,9 @@ void Precacheclassic(){
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/ngrunt.mdl" );
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/civ_scientist.mdl" );
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/aworker.mdl" );
+	g_Game.PrecacheModel( "models/mikk/hlclassic/massn.mdl" );
 	g_Game.PrecacheModel( "models/cm_v3/zombie_soldier.mdl" );
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/hgrunt_opfor.mdl" );
 	g_Game.PrecacheModel( "models/cm_v3/zombie_barney.mdl" );
-	g_Game.PrecacheModel( "models/cm_v3/massn.mdl" );
 	g_Game.PrecacheModel( "models/cm_v3/otis.mdl" );
 }

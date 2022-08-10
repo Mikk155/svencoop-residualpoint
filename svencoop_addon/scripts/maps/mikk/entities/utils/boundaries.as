@@ -10,6 +10,6 @@ bool Inside(CBasePlayer@ pPlayer, CBaseEntity@ self)
 	blInside = blInside && pPlayer.pev.origin.y + pPlayer.pev.mins.y <= self.pev.origin.y + self.pev.maxs.y;
 	blInside = blInside && pPlayer.pev.origin.z + pPlayer.pev.mins.z <= self.pev.origin.z + self.pev.maxs.z;
 
-	return a;
+	return blInside;
 }
 }

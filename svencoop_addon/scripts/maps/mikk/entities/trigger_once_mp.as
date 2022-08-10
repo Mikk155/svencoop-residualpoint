@@ -340,7 +340,7 @@ class trigger_once_mp : ScriptBaseEntity
 
         self.pev.movetype = MOVETYPE_NONE;
         self.pev.solid = SOLID_NOT;
-//		self.pev.effects != EF_NODRAW;
+		self.pev.effects != EF_NODRAW;
 		self.pev.dmg = 9;
 			
         if( self.GetClassname() == "trigger_once_mp" && string( self.pev.model )[0] == "*" && self.IsBSPModel() )

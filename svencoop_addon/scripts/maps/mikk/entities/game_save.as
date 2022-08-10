@@ -317,7 +317,7 @@ class game_save : ScriptBaseEntity
 					g_PlayerFuncs.RespawnPlayer( pPlayer, false, true );
 					
 					// Must include https://github.com/Outerbeast/Entities-and-Gamemodes/blob/master/respawndead_keepweapons.as
-					RESPAWNDEAD_KEEPWEAPONS::ReEquipCollected( pPlayer );
+					RESPAWNDEAD_KEEPWEAPONS::ReEquipCollected( pPlayer, true );
 					
 					g_SoundSystem.EmitSound( self.edict(), CHAN_STATIC, strEndSound, 1.0f, ATTN_NORM );
 					

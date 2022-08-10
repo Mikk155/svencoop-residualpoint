@@ -1,50 +1,61 @@
 #include "hl_weapons/weapons"
 #include "hl_weapons/mappings"
-#include "multi_language/multi_language"
-#include "cubemath/item_airbubble"
 
-#include "residualpoint/ammo_individual"
+#include "beast/respawndead_keepweapons"
+
+#include "multi_language/multi_language"
+
+#include "gaftherman/ammo_individual"
+
+#include "mikk/entities/trigger_once_mp"
+#include "mikk/entities/item_airbubble"
+#include "mikk/entities/tram_ride_train"
+#include "mikk/entities/game_save"
+
 #include "residualpoint/weapon_teleporter"
 #include "residualpoint/monster_zombie_hev"
-#include "residualpoint/tram_ride_train"
-#include "residualpoint/trigger_once_mp"
-#include "residualpoint/game_save"
 
 // Modify code bellow for Server operator's choices. -Mikk
-bool blSpawnNpcRequired = true;
+bool blSpawnNpcRequired = false;
 /*
-	Change to true = npcs required for progress Respawn if they die instead of restart the map.
+	true	=	Npc's for-progress-required will respawn when die.
+	false	=	Npc's for-progress-required will restart the map when die.
 */
 
 bool blIsAntiRushEnable = true;
 /*
-	Change to false = antirush is disabled.
+	true	=	Anti-Rush is disabled.
+	false	=	Anti-Rush is enabled.
 */
 
-bool blClassicModeChoos = false;
+bool blClassicModeChoos = true;
 /*
-	Change to false = Vote for Classic mode is disabled.
+	true	=	Enables classic mode vote button at lobby.
+	false	=	Disable classic mode vote button at lobby.
 */
 
 bool blWeWantSurvival = true;
 /*
-	Change to false = Survival mode is disabled.
+	true	=	Enables Survival-Mode.
+	false	=	Disable Survival-Mode.
 */
 
-bool blDifficultyChoose = false;
+bool blDifficultyChoose = true;
 /*
-	Change to false = Vote for difficulty is disabled.
+	true	=	Enables Difficulty vote button at lobby.
+	false	=	Disable Difficulty vote button at lobby.
 */
 
 const string str_DiffIs = "easy";
 /*
-	Change to "easy" "medium" "hard" "hardcore" for default difficulty.
+	easy		=	Easy difficulty (most normal by its server)
+	medium		=	Medium difficulty (some cvars update) Health/suit max 80
+	hard		=	Hard difficulty (some cvars update) Health/suit max 50
+	hardcore	=	Hardcore difficulty (some cvars update) Health/suit max 1
+	anything	=	same as easy. use this if using DynamicDifficulty things locked at a certain diff.
 	
 	if you're using DinamicDifficulty plugins monster_alien_tor will be kinda strong there.
-	custom keyvalue for skippin npcs Health Updates is "$i_dyndiff_skip"
-	
-	using str_DiffIs with a value that is not specified here will make trigger_save/load do not work.
-	so change to anything else and make blDifficultyChoose false to disable this campaign's difficulty system. -Mikk
+	custom keyvalue for skippin npcs Health Updates is "$i_dyndiff_skip" -Mikk
 */
 
 int DiffMode = 0; //Default DO NOT CHANGE HERE. this will be updated via mapping trigger_save/load. see bool blDifficultyChoose and string str_DiffIs -Mikk
@@ -80,10 +91,16 @@ void MapInit()
 	
 	// Just in case...
 	g_EngineFuncs.CVarSetFloat( "mp_npckill", 2 );
-	g_EngineFuncs.CVarSetFloat( "mp_weapon_droprules", 0 );
 
 	// Register antirush entity.
-	if( blIsAntiRushEnable ) { RegisterAntiRushEntity(); }
+	if( blIsAntiRushEnable )
+	{
+		RegisterAntiRushEntity();
+	
+		g_Game.PrecacheModel( "models/cubemath/skull.mdl" );
+		g_Game.PrecacheModel( "sprites/laserbeam.spr" );
+		g_Game.PrecacheGeneric( "sprites/laserbeam.spr" );
+	}
 }
 
 void MapStart()
@@ -141,10 +158,10 @@ void MapActivate()
 	if( !g_EntityLoader.LoadFromFile( EntFileLoad ) ) { g_EngineFuncs.ServerPrint( "Can't open multi-language script file " + EntFileLoad + " No messages will be shown.\n" ); }
 }
 
-void KillThisNpc( const string targetname ){
+void KillThisNpc(const string TN){
 	CBaseEntity@ pEntity = null;
 	g_EntityFuncs.FireTargets( "spawn_npc_required", null, null, USE_TOGGLE );
-	while((@pEntity = g_EntityFuncs.FindEntityByTargetname(pEntity, targetname )) !is null )
+	while((@pEntity = g_EntityFuncs.FindEntityByTargetname(pEntity, TN )) !is null )
 		g_EntityFuncs.Remove(pEntity);
 }
 
@@ -163,15 +180,13 @@ void ReloadModelsClassicMode(){
 			g_EntityFuncs.FireTargets( "ClassicMode_zgrunt", pCM, pCM, USE_TOGGLE );
 		if( pCM.pev.model == "models/mikk/residualpoint/xenocrab.mdl" )
 			g_EntityFuncs.FireTargets( "ClassicMode_xenocrab", pCM, pCM, USE_TOGGLE );
-		if( pCM.pev.model == "models/mikk/residualpoint/ngrunt.mdl" )
+		if( pCM.pev.classname == "monster_male_assassin" and pCM.pev.model == "models/mikk/residualpoint/ngrunt.mdl" )
 			g_EntityFuncs.FireTargets( "ClassicMode_ngrunt", pCM, pCM, USE_TOGGLE );
-		if( pCM.pev.model == "models/mikk/residualpoint/civ_scientist.mdl" )
-			g_EntityFuncs.FireTargets( "ClassicMode_civ_scientist", pCM, pCM, USE_TOGGLE );
 		if( pCM.pev.model == "models/mikk/residualpoint/hgrunt_opfor.mdl" )
 			g_EntityFuncs.FireTargets( "ClassicMode_hgrunt_opfor", pCM, pCM, USE_TOGGLE );
 		if( pCM.pev.model == "models/mikk/residualpoint/aworker.mdl" )
 			g_EntityFuncs.FireTargets( "ClassicMode_aworker", pCM, pCM, USE_TOGGLE );
-		if( pCM.pev.classname == "monster_male_assassin" and pCM.pev.model != "models/mikk/hlclassic/massn.mdl" )
+		if( pCM.pev.classname == "monster_male_assassin" and pCM.pev.model == "models/massn.mdl" )
 			g_EntityFuncs.FireTargets( "ClassicMode_massn", pCM, pCM, USE_TOGGLE );
 		if( pCM.pev.classname == "monster_otis" and pCM.pev.model != "models/cm_v3/otis.mdl" )
 			g_EntityFuncs.FireTargets( "ClassicMode_otis", pCM, pCM, USE_TOGGLE );
@@ -390,11 +405,10 @@ void hard( CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useType, float
 void hardcore( CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useType, float flValue ){
     DiffMode = 3;
 	Register();
-	
+
 	CBaseEntity@ pRepl = null;
 	while((@pRepl = g_EntityFuncs.FindEntityByClassname(pRepl, "game_save")) !is null)
-		if( pRepl.pev.model == "models/mikk/residualpoint/lambda.mdl" )
-			g_EntityFuncs.FireTargets( "limitless_potential", pRepl, pRepl, USE_TOGGLE );
+		g_EntityFuncs.FireTargets( "limitless_potential", pRepl, pRepl, USE_TOGGLE );
 }
 
 void Register(){
@@ -434,11 +448,10 @@ void Precacheclassic(){
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/zgrunt.mdl" );
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/xenocrab.mdl" );
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/ngrunt.mdl" );
-	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/civ_scientist.mdl" );
 	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/aworker.mdl" );
+	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/hgrunt_opfor.mdl" );
 	g_Game.PrecacheModel( "models/mikk/hlclassic/massn.mdl" );
 	g_Game.PrecacheModel( "models/cm_v3/zombie_soldier.mdl" );
-	g_Game.PrecacheModel( "models/mikk/residualpoint/hlclassic/hgrunt_opfor.mdl" );
 	g_Game.PrecacheModel( "models/cm_v3/zombie_barney.mdl" );
 	g_Game.PrecacheModel( "models/cm_v3/otis.mdl" );
 }

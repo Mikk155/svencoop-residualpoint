@@ -1,7 +1,7 @@
 #include "hl_weapons/weapons"
 #include "hl_weapons/mappings"
 
-#include "beast/respawndead_keepweapons"
+#include "respawndead_keepweapons"
 
 #include "multi_language/multi_language"
 

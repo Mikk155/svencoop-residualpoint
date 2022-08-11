@@ -1,43 +1,6 @@
 /*
 *	Original Script by Cubemath
 *	Modified a bit by mikk & gaftherman
-*
-*	USAGE: 
-*	
-*	spawnflags 1 meant the script will be Off until trigger.
-*	  no messages shown. useful for backward-maps style. (will discount 1 "health" point if set more than 0)
-*
-*	"health" defines how many time this entity need to be triggered to enable the percentage area.
-*	  used for "skull" method. same as game_counter.
-*
-*	"message" will show a custom message of your own on the game_text.
-*	  use in conjunction with "health" value of how many tasks you want to fire this entity.
-*
-*	"killtarget" self explain
-*
-*	"percent" or "m_flPercentage" (for legacy) is used to speficy percentage.
-*	  value should be "0.(percent)" "leave it empty for 66%
-*
-*	"model" defines a brush model to use boundaries instead
-*	  if mapping just tie to entity any brush.
-*
-*	"blipsound" defines the sound when the entity conditions are true. NOTE: If using the external file method. make sure to precache the sound at MapInit first x[
-*	  default is bell1.wav. Precached at MapInit
-*
-*	"frags" will start a countdown with the value specified once the percentage is true (if percentage is less than specified = countdown stop at current time)
-*	  when countdown reach 0 it'll fire its target.
-*	
-*	This script will create a env_render_individual intermediary for your effects.
-*	  Name your env_beam/item_generic as "your trigger_once's target" + "_FX"
-*	  Now only players inside the zone will see the efects while outside ones will not see those spoiler icons for new maps.
-*	    -Idea Sparks
-*
-*	"netname" must be a brush model value i.e "*255" for deleting the entity with that model.
-*		That mean you'll need to create your own but using "master" etc.
-*		  You'll need to add the custom key "$i_ignore" to your new entity for replacemet. -Mikk
-*
-*	A vote for toggle anti rush has been added. "say /antirush" Code taked from Duk0, we need to simplify it -Mikk
-*	  Idea -Sparks
 */
 
 /*
@@ -48,29 +11,11 @@
 	-
 	- A way to "Watch" for monsters state (alive/dead) then specify in the entity how many should be dead to enable this. alternative for skull without modify maps.
 */
-
-/*
-	SOURCES:
-	
-	Cubemath:		https://github.com/CubeMath/UCHFastDL2/blob/master/svencoop/scripts/maps/cubemath/trigger_once_mp.as
-	
-	Duk0:			https://github.com/Duk0/AngelScript-SvenCoop/blob/master/plugins/VoteRestart.as
-	
-	Gaftherman:		https://github.com/Gaftherman
-	
-	MultiLanguage: https://github.com/Mikk155/multi_language
-*/
 #include "utils/boundaries"
 
 const Cvar@ g_pCvarVoteAllow, g_pCvarVoteTimeCheck, g_pCvarVoteMapRequired;
 string g_szPlayerName;
 bool IsDisabledByVoted = false;
-
-/*
-	INSTALLATION:
-
-#include "mikk/entities/trigger_once_mp"
-*/
 
 // At MapInit()
 void RegisterAntiRushEntity() 
@@ -340,7 +285,7 @@ class trigger_once_mp : ScriptBaseEntity
 
         self.pev.movetype = MOVETYPE_NONE;
         self.pev.solid = SOLID_NOT;
-		self.pev.effects != EF_NODRAW;
+		self.pev.effects |= EF_NODRAW;
 		self.pev.dmg = 9;
 			
         if( self.GetClassname() == "trigger_once_mp" && string( self.pev.model )[0] == "*" && self.IsBSPModel() )
@@ -483,7 +428,7 @@ class trigger_once_mp : ScriptBaseEntity
 				
 			if( BlIsEnabled and CurrentPercentage >= m_flPercentage ) 
 			{
-				if( self.pev.frags >= 0 )
+				if( self.pev.frags > 0 )
 				{
 					while((@pText = g_EntityFuncs.FindEntityByTargetname(pText, ""+self.pev.target+"_TEXT")) !is null)
 					{

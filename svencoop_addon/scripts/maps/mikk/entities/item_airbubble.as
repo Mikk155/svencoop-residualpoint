@@ -10,11 +10,10 @@ void RegisterAirbubbleCustomEntity()
 	dictionary keyvalues;
 	keyvalues =	
 	{
-		{ "targetname", "AirBubbleSound"},
 		{ "volume", "10"},
 		{ "message", "debris/bustflesh1.wav"},
 		{ "spawnflags", "5"},
-		{ "targetname", "game_playerspawn" }
+		{ "targetname", "AirBubbleSound" }
 	};
 	g_EntityFuncs.CreateEntity( "ambient_music", keyvalues, true );
 }
@@ -24,7 +23,7 @@ class item_airbubble : ScriptBaseEntity
 	void Precache() 
 	{
 		BaseClass.Precache();
-		if( !string( self.pev.targetname ).IsEmpty() ) { g_Game.PrecacheModel( "models/w_oxygen.mdl" ); } else{ g_Game.PrecacheModel( self.pev.model ); }
+		g_Game.PrecacheModel( "models/w_oxygen.mdl" );
 		g_Game.PrecacheModel( "sprites/bubble.spr" );
 		g_SoundSystem.PrecacheSound( "debris/bustflesh1.wav" );
 	}
@@ -36,11 +35,10 @@ class item_airbubble : ScriptBaseEntity
 		self.pev.movetype 		= MOVETYPE_NONE;
 		self.pev.solid 			= SOLID_TRIGGER;
 		self.pev.scale 			= 1.0;
-		self.pev.rendermode		= 2;
-		self.pev.renderamt		= 255;
 		
 		g_EntityFuncs.SetOrigin( self, self.pev.origin );
-		if( !string( self.pev.targetname ).IsEmpty() ){g_EntityFuncs.SetModel( self, "models/w_oxygen.mdl" );}else{g_EntityFuncs.SetModel( self, self.pev.model);}
+		
+		g_EntityFuncs.SetModel( self, "models/w_oxygen.mdl" );
 		g_EntityFuncs.SetSize( self.pev, Vector(-32, -32, -32), Vector(32, 32, 32) );
 		
 		SetThink( ThinkFunction( this.letsRespawn ) );
@@ -48,7 +46,6 @@ class item_airbubble : ScriptBaseEntity
 	
 	void letsRespawn() 
 	{
-		self.pev.renderamt = 255;
 		self.pev.solid = SOLID_TRIGGER;
 	}
 	
@@ -61,7 +58,6 @@ class item_airbubble : ScriptBaseEntity
 		
 		pOther.pev.air_finished = g_Engine.time + 12.0;
 		self.pev.solid = SOLID_NOT;
-		self.pev.renderamt = 155;
         self.pev.nextthink = g_Engine.time + 1.0f;
 	}
 }

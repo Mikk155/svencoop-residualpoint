@@ -142,6 +142,7 @@ void MapActivate()
 				g_EntityFuncs.DispatchKeyValue( pEdict, "$s_difficulty", "" + str_DiffIs );
 			}
 		}
+		g_EngineFuncs.CVarSetFloat( "mp_allowmonsterinfo", 1 );
 	}
 	
 	// We want to Respawn Required-for-progress npcs if they die instead of restart the map.

@@ -11,7 +11,7 @@ SEE LINE 320		RESPAWNDEAD_KEEPWEAPONS::ReEquipCollected( pPlayer );
 void RegisterGameSave()
 {
 	g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @ClientPutInServer );
-	g_CustomEntityFuncs.RegisterCustomEntity( "point_checkpoint", "point_checkpoint" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "game_save", "point_checkpoint" );
 	g_Game.PrecacheOther( "point_checkpoint" );
 
 	CBaseEntity@ pTextos = null;
@@ -178,7 +178,7 @@ class game_save : ScriptBaseEntity
 
 	void Use(CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue)
 	{
-		if( !self.pev.SpawnFlagBitSet( 1 ) )
+		if( self.pev.SpawnFlagBitSet( 1 ) )
 		{
 			g_Scheduler.SetTimeout( this, "SpawnSnd", 1.6f );
 

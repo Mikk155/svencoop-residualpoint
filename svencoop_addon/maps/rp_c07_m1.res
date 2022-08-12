@@ -18,11 +18,9 @@ models/hlclassic/w_m40a1clip.mdl
 models/hlclassic/w_saw.mdl
 models/hlclassic/w_saw_clip.mdl
 models/mikk/hlclassic/massn.mdl
-models/mikk/misc/lambda.mdl
 models/mikk/misc/limitless_potential.mdl
 models/mikk/monsters/zombie_hev.mdl
 models/mikk/residualpoint/aworker.mdl
-models/mikk/residualpoint/dead_barney.mdl
 models/mikk/residualpoint/hgrunt.mdl
 models/mikk/residualpoint/hgrunt_opfor.mdl
 models/mikk/residualpoint/hlclassic/aworker.mdl
@@ -53,8 +51,8 @@ models/mikk/residualpoint/hlclassic/w_bloodly_shotgun.mdl
 models/mikk/residualpoint/hlclassic/xenocrab.mdl
 models/mikk/residualpoint/hlclassic/zgrunt.mdl
 models/mikk/residualpoint/level_change.spr
+models/mikk/residualpoint/mbarrel.mdl
 models/mikk/residualpoint/ngrunt.mdl
-models/mikk/residualpoint/rbarrel.mdl
 models/mikk/residualpoint/v_357.mdl
 models/mikk/residualpoint/v_9mmar.mdl
 models/mikk/residualpoint/v_9mmhandgun.mdl

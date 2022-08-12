@@ -11,6 +11,7 @@
 "maxhullsize" "1616 1519 -2618"
 "targetname" "Startzoneantirush"
 "spawnflags" "1"
+"frags" "40"
 "target" "percent_lock_2"
 "minhullsize" "884 317 -2840"
 }

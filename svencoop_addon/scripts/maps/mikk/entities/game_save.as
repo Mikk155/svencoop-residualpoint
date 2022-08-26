@@ -2,6 +2,19 @@
 	Replacemet for point_checkpoint that will save everyone's lifes and not only dead ones.
 	
 	NOTE: This scripts required you to Include https://github.com/Outerbeast/Entities-and-Gamemodes/blob/master/respawndead_keepweapons.as
+
+
+INSTALL:
+
+
+#include "respawndead_keepweapons"
+#include "mikk/entities/game_save"
+
+MapInit()
+{
+	RegisterGameSave();
+}
+
 */
 
 void RegisterGameSave()

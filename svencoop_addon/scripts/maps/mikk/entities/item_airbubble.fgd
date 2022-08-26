@@ -1,0 +1,5 @@
+@PointClass size(-32 -32 -32, 32 32 32) studio("models/w_oxygen.mdl") = item_airbubble : "Air Bubble Tank"
+[
+	targetname(target_source) : "Name"
+	model(studio) : "Custom Model"
+]

@@ -1,88 +1,41 @@
 void PluginInit()
 {
-	g_Module.ScriptInfo.SetAuthor( "Gaftherman" );
+	g_Module.ScriptInfo.SetAuthor( "Gaftherman & Mikk" );
 	g_Module.ScriptInfo.SetContactInfo( "https://github.com/Mikk155/Sven-Coop-Multi-language-localizations" );
 
 	g_Hooks.RegisterHook( Hooks::Game::MapChange, @MapChange );
-	g_Hooks.RegisterHook( Hooks::Player::ClientSay, @ClientSay );
     g_Hooks.RegisterHook( Hooks::Player::ClientDisconnect, @ClientDisconnect );
     g_Hooks.RegisterHook( Hooks::Player::ClientPutInServer, @ClientPutInServer );
 }
 
-EHandle InfoTarget;
+dictionary keyvalues;
 
 void MapStart()
 {
-	bool blIsInstalled = g_CustomEntityFuncs.IsCustomEntity( "game_text_custom" );
-
-	for( int i = 0; i < g_Engine.maxEntities; ++i )
+	if( g_CustomEntityFuncs.IsCustomEntity( "game_text_custom" ) )
 	{
-		edict_t@ edict = @g_EntityFuncs.IndexEnt(i);
-		CBaseEntity@ FindInfoTarget = g_EntityFuncs.Instance( edict );
-
-		if( FindInfoTarget !is null && FindInfoTarget.pev.classname == "info_target" && FindInfoTarget.pev.targetname == "language" )
+		g_Hooks.RegisterHook( Hooks::Player::ClientSay, @ClientSay );
+		
+		keyvalues =	
 		{
-			InfoTarget = FindInfoTarget;
-		}
+			{ "message", "[Multi-Language] Now will show maps messages in english.\n"},
+			{ "message_spanish", "[Multiples idiomas] Ahora mostrara mensajes de mapas en espaniol.\nAlgunos caracteres no se mostraran por limitaciones.\n"},
+			{ "message_portuguese", "[Multi-Language] Agora mostrara mensagens de mapas em Portugues.\nAlguns caracteres nao serao mostrados por limitacoes.\n"},
+			{ "message_german", "[Multi-Language] Zeigt Kartennachrichten jetzt auf Deutsch an.\nEinige Zeichen werden aufgrund von Einschrankungen nicht angezeigt.\n"},
+			{ "message_french", "[Multilingue] Affichera desormais les messages cartographiques en francaise.\nCertains caracteres ne seront pas affiches en raison des limitations.\n"},
+			{ "message_italian", "[Multilingua] Ora mostrera i messaggi delle mappe in francese.\nAlcuni caratteri non verranno mostrati per limitazioni.\n"},
+			{ "message_esperanto", "[Multlingva] Nuud kuvab kaarditeateid esperanto keeles.\nMonda tahemarki piirangute tottu ei kuvata.\n"},
+			{ "x", "-1"},
+			{ "y", "0.90"},
+			{ "holdtime", "15"},
+			{ "fadein", "0.1"},
+			{ "channel", "8"},
+			{ "spawnflags", "1"},
+			{ "color", "255 0 0"},
+			{ "targetname", "MULTILANGUAGE_ADVICE" }
+		};
+		g_EntityFuncs.CreateEntity( "game_text_custom", keyvalues, true );
 	}
-
-	if( blIsInstalled )
-	{
-		g_Scheduler.SetInterval( "SpamsMultilanguage", 140.0f, g_Scheduler.REPEAT_INFINITE_TIMES );
-	}
-}
-
-void SpamsMultilanguage()
-{
-	string Available = "";
-
-	if( InfoTarget.GetEntity() !is null )
-	{
-		CBaseEntity@ FindInfoTarget = cast<CBaseEntity@>(InfoTarget);
-
-		CustomKeyvalues@ ckLenguage = FindInfoTarget.GetCustomKeyvalues();  
-
-		CustomKeyvalue ckEnglish = ckLenguage.GetKeyvalue("$i_message");
-		CustomKeyvalue ckSpanish = ckLenguage.GetKeyvalue("$i_message_spanish");
-		CustomKeyvalue ckPortuguese = ckLenguage.GetKeyvalue("$i_message_portuguese");
-		CustomKeyvalue ckGerman = ckLenguage.GetKeyvalue( "$i_message_german" );
-		CustomKeyvalue ckFrench = ckLenguage.GetKeyvalue( "$i_message_french" );
-		CustomKeyvalue ckItalian = ckLenguage.GetKeyvalue( "$i_message_italian" );
-		CustomKeyvalue ckEsperanto = ckLenguage.GetKeyvalue( "$i_message_esperanto" );
-
-		int English = ckEnglish.GetInteger();
-		int Spanish = ckSpanish.GetInteger();
-		int Portuguese = ckPortuguese.GetInteger();
-		int German = ckGerman.GetInteger();
-		int French = ckFrench.GetInteger();
-		int Italian = ckItalian.GetInteger();
-		int Esperanto = ckEsperanto.GetInteger();
-
-		if( English == 1 )
-			Available = Available == "" ? "English" : Available + " || " + "English";
-
-		if( Spanish == 1 )
-			Available = Available == "" ? "Spanish" : Available + " || " + "Spanish";
-
-		if( Portuguese == 1 )
-			Available = Available == "" ? "Portuguese" : Available + " || " + "Portuguese";
-
-		if( German == 1 )
-			Available = Available == "" ? "German" : Available + " || " + "German";
-
-		if( French == 1 )
-			Available = Available == "" ? "French" : Available + " || " + "French";
-
-		if( Italian == 1 )
-			Available = Available == "" ? "Italian" : Available + " || " + "Italian";
-
-		if( Esperanto == 1 )
-			Available = Available == "" ? "Esperanto" : Available + " || " + "Esperanto";
-
-	//	g_PlayerFuncs.ClientPrintAll( HUD_PRINTTALK, "[Multi-Language] This map supports multi-language, use /language (language).\n" );
-	//	g_PlayerFuncs.ClientPrintAll( HUD_PRINTTALK, "Available: " +Available+ "\n" );
-	}
-
 }
 
 dictionary g_PlayerKeepLenguage;
@@ -171,130 +124,80 @@ void PlayerLoadLenguage( int &in iIndex, string &in SteamID )
 	ckLenguage.SetKeyvalue("$f_lenguage", int(pData.lenguage));
 }
 
+// This was the most paintful shit to implement by myself until i've start the copy-paste method. i love you Duk0
+// https://github.com/Duk0/AngelScript-SvenCoop/blob/master/plugins/AdminVote.as
 HookReturnCode ClientSay( SayParameters@ pParams )
 {
-    CBasePlayer@ pPlayer = pParams.GetPlayer();
-    const CCommand@ args = pParams.GetArguments();
+	CBasePlayer@ pPlayer = pParams.GetPlayer();
+	const CCommand@ args = pParams.GetArguments();
+	
+	if( args.ArgC() == 1 && args.Arg(0) == "language" or args.Arg(0) == "idioma" or args.Arg(0) == "trans" ){ CreateMenu( pPlayer ); }
+	
+	return HOOK_CONTINUE;
+}
 
-    if(args[0] == "/language" || args[0] == "/lenguaje" || args[0] == "/idioma") 
-    {
-        if(args.ArgC() < 2)
+CTextMenu@ g_VoteMenu;
+
+void CreateMenu(CBasePlayer@ pPlayer)
+{
+	@g_VoteMenu = CTextMenu( @MainCallback );
+	g_VoteMenu.SetTitle( "Choose Language\n" );
+	g_VoteMenu.AddItem( "English" );
+	g_VoteMenu.AddItem( "Spanish" );
+	g_VoteMenu.AddItem( "Portuguese" );
+	g_VoteMenu.AddItem( "German" );
+	g_VoteMenu.AddItem( "French" );
+	g_VoteMenu.AddItem( "Italian" );
+	g_VoteMenu.AddItem( "Esperanto" );
+	g_VoteMenu.Register();
+	g_VoteMenu.Open( 15, 0, pPlayer );
+}
+
+void Advice(CBasePlayer@ pPlayer){g_EntityFuncs.FireTargets( "MULTILANGUAGE_ADVICE", pPlayer, pPlayer, USE_TOGGLE );}
+
+void MainCallback( CTextMenu@ menu, CBasePlayer@ pPlayer, int iSlot, const CTextMenuItem@ pItem )
+{
+	CustomKeyvalues@ ckLenguage = pPlayer.GetCustomKeyvalues();
+	CustomKeyvalue ckLenguageIs = ckLenguage.GetKeyvalue("$f_lenguage");
+	int iLanguage = int(ckLenguageIs.GetFloat());
+	
+	if( pItem !is null )
+	{
+		string sChoice = pItem.m_szName;
+		if( sChoice == "English" )
 		{
-			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "[Multi-Language] Select a language, you can use: 'english' or '0'; 'spanish' or '1'; and so on.\n" );
-			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Example: /language english\n" );
+			ckLenguage.SetKeyvalue("$f_lenguage", 0 );
+			Advice( pPlayer );
 		}
-		else
-        {
-			CustomKeyvalues@ ckLenguage = pPlayer.GetCustomKeyvalues();
-            CustomKeyvalue ckLenguageIs = ckLenguage.GetKeyvalue("$f_lenguage");
-            int iLanguage = int(ckLenguageIs.GetFloat());
-
-			if(args[1] == "esperanto" || args[1] == "6")
-			{
-				if(iLanguage == 5)
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Vi aktivigis ci tiun lingvon\n" );
-				}
-				else
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Esperonton aktivigis\n" );
-					ckLenguage.SetKeyvalue("$f_lenguage", 6);
-				}
-
-				pParams.ShouldHide = true;
-			}
-			else if(args[1] == "italian" || args[1] == "5")
-			{
-				if(iLanguage == 5)
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "hai gia questa lingua\n" );
-				}
-				else
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Lingua in italiano attivata\n" );
-					ckLenguage.SetKeyvalue("$f_lenguage", 5);
-				}
-
-				pParams.ShouldHide = true;
-			}
-			else if(args[1] == "french" || args[1] == "4")
-			{
-				if(iLanguage == 4)
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "vous avez deja cette langue\n" );
-				}
-				else
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Langue en francais activee\n" );
-					ckLenguage.SetKeyvalue("$f_lenguage", 4);
-				}
-
-				pParams.ShouldHide = true;
-			}
-			else if(args[1] == "german" || args[1] == "3")
-			{
-				if(iLanguage == 3)
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Sie haben diese Sprache bereits\n" );
-				}
-				else
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "deutsche sprache aktiviert\n" );
-					ckLenguage.SetKeyvalue("$f_lenguage", 3);
-				}
-
-				pParams.ShouldHide = true;
-			}
-			else if(args[1] == "portuguese" || args[1] == "2")
-			{
-				if(iLanguage == 2)
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Voce ativou este idioma\n" );
-				}
-				else
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Idioma em portugues ativado\n" );
-					ckLenguage.SetKeyvalue("$f_lenguage", 2);
-				}
-
-				pParams.ShouldHide = true;
-			}
-			else if(args[1] == "spanish" || args[1] == "1")
-			{
-				if(iLanguage == 1)
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Ya tienes activado este lenguaje\n" );
-				}
-				else
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Lenguaje en español activado\n" );
-					ckLenguage.SetKeyvalue("$f_lenguage", 1);
-				}
-
-				pParams.ShouldHide = true;
-			}
-			else if(args[1] == "english" || args[1] == "0")
-			{
-				if(iLanguage == 0)
-				{
-                    g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "You have activated this leguage\n" );
-				}
-				else
-				{
-					g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Language in english activated\n" );
-					ckLenguage.SetKeyvalue("$f_lenguage", 0);
-				}
-
-				pParams.ShouldHide = true;
-			}
-			else
-			{		
-        		pParams.ShouldHide = false;
-			}
-        }
-
-        return HOOK_HANDLED;
-    }
-
-    return HOOK_CONTINUE;
+		else if( sChoice == "Spanish" )
+		{
+			ckLenguage.SetKeyvalue("$f_lenguage", 1 );
+			Advice( pPlayer );
+		}
+		else if( sChoice == "Portuguese" )
+		{
+			ckLenguage.SetKeyvalue("$f_lenguage", 2 );
+			Advice( pPlayer );
+		}
+		else if( sChoice == "German" )
+		{
+			ckLenguage.SetKeyvalue("$f_lenguage", 3 );
+			Advice( pPlayer );
+		}
+		else if( sChoice == "French" )
+		{
+			ckLenguage.SetKeyvalue("$f_lenguage", 4 );
+			Advice( pPlayer );
+		}
+		else if( sChoice == "Italian" )
+		{
+			ckLenguage.SetKeyvalue("$f_lenguage", 5 );
+			Advice( pPlayer );
+		}
+		else if( sChoice == "Esperanto" )
+		{
+			ckLenguage.SetKeyvalue("$f_lenguage", 6 );
+			Advice( pPlayer );
+		}
+	}
 }

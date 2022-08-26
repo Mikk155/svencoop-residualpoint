@@ -1,0 +1,51 @@
+@BaseClass = TriggerOnceMp
+[
+	// Tell the script to not detect players until health is 0. use in conjunction with "health"
+	targetname(target_source) : "Name"
+
+	// Trigger something when conditions are true
+	target(target_destination) : "Target"
+
+	// Kill something when conditions are true
+	killtarget(target_destination) : "Killtarget"
+	
+	// Percent of players to be inside to trigger its target. empty = 0.66
+	percent(integer) : "Percent Players (i.e 0.66 )"
+	
+	spawnflags(flags) =
+	[
+		// If set. script won't work in any sense until trigger.
+		1: "Start Off" : 0
+		// Will not show any messages.
+		2: "No Text" : 0
+		// Will not do any noise when fire.
+		4 : "No Sound" : 0
+	]
+	
+	// Set a number value equal to the monsters that will trigger this entity. the same as game_counter.
+	health(string) : "Counter"
+	
+	// if set a number (seconds) when conditions are true it shows a count-down before trigger its target.
+	frags(string) : "Countdown"
+	
+	// Remove entity's from the world that is using the same model as this value i.e "*255"
+	// NOTE: This feature will remove the entity as you have to create the same one but using "master" value.
+	// Don't forget add the key "$i_ignore" for prevent the script delete your own.
+	netname(string) : "Remove entity"
+	
+	// Played when Target is triggered.
+	// Empty = buttons/bell1.wav
+	blipsound(sound) : "Sound File"
+	
+	// Message shown if "health" and "targetname" is set.
+	message(string) : "Alternative message"
+]
+
+@PointClass base(TriggerOnceMp) size(-6 -6 -6, 6 6 6) color(255 0 0) = trigger_once_mp : "Player Condition Point"
+[
+	// Specify the detection zone.
+    minhullsize(string) : "minhullsize (X Y Z)"
+	maxhullsize(string) : "maxhullsize (X Y Z)"
+]
+
+@SolidClass base(TriggerOnceMp) = trigger_once_mp : "Player Condition Brush"[]

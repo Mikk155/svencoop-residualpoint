@@ -11,7 +11,6 @@
 	-
 	- A way to "Watch" for monsters state (alive/dead) then specify in the entity how many should be dead to enable this. alternative for skull without modify maps.
 */
-#include "utils/boundaries"
 
 const Cvar@ g_pCvarVoteAllow, g_pCvarVoteTimeCheck, g_pCvarVoteMapRequired;
 string g_szPlayerName;
@@ -356,7 +355,7 @@ class trigger_once_mp : ScriptBaseEntity
 			if( pPlayer is null || !pPlayer.IsConnected() || !pPlayer.IsAlive() )
 				continue;
 
-			if( INSIDE::Inside( pPlayer, self ) )
+			if( UTILS::InsideZone( pPlayer, self ) )
 				PlayersTrigger = PlayersTrigger + 1.0f;
 
 			TotalPlayers = TotalPlayers + 1.0f;	
@@ -375,7 +374,7 @@ class trigger_once_mp : ScriptBaseEntity
 				if( pPlayer is null || !pPlayer.IsConnected() || !pPlayer.IsAlive() )
 					continue;
 					
-				if( INSIDE::Inside( pPlayer, self ) )
+				if( UTILS::InsideZone( pPlayer, self ) )
 				{
 					if( IsDisabledByVoted )
 					{

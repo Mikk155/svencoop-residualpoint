@@ -22,15 +22,15 @@ Usage:-
 namespace RESPAWNDEAD_KEEPWEAPONS
 {
 
-CScheduledFunction@ fnPatchTriggerRespawn = g_Scheduler.SetTimeout( "PatchTriggerRespawn", 0.0f );
-bool blPlayerKilled = g_Hooks.RegisterHook( Hooks::Player::PlayerKilled, PlayerKilled );
-array<dictionary> DICT_PLAYER_LOADOUT( g_Engine.maxClients + 1 );
-
 enum respawndead_flags
 {
     KEEP_WEAPONS    = 8,
     KEEP_AMMO       = 16
 };
+
+CScheduledFunction@ fnPatchTriggerRespawn = g_Scheduler.SetTimeout( "PatchTriggerRespawn", 0.0f );
+bool blPlayerKilled = g_Hooks.RegisterHook( Hooks::Player::PlayerKilled, PlayerKilled );
+array<dictionary> DICT_PLAYER_LOADOUT( g_Engine.maxClients + 1 );
 
 void PatchTriggerRespawn()
 {
@@ -68,7 +68,7 @@ void RespawnDead(CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType
             continue;
 
         g_PlayerFuncs.RespawnPlayer( pPlayer, false, true );
-        ReEquipCollected( pPlayer, pCaller.pev.SpawnFlagBitSet( KEEP_AMMO ) );
+        ReEquipCollected( pPlayer, pCaller !is null ? pCaller.pev.SpawnFlagBitSet( KEEP_AMMO ) : false );
     }
 }
 // Players get their old loadout when they died

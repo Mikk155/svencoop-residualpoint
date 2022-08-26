@@ -6,13 +6,17 @@
 	Mikk idea
 	Gaftherman Script
 	
+	CTRL+F "-Planned"
+	
 */
 
-enum ammo_individual
+/*enum ammo_individual
 {
-    SF_AI_START_OFF = 1 << 0, //Mis huevos Can't pick up
-	SF_AI_USE_ONLY = 1 << 1
-}
+    SF_AI_START_OFF = 1 << 0, //Mis huevos Can't pick up - Moved to flag 384 ( TOUCH + USE ONLY )
+	SF_AI_USE_ONLY = 1 << 1 - Moved to flag 256 ( USE ONLY )
+	
+	Gaf turkey. usa stock flags. p pavo -Mikk gaming
+}*/
 
 void RegisterAmmoIndividual()
 {
@@ -37,7 +41,7 @@ void RegisterAmmoIndividual()
 	DefaultRegister( "item_battery_individual" );
 	DefaultRegister( "item_healthkit_individual" );
 	DefaultRegister( "weaponbox_individual" );
-	DefaultRegister( "ammo_satchel_individual" );
+	DefaultRegister( "ammo_satchel_individual" ); // Mis huevos se van a bugear.
 	//DefaultRegister( "func_recharge_individual" );
 }
 
@@ -61,11 +65,11 @@ void AmmoIndividualRemap()
 	Reemplazar( "ammo_medkit", "ammo_medkit_individual" );
 	Reemplazar( "weapon_snark", "ammo_snarks_individual" );
 	Reemplazar( "weapon_handgrenade", "ammo_handgrenade_individual" );
-	Reemplazar( "weapon_satchel", "ammo_satchel_individual" );
 	Reemplazar( "weapon_tripmine", "ammo_tripmine_individual" );
 	Reemplazar( "item_battery", "item_battery_individual" );
 	Reemplazar( "item_healthkit", "item_healthkit_individual" );
-	//Reemplazar( "func_recharge_individual", "func_recharge_individual" ); WiP :p
+	Reemplazar( "weapon_satchel", "ammo_satchel_individual" );
+	//Reemplazar( "func_recharge_individual", "func_recharge_individual" ); Pavo. para cuando? hacer esto en serio me gano. -Planned
 }
 
 class weaponbox_individual : ScriptBasePlayerItemEntity, ammo_base
@@ -146,7 +150,12 @@ class weaponbox_individual : ScriptBasePlayerItemEntity, ammo_base
 		{
 			m_ilm40a1 = atoi( szValue );
 			return true;
-		} 
+		}/*
+		else if( szKey == "satchel" ) -not added yet. Meanwhile use this value if you want.
+		{
+			m_ilm40a1 = atoi( szValue );
+			return true;
+		} Maybe value para el satchel? Algún dia. -Planned */
 		else 
 			return BaseClass.KeyValue( szKey, szValue );
     }
@@ -509,7 +518,7 @@ class item_battery_individual : ScriptBasePlayerItemEntity
 		else //Custom model
 			g_EntityFuncs.SetModel( self, self.pev.model );
 
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF )  )
+        if( self.pev.SpawnFlagBitSet( 384 )  )
 		{	
             Activated = false;
 		}
@@ -565,7 +574,7 @@ class item_battery_individual : ScriptBasePlayerItemEntity
 
 	void Touch( CBaseEntity@ pOther )
 	{
-		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( SF_AI_USE_ONLY ) )
+		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( 256 ) )
 			return;
 				
 		AddArmor( cast<CBasePlayer@>( pOther ) );
@@ -573,7 +582,7 @@ class item_battery_individual : ScriptBasePlayerItemEntity
 		
 	void Use( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue )
 	{
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF ) && !Activated )
+        if( self.pev.SpawnFlagBitSet( 384 ) && !Activated )
 		{	
             Activated = !Activated;
 		}
@@ -599,7 +608,7 @@ class item_healthkit_individual : ScriptBasePlayerItemEntity
 		else //Custom model
 			g_EntityFuncs.SetModel( self, self.pev.model );
 
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF )  )
+        if( self.pev.SpawnFlagBitSet( 384 )  )
 		{	
             Activated = false;
 		}
@@ -642,7 +651,7 @@ class item_healthkit_individual : ScriptBasePlayerItemEntity
 
 	void Touch( CBaseEntity@ pOther )
 	{
-		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( SF_AI_USE_ONLY ) )
+		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( 256 ) )
 			return;
 				
 		AddHealth( cast<CBasePlayer@>( pOther ) );
@@ -650,7 +659,7 @@ class item_healthkit_individual : ScriptBasePlayerItemEntity
 		
 	void Use( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue )
 	{
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF ) && !Activated )
+        if( self.pev.SpawnFlagBitSet( 384 ) && !Activated )
 		{	
             Activated = !Activated;
 		}
@@ -676,7 +685,7 @@ mixin class ammo_base
 		else //Custom model
 			g_EntityFuncs.SetModel( self, self.pev.model );
 
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF )  )
+        if( self.pev.SpawnFlagBitSet( 384 )  )
 		{	
             Activated = false;
 		}
@@ -741,7 +750,7 @@ mixin class ammo_base
 
 	void Touch( CBaseEntity@ pOther )
 	{
-		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( SF_AI_USE_ONLY ) )
+		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( 256 ) )
 			return;
 				
 		AddAmmo( cast<CBasePlayer@>( pOther ));
@@ -749,7 +758,7 @@ mixin class ammo_base
 		
 	void Use( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue )
 	{
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF ) && !Activated )
+        if( self.pev.SpawnFlagBitSet( 384 ) && !Activated )
 		{	
             Activated = !Activated;
 		}
@@ -775,7 +784,7 @@ mixin class ammo_base_c
 		else //Custom model
 			g_EntityFuncs.SetModel( self, self.pev.model );
 
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF )  )
+        if( self.pev.SpawnFlagBitSet( 384 )  )
 		{	
             Activated = false;
 		}
@@ -819,7 +828,7 @@ mixin class ammo_base_c
 
 	void Touch( CBaseEntity@ pOther )
 	{
-		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( SF_AI_USE_ONLY ) )
+		if( pOther is null || !pOther.IsPlayer() || !pOther.IsAlive() || !Activated || self.pev.SpawnFlagBitSet( 256 ) )
 			return;
 				
 		AddAmmo( cast<CBasePlayer@>( pOther ));
@@ -827,7 +836,7 @@ mixin class ammo_base_c
 		
 	void Use( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue )
 	{
-        if( self.pev.SpawnFlagBitSet( SF_AI_START_OFF ) && !Activated )
+        if( self.pev.SpawnFlagBitSet( 384 ) && !Activated )
 		{	
             Activated = !Activated;
 		}
@@ -861,7 +870,7 @@ void Reemplazar( string item_para_buscar, string item_para_reemplazar )
 		if( pEntity.GetCustomKeyvalues().HasKeyvalue( "$i_ignore_item" ) )
 			continue;
 			
-		g_EntityFuncs.Create( item_para_reemplazar, pEntity.pev.origin, pEntity.pev.angles, false);
+		g_EntityFuncs.Create( item_para_reemplazar, pEntity.pev.origin, pEntity.pev.angles, false);// Keep spawnflags del anterior? -Planned
 		g_EntityFuncs.Remove( pEntity );
     }
 }

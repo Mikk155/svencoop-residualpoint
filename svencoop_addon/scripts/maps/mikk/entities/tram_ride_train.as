@@ -7,24 +7,17 @@ void RegisterSolidityZone()
 	g_CustomEntityFuncs.RegisterCustomEntity( "tram_ride_train", "tram_ride_train" );
 }
 
-enum tram_ride_train_flag
-{
-    SF_NTS_START_OFF = 1 << 0
-}
-
 class tram_ride_train : ScriptBaseEntity 
 {
 	private bool toggle 			= true;
 	void Spawn() 
 	{
-        self.Precache();
-
         self.pev.movetype = MOVETYPE_NONE;
         self.pev.solid = SOLID_NOT;
 
 		g_EntityFuncs.SetOrigin( self, self.pev.origin );
 
-        if( !self.pev.SpawnFlagBitSet( SF_NTS_START_OFF ) )
+		if( !self.pev.SpawnFlagBitSet( 1 ) )
 		{
 			toggle = false;
 			SetThink( ThinkFunction( this.TriggerThink ) );

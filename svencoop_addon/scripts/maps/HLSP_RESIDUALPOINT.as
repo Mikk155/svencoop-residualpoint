@@ -1,14 +1,15 @@
 #include "hl_weapons/weapons"
 #include "hl_weapons/mappings"
 
+#include "mikk/entities/utils"
 #include "respawndead_keepweapons"
 
-#include "multi_language/multi_language"
+#include "multi_language/game_text_custom"
 
 #include "gaftherman/ammo_individual"
 
-#include "mikk/entities/trigger_once_mp"
 #include "mikk/entities/item_airbubble"
+#include "mikk/entities/trigger_once_mp"
 #include "mikk/entities/tram_ride_train"
 #include "mikk/entities/game_save"
 
@@ -64,7 +65,7 @@ bool ShouldRestartResidualPoint(const string& in szMapName){return szMapName != 
 
 void MapInit()
 {
-	MultiLanguageInit();
+	RegisterCustomTextGame();
 	RegisterHLMP5(); 
 	RegisterAmmoIndividual();
 	MonsterZombieHev::Register();
@@ -85,8 +86,7 @@ void MapInit()
 	if( IsSurvivalEnabled and blWeWantSurvival )
 	{
 		g_EngineFuncs.CVarSetFloat( "mp_survival_starton", 1 );
-		g_EngineFuncs.CVarSetFloat( "mp_survival_startdelay", 10 ); // Choose a default delay by your choice. BUT game_save actually revives any new players that joins the server
-		RegisterGameSave(); // So there isn't a reason to update it more than 10 seconds unless you really love everyone rushing maps -Mikk
+		RegisterGameSave();
 	}
 	
 	// Just in case...
@@ -154,9 +154,6 @@ void MapActivate()
 		if(string(g_Engine.mapname) == "rp_c12_m1"			)	{ KillThisNpc( "o3n_kelly"			);										}
 		if(string(g_Engine.mapname) == "rps_surface"		)	{ KillThisNpc( "bar01_friend"		);										}
 	}
-
-	// Just a debug.
-	if( !g_EntityLoader.LoadFromFile( EntFileLoad ) ) { g_EngineFuncs.ServerPrint( "Can't open multi-language script file " + EntFileLoad + " No messages will be shown.\n" ); }
 }
 
 void KillThisNpc(const string TN){
@@ -258,121 +255,6 @@ void makezerodamage( CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useT
 	g_EngineFuncs.CVarSetFloat( "sk_tor_energybeam", 0 );
 }
 
-// CallBack for rp_c13_m3a
-/*void BossFight( CBaseEntity@ pTriggerScript )
-{
-	for( int playerID = 1; playerID <= g_PlayerFuncs.GetNumPlayers(); playerID++ )
-	{
-		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( playerID );
-            
-		if( pPlayer is null || !pPlayer.IsConnected() || !pPlayer.IsAlive() )
-			continue;
-			
-		CBaseEntity@ pBoss = null;
-		while( ( @pBoss = g_EntityFuncs.FindEntityByTargetname( pBoss, "thelastboss" )) !is null )
-		{
-			if( pBoss.takedamage )
-				g_EntityFuncs.FireTargets( "IterateTeleport", null, null, USE_TOGGLE );
-		}
-	}
-}*/
-
-
-/*
-
-
-
-	//Damage on players
-	while ((@playerInAura = g_EntityFuncs.FindEntityInSphere(playerInAura, controller.pev.origin, 512, "player", "classname")) != null)
-	{
-		CBaseMonster@ playerInAuraM =  cast<CBaseMonster@>(@playerInAura);
-		float psychAuraDmg = 4 * (1 - (controller.pev.origin - playerInAuraM.pev.origin).Length() / 512);
-		playerInAuraM.TakeDamage(controller.pev, controller.pev, psychAuraDmg, DMG_FALL);
-	}
-	
-	
-				if( m_ilToxicCloud > 1 ) // Make a toxic cloud
-				{
-					NetworkMessage message( MSG_PVS, NetworkMessages::ToxicCloud );
-					message.WriteCoord( self.pev.origin.x );
-					message.WriteCoord( self.pev.origin.y );
-					message.WriteCoord( self.pev.origin.z );
-					message.End();
-				}
-				
-				
-				// Return player rendermode.
-				if( pPlayer.pev.rendercolor == self.pev.rendercolor && ExistSteamID( pPlayer ) )
-				{
-					pPlayer.pev.rendermode  = kRenderNormal;
-					pPlayer.pev.renderfx    = kRenderFxNone;
-					pPlayer.pev.renderamt   = 255;
-					pPlayer.pev.rendercolor = Vector(0,0,0); 
-
-					// Stop the sound.
-					if( m_slPlaySound != "" )
-					{
-						g_SoundSystem.StopSound( pPlayer.edict(), CHAN_STATIC, m_slPlaySound ); // it is from the audio remaster
-					}
-
-					// Return default speed.
-					pPlayer.SetMaxSpeedOverride( -1 );
-					
-    void VerifyEffects( CBasePlayer@ pPlayer )
-    {	
-		if( m_ilBeamPointer >= 1 ) // Add beam from this entity's origin to the affected player.
-		{
-			@pBorderBeam = g_EntityFuncs.CreateBeam( "sprites/laserbeam.spr", 30 );
-			pBorderBeam.SetFlags( BEAM_POINTS | SF_BEAM_SHADEIN );
-			pBorderBeam.SetStartPos( self.Center() );
-			pBorderBeam.SetEndPos( pPlayer.Center() );
-			pBorderBeam.SetScrollRate( 100 );
-			pBorderBeam.LiveForTime( 0.20 );
-			pBorderBeam.pev.rendercolor = self.pev.rendercolor == g_vecZero ? Vector( 255, 0, 0 ) : self.pev.rendercolor;
-		}
-
-		if( m_ilFadeScreen >= 1  ) // Fade screen effect.
-		{
-			g_PlayerFuncs.ScreenFade( pPlayer, self.pev.rendercolor, 1.01f, 1.5f, 52, FFADE_IN );
-		}
-
-		if( m_ilGlowPlayers >= 1  ) // Add glow to the player
-		{
-			if( pPlayer.pev.rendercolor == g_vecZero )
-			{
-				pPlayer.pev.rendermode  = kRenderNormal;
-				pPlayer.pev.renderfx    = kRenderFxGlowShell;
-				pPlayer.pev.renderamt   = 4;
-				pPlayer.pev.rendercolor = self.pev.rendercolor;
-			}
-		}
-		
-		if( m_slPlaySound != "" ) // Play sounds (specify custom sounds too)
-		{
-			g_SoundSystem.PlaySound( pPlayer.edict(), CHAN_STATIC, m_slPlaySound, 1.0f, 1.0f, 0, PITCH_NORM );
-		}
-
-		if( m_ilSpeedModifier >= 1 ) // Add glow to the player
-		{
-			pPlayer.SetMaxSpeedOverride( m_ilSpeedModifier );
-		}
-
-		if( m_ilAttachSpr >= 1 ) // Add Sprites to player
-		{
-			NetworkMessage firemsg( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY, null );
-
-			firemsg.WriteByte(TE_PLAYERSPRITES);
-			firemsg.WriteShort(pPlayer.entindex());
-			firemsg.WriteShort(g_EngineFuncs.ModelIndex( m_ilAttachSpr )); // bubble"sprites/mommaspit.spr" 
-			firemsg.WriteByte(16);
-			firemsg.WriteByte(0);
-			firemsg.End();
-            return;
-		}
-
-		pPlayer.TakeDamage( self.pev, self.pev, 0 * 0.0, m_ilHud | m_ilHudAlt );
-*/
-
 // CallBack for rp_c14
 void SetOriginPlease( CBaseEntity@ pTriggerScript ){
     CBaseEntity@ pTrain = null;
@@ -384,7 +266,7 @@ void SetOriginPlease( CBaseEntity@ pTriggerScript ){
             if( pPlayer is null or !pPlayer.IsConnected() )
                 continue;
 
-            pPlayer.SetOrigin( pTrain.Center() + Vector( 0, -24, 16 ) );
+            pPlayer.SetOrigin( pTrain.Center() + Vector( 0, -24, 6 ) );
             pPlayer.pev.solid = SOLID_NOT;
             pPlayer.pev.flags |= FL_DUCKING | FL_NOTARGET;
 			pPlayer.pev.flDuckTime = 26;
@@ -408,7 +290,7 @@ void hardcore( CBaseEntity@ pActivator,CBaseEntity@ pCaller, USE_TYPE useType, f
 	Register();
 
 	CBaseEntity@ pRepl = null;
-	while((@pRepl = g_EntityFuncs.FindEntityByClassname(pRepl, "game_save")) !is null)
+	while((@pRepl = g_EntityFuncs.FindEntityByClassname(pRepl, "point_checkpoint")) !is null)
 		g_EntityFuncs.FireTargets( "limitless_potential", pRepl, pRepl, USE_TOGGLE );
 }
 

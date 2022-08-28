@@ -1,23 +1,26 @@
-enum EnumLanguage
+void RegisterCustomTextGame()
 {
-	LANGUAGE_ENGLISH = 0, 
-	LANGUAGE_SPANISH,
-	LANGUAGE_PORTUGUESE,	
-	LANGUAGE_GERMAN,
-	LANGUAGE_FRENCH,
-	LANGUAGE_ITALIAN,
-	LANGUAGE_ESPERANTO	
+	g_CustomEntityFuncs.RegisterCustomEntity( "game_text_custom", "game_text_custom" );
 }
+
+/*
+	Original idea and game_text_custom base by Kmkz.
 	
-enum EnumSpawnFlags
-{
-	SF_ALL_PLAYERS = 1 << 0,
-	SF_NO_ECHO_CON = 1 << 1
-}
+	game_text_custom
+	The same as game_text but this entity will support custom languages if the plugin is being used.
+
+	"message" is the default message, should be placeholder for english.
+	"message_spanish" will be shown if spanish is choosen and so on with other languages. see keyvalues.
+	see supported languages at line 213
+	
+	if spawnflags 4 it will show a motd instead.
+	game_popup by Outerbeast and Giegue. Merged here for the use of languages.
+*/
 
 class game_text_custom : ScriptBaseEntity
 {
 	HUDTextParams TextParams;
+	private string killtarget	= "";
 	private string_t message_spanish, message_portuguese, message_german, message_french, message_italian, message_esperanto;
 
 	void Spawn() 
@@ -25,12 +28,12 @@ class game_text_custom : ScriptBaseEntity
 		self.pev.solid = SOLID_NOT;
 		self.pev.movetype = MOVETYPE_NONE;
 		self.pev.framerate = 1.0f;
-			
+
 		g_EntityFuncs.SetOrigin( self, self.pev.origin );
 
 		BaseClass.Spawn();	
 	}
-		
+
 	bool KeyValue( const string& in szKey, const string& in szValue )
 	{
 		if(szKey == "channel")
@@ -139,182 +142,153 @@ class game_text_custom : ScriptBaseEntity
 			message_esperanto = szValue;
 			return true;
 		}
+		else if( szKey == "killtarget" )
+		{
+            killtarget = szValue;
+			return true;
+		}
 		else 
 		{
 			return BaseClass.KeyValue( szKey, szValue );
 		}
 	}
-		
+
 	void Use(CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue)
 	{
-		if( self.pev.SpawnFlagBitSet(SF_ALL_PLAYERS) )
+		// All players flag
+		if ( self.pev.SpawnFlagBitSet( 1 ) )
 		{
 			for( int iPlayer = 1; iPlayer <= g_PlayerFuncs.GetNumPlayers(); ++iPlayer )
 			{
 				CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( iPlayer );
-				CustomKeyvalues@ ckLenguage = pPlayer.GetCustomKeyvalues();
-				CustomKeyvalue ckLenguageIs = ckLenguage.GetKeyvalue("$f_lenguage");
-				int iLanguage = int(ckLenguageIs.GetFloat());	
 
-				if( pPlayer is null || !pPlayer.IsConnected() )
-					continue;
-
-				if(iLanguage == LANGUAGE_ENGLISH)
+				if( pPlayer !is null )
 				{
-					g_PlayerFuncs.HudMessage( pPlayer, TextParams, self.pev.message );
-
-					if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-					{
-						g_Game.AlertMessage( at_notice, self.pev.message );
-					}
-				}
-					
-				if(iLanguage == LANGUAGE_SPANISH)
-				{
-					g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_spanish );
-				
-					if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-					{
-						g_Game.AlertMessage( at_notice, message_spanish );
-					}
-				}
-
-				if(iLanguage == LANGUAGE_PORTUGUESE)
-				{
-					g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_portuguese );
-				
-					if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-					{
-						g_Game.AlertMessage( at_notice, message_portuguese );
-					}
-				}
-
-				if(iLanguage == LANGUAGE_GERMAN)
-				{
-					g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_german );
-				
-					if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-					{
-						g_Game.AlertMessage( at_notice, message_german );
-					}
-				}
-
-				if(iLanguage == LANGUAGE_FRENCH)
-				{
-					g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_french );
-				
-					if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-					{
-						g_Game.AlertMessage( at_notice, message_french );
-					}
-				}
-
-				if(iLanguage == LANGUAGE_ITALIAN)
-				{
-					g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_italian );
-				
-					if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-					{
-						g_Game.AlertMessage( at_notice, message_italian );
-					}
-				}
-
-				if(iLanguage == LANGUAGE_ESPERANTO)
-				{
-					g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_esperanto );
-				
-					if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-					{
-						g_Game.AlertMessage( at_notice, message_esperanto );
-					}
+					CallText( pPlayer );
 				}
 			}
-			
-			self.SUB_UseTargets( @self, USE_TOGGLE, 0 );
 		}
 		else if( pActivator !is null && pActivator.IsPlayer() )
-		{
-			CBasePlayer@ pPlayer = cast<CBasePlayer@>(pActivator);
-			CustomKeyvalues@ ckLenguage = pPlayer.GetCustomKeyvalues();
-			CustomKeyvalue ckLenguageIs = ckLenguage.GetKeyvalue("$f_lenguage");
-			int iLanguage = int(ckLenguageIs.GetFloat());
-
-			if(iLanguage == LANGUAGE_ENGLISH)
-			{
-				g_PlayerFuncs.HudMessage( pPlayer, TextParams, self.pev.message );
-				
-				if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) ) // idk how to show this to only pPlayer. -microphone.
-				{
-					g_Game.AlertMessage( at_notice, self.pev.message );
-				}
-			}
-
-			if(iLanguage == LANGUAGE_SPANISH)
-			{
-				g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_spanish );
-				
-				if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-				{
-					g_Game.AlertMessage( at_notice, message_spanish );
-				}
-			}
-
-			if(iLanguage == LANGUAGE_PORTUGUESE)
-			{
-				g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_portuguese );
-				
-				if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-				{
-					g_Game.AlertMessage( at_notice, message_portuguese );
-				}
-			}
-
-			if(iLanguage == LANGUAGE_GERMAN)
-			{
-				g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_german );
-				
-				if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-				{
-					g_Game.AlertMessage( at_notice, message_german );
-				}
-			}
-
-			if(iLanguage == LANGUAGE_FRENCH)
-			{
-				g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_french );
-				
-				if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-				{
-					g_Game.AlertMessage( at_notice, message_french );
-				}
-			}
-
-			if(iLanguage == LANGUAGE_ITALIAN)
-			{
-				g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_italian );
-				
-				if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-				{
-					g_Game.AlertMessage( at_notice, message_italian );
-				}
-			}
-
-			if(iLanguage == LANGUAGE_ESPERANTO)
-			{
-				g_PlayerFuncs.HudMessage( pPlayer, TextParams, message_esperanto );
-				
-				if( !self.pev.SpawnFlagBitSet(SF_NO_ECHO_CON) )
-				{
-					g_Game.AlertMessage( at_notice, message_esperanto );
-				}
-			}
-			
-			g_EntityFuncs.FireTargets( self.pev.target, pPlayer, pPlayer, USE_TOGGLE );
+		{	
+			CallText( cast<CBasePlayer@>(pActivator) );
 		}
 	}
-}
+
+	void CallText( CBasePlayer@ pPlayer )
+	{
+		CustomKeyvalues@ ckLenguage = pPlayer.GetCustomKeyvalues();
+		CustomKeyvalue ckLenguageIs = ckLenguage.GetKeyvalue("$f_lenguage");
+		int iLanguage = int(ckLenguageIs.GetFloat());	
+
+		// No echo console flag
+		if( !self.pev.SpawnFlagBitSet( 2 ) )
+		{
+			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTCONSOLE, ReadLanguages(iLanguage) );
+		}
+
+		if( TextParams.effect < 3 )
+		{
+			g_PlayerFuncs.HudMessage( pPlayer, TextParams, ReadLanguages(iLanguage) );
+		}
+		else if( TextParams.effect == 3 )
+		{
+			ShowMOTD(pPlayer, string( "Title" ), ReadLanguages(iLanguage) );
+		}
+		else if( TextParams.effect == 4 )
+		{
+			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, ReadLanguages(iLanguage) );
+		}
+		/*else if( TextParams.effect == 3 )
+		{
+			TextParams.y -= 0.005;
+			
+			if( TextParams.y < 0 )
+				g_EntityFuncs.Remove( self );
+		}
+		else if( TextParams.effect == 4 )
+		{
+			TextParams.y += 0.005;
+			
+			if( TextParams.y > 1 )
+				g_EntityFuncs.Remove( self );
+		}*/
+		
+		g_EntityFuncs.FireTargets( self.pev.target, pPlayer, pPlayer, USE_TOGGLE );
+
+		if( killtarget != "" && killtarget != self.GetTargetname() )
+		{
+			do g_EntityFuncs.Remove( g_EntityFuncs.FindEntityByTargetname( null, killtarget ) );
+			while( g_EntityFuncs.FindEntityByTargetname( null, killtarget ) !is null );
+		}
+	}
+
+    string_t ReadLanguages( int iLanguage )
+    {
+        dictionary Languages =
+        {
+            {"0", self.pev.message},
+            {"1", message_spanish},
+            {"2", message_portuguese},
+            {"3", message_german},
+            {"4", message_french},
+            {"5", message_italian},
+            {"6", message_esperanto}
+        };
+
+		return string_t(Languages[ iLanguage ]);
+    }
 	
-void RegisterCustomTextGame()
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "game_text_custom", "game_text_custom" );
+    /* Shows a MOTD message to the player */ // Code by Geigue
+    void ShowMOTD(EHandle hPlayer, const string& in szTitle, const string& in szMessage)
+    {
+        if( !hPlayer )
+            return;
+
+        CBasePlayer@ pPlayer = cast<CBasePlayer@>( hPlayer.GetEntity() );
+
+        if( pPlayer is null )
+            return;
+        
+        NetworkMessage title( MSG_ONE_UNRELIABLE, NetworkMessages::ServerName, pPlayer.edict() );
+        title.WriteString( szTitle );
+        title.End();
+        
+        uint iChars = 0;
+        string szSplitMsg = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        
+        for( uint uChars = 0; uChars < szMessage.Length(); uChars++ )
+        {
+            szSplitMsg.SetCharAt( iChars, char( szMessage[ uChars ] ) );
+            iChars++;
+            if( iChars == 32 )
+            {
+                NetworkMessage message( MSG_ONE_UNRELIABLE, NetworkMessages::MOTD, pPlayer.edict() );
+                message.WriteByte( 0 );
+                message.WriteString( szSplitMsg );
+                message.End();
+                
+                iChars = 0;
+            }
+        }
+		
+        // If we reached the end, send the last letters of the message
+        if( iChars > 0 )
+        {
+            szSplitMsg.Truncate( iChars );
+            
+            NetworkMessage fix( MSG_ONE_UNRELIABLE, NetworkMessages::MOTD, pPlayer.edict() );
+            fix.WriteByte( 0 );
+            fix.WriteString( szSplitMsg );
+            fix.End();
+        }
+        
+        NetworkMessage endMOTD( MSG_ONE_UNRELIABLE, NetworkMessages::MOTD, pPlayer.edict() );
+        endMOTD.WriteByte( 1 );
+        endMOTD.WriteString( "\n" );
+        endMOTD.End();
+        
+        NetworkMessage restore( MSG_ONE_UNRELIABLE, NetworkMessages::ServerName, pPlayer.edict() );
+        restore.WriteString( g_EngineFuncs.CVarGetString( "hostname" ) );
+        restore.End();
+    }
 }

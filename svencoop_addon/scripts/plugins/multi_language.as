@@ -131,7 +131,10 @@ HookReturnCode ClientSay( SayParameters@ pParams )
 	CBasePlayer@ pPlayer = pParams.GetPlayer();
 	const CCommand@ args = pParams.GetArguments();
 	
-	if( args.ArgC() == 1 && args.Arg(0) == "language" or args.Arg(0) == "idioma" or args.Arg(0) == "trans" ){ CreateMenu( pPlayer ); }
+	if( args.ArgC() == 1 && args.Arg(0) == "language" or args.Arg(0) == "idioma" or args.Arg(0) == "trans" )
+	{
+		CreateMenu( pPlayer );
+	}
 	
 	return HOOK_CONTINUE;
 }

@@ -18,18 +18,6 @@
 }
 "entity"
 {
-"$i_message" "1"
-"$i_message_spanish" "1"
-"$i_message_portuguese" "1"
-"$i_message_german" "0"
-"$i_message_french" "0"
-"$i_message_italian" "0"
-"$i_message_esperanto" "0"
-"classname" "info_target"
-"targetname" "language"
-}
-"entity"
-{
 "classname" "game_text_custom"
 "channel" "5"
 "fxtime" "0.25"

@@ -4,7 +4,7 @@
 #include "mikk/entities/utils"
 #include "respawndead_keepweapons"
 
-#include "multi_language/game_text_custom"
+#include "multi_language/multi_language"
 
 #include "gaftherman/ammo_individual"
 
@@ -65,7 +65,7 @@ bool ShouldRestartResidualPoint(const string& in szMapName){return szMapName != 
 
 void MapInit()
 {
-	RegisterCustomTextGame();
+	MultiLanguageInit();
 	RegisterHLMP5(); 
 	RegisterAmmoIndividual();
 	MonsterZombieHev::Register();

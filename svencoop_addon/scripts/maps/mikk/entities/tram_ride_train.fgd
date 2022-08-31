@@ -1,9 +1,0 @@
-@PointClass size(-16 -16 0, 16 16 72) color(164 0 255) = tram_ride_train : "tram_ride_train"
-[
-	target(target_destination) : "Train name"
-	targetname(target_source) : "Name"
-	spawnflags(flags) =
-	[
-		1 : "Start Off" : 0
-	]
-]

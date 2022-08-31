@@ -1,6 +1,17 @@
 /*
 	Not solidity zone for tram ride like maps. "target" must be the train.
 	spawnflag 1 start off
+	
+
+INSTALL:
+
+#include "mikk/entities/tram_ride_train"
+
+void MapInit()
+{
+	RegisterSolidityZone();
+}
+
 */
 void RegisterSolidityZone() 
 {

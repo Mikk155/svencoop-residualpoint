@@ -2,17 +2,17 @@
 #include "hl_weapons/mappings"
 
 #include "mikk/entities/utils"
-#include "respawndead_keepweapons"
 
-#include "multi_language/multi_language"
+#include "mikk/multi_language"
+#include "mikk/entities/game_text_custom"
 
-#include "gaftherman/ammo_individual"
+#include "gaftherman/misc/ammo_individual"
 
 #include "mikk/entities/item_airbubble"
-#include "mikk/entities/trigger_once_mp"
 #include "mikk/entities/tram_ride_train"
-#include "mikk/entities/game_save"
 
+#include "residualpoint/game_save"
+#include "residualpoint/trigger_once_mp"
 #include "residualpoint/weapon_teleporter"
 #include "residualpoint/monster_zombie_hev"
 
@@ -65,6 +65,7 @@ bool ShouldRestartResidualPoint(const string& in szMapName){return szMapName != 
 
 void MapInit()
 {
+	RegisterCustomTextGame();
 	MultiLanguageInit();
 	RegisterHLMP5(); 
 	RegisterAmmoIndividual();

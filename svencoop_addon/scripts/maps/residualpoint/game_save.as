@@ -4,18 +4,11 @@
 	NOTE: This scripts required you to Include https://github.com/Outerbeast/Entities-and-Gamemodes/blob/master/respawndead_keepweapons.as
 
 
-INSTALL:
-
-
-#include "respawndead_keepweapons"
-#include "mikk/entities/game_save"
-
-MapInit()
-{
-	RegisterGameSave();
-}
+OLD SCRIPT but im not doing lazyripent yet until v2 or something
 
 */
+
+#include "../respawndead_keepweapons"
 
 void RegisterGameSave()
 {

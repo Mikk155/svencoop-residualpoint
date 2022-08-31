@@ -4,13 +4,36 @@
 */
 
 /*
-	Suggestions:
-	-
-	
-	Place here your suggestions
-	-
-	- A way to "Watch" for monsters state (alive/dead) then specify in the entity how many should be dead to enable this. alternative for skull without modify maps.
+
+PLACED HERE CUZ MAY BE OUT OF DATE. im not doing a update for yet in residual point until v2 or something.-
 */
+
+string ReadMap = "scripts/maps/mikk/antirush/" + string( g_Engine.mapname ) + ".txt";
+
+void ReadFile()
+{
+    File@ pFile = g_FileSystem.OpenFile( ReadMap, OpenFile::READ );
+
+    if( pFile is null || !pFile.IsOpen() ) 
+        return;
+
+    string line;
+
+    while( !pFile.EOFReached() )
+    {
+        pFile.ReadLine( line );
+            
+        if( line.Find("model") == String::INVALID_INDEX or line.Find("blipsound") == String::INVALID_INDEX ) 
+            continue;
+
+        array<string> SubLines = line.Split("\"");
+
+        g_Game.AlertMessage( at_console, SubLines[3]+"\n" );
+        g_Game.PrecacheModel( SubLines[3] );
+    }
+
+    pFile.Close();
+}
 
 const Cvar@ g_pCvarVoteAllow, g_pCvarVoteTimeCheck, g_pCvarVoteMapRequired;
 string g_szPlayerName;

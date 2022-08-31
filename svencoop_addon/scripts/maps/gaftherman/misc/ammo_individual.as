@@ -6,8 +6,27 @@
 	Mikk idea
 	Gaftherman Script
 	
-	CTRL+F "-Planned"
 	
+#include "gaftherman/misc/ammo_individual"
+
+void MapInit()
+{
+	RegisterAmmoIndividual();
+}
+
+void MapActivate()
+{
+	AmmoIndividualRemap();
+}
+
+
+
+	If you're mapper then you can use this by 2 diferent ways.
+	
+	1 - Hardcode the classnames in your maps and do not use AmmoIndividualRemap()
+	2 - use AmmoIndividualRemap() and exclude some items by adding custom keyvalue "$i_ignore_item"
+	
+	CTRL+F "-Planned"
 */
 
 /*enum ammo_individual

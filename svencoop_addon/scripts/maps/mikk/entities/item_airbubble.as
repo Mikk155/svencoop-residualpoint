@@ -1,10 +1,23 @@
 /*
 	Original script by Cubemath: https://github.com/CubeMath/UCHFastDL2/blob/master/svencoop/scripts/maps/cubemath/item_airbubble.as
+	
+
+INSTALL:
+
+#include "mikk/entities/item_airbubble"
+
+void MapInit()
+{
+	RegisterAirbubbleCustomEntity();
+}
+
 */
+
 void RegisterAirbubbleCustomEntity()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "item_airbubble", "item_airbubble" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "item_miniairbubble", "item_miniairbubble" );
+	g_Game.PrecacheOther( "item_miniairbubble" );
 }
 
 class item_airbubble : ScriptBaseEntity 

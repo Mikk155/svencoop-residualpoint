@@ -1,8 +1,3 @@
-void RegisterCustomTextGame()
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "game_text_custom", "game_text_custom" );
-}
-
 /*
 	Original idea and game_text_custom base by Kmkz.
 	
@@ -10,18 +5,34 @@ void RegisterCustomTextGame()
 	The same as game_text but this entity will support custom languages if the plugin is being used.
 
 	"message" is the default message, should be placeholder for english.
-	"message_spanish" will be shown if spanish is choosen and so on with other languages. see keyvalues.
-	see supported languages at line 213
+	"message_spanish" will be shown if spanish is choosen and so on with other languages. see utils for supported languages.
 	
-	if spawnflags 4 it will show a motd instead.
 	game_popup by Outerbeast and Giegue. Merged here for the use of languages.
+	
+
+INSTALL:
+
+#include "mikk/multi_language"
+#include "mikk/entities/utils"
+#include "mikk/entities/game_text_custom"
+
+void MapInit()
+{
+	RegisterCustomTextGame();
+	MultiLanguageInit();
+}
+
 */
 
-class game_text_custom : ScriptBaseEntity
+void RegisterCustomTextGame()
+{
+	g_CustomEntityFuncs.RegisterCustomEntity( "game_text_custom", "game_text_custom" );
+}
+
+class game_text_custom : ScriptBaseEntity, MLAN::MoreKeyValues
 {
 	HUDTextParams TextParams;
-	private string killtarget	= "";
-	private string_t message_spanish, message_portuguese, message_german, message_french, message_italian, message_esperanto;
+	private string killtarget = "";
 
 	void Spawn() 
 	{
@@ -36,25 +47,23 @@ class game_text_custom : ScriptBaseEntity
 
 	bool KeyValue( const string& in szKey, const string& in szValue )
 	{
+		SexKeyValues(szKey, szValue);
+
 		if(szKey == "channel")
 		{
 			TextParams.channel = atoi(szValue);
-			return true;
 		}
 		else if(szKey == "x")
 		{
 			TextParams.x = atof(szValue);
-			return true;
 		}
 		else if(szKey == "y")
 		{
 			TextParams.y = atof(szValue);
-			return true;
 		}
 		else if(szKey == "effect")
 		{
 			TextParams.effect = atoi(szValue);
-			return true;
 		}
 		else if(szKey == "color")
 		{
@@ -72,7 +81,6 @@ class game_text_custom : ScriptBaseEntity
 			TextParams.r1 = vcolor.r;
 			TextParams.g1 = vcolor.g;
 			TextParams.b1 = vcolor.b;
-			return true;
 		}
 		else if(szKey == "color2")
 		{
@@ -90,67 +98,33 @@ class game_text_custom : ScriptBaseEntity
 			TextParams.r2 = vcolor2.r;
 			TextParams.g2 = vcolor2.g;
 			TextParams.b2 = vcolor2.b;
-			return true;
 		}
 		else if(szKey == "fadein")
 		{
 			TextParams.fadeinTime = atof(szValue);
-			return true;
 		}
 		else if(szKey == "fadeout")
 		{
 			TextParams.fadeoutTime = atof(szValue);
-			return true;
 		}
 		else if(szKey == "holdtime")
 		{
 			TextParams.holdTime = atof(szValue);
-			return true;
 		}
 		else if(szKey == "fxtime")
 		{
 			TextParams.fxTime = atof(szValue);
-			return true;
-		}
-		else if(szKey == "message_spanish")
-		{
-			message_spanish = szValue;
-			return true;
-		}
-		else if(szKey == "message_portuguese")
-		{
-			message_portuguese = szValue;
-			return true;
-		}
-		else if(szKey == "message_german")
-		{
-			message_german = szValue;
-			return true;
-		}
-		else if(szKey == "message_french")
-		{
-			message_french = szValue;
-			return true;
-		}
-		else if(szKey == "message_italian")
-		{
-			message_italian = szValue;
-			return true;
-		}
-		else if(szKey == "message_esperanto")
-		{
-			message_esperanto = szValue;
-			return true;
 		}
 		else if( szKey == "killtarget" )
 		{
             killtarget = szValue;
-			return true;
 		}
 		else 
 		{
 			return BaseClass.KeyValue( szKey, szValue );
 		}
+
+		return true;
 	}
 
 	void Use(CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue)
@@ -176,69 +150,66 @@ class game_text_custom : ScriptBaseEntity
 
 	void CallText( CBasePlayer@ pPlayer )
 	{
-		CustomKeyvalues@ ckLenguage = pPlayer.GetCustomKeyvalues();
-		CustomKeyvalue ckLenguageIs = ckLenguage.GetKeyvalue("$f_lenguage");
-		int iLanguage = int(ckLenguageIs.GetFloat());	
-
-		// No echo console flag
-		if( !self.pev.SpawnFlagBitSet( 2 ) )
-		{
-			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTCONSOLE, ReadLanguages(iLanguage) );
-		}
-
-		if( TextParams.effect < 3 )
-		{
-			g_PlayerFuncs.HudMessage( pPlayer, TextParams, ReadLanguages(iLanguage) );
-		}
-		else if( TextParams.effect == 3 )
-		{
-			ShowMOTD(pPlayer, string( "Title" ), ReadLanguages(iLanguage) );
-		}
-		else if( TextParams.effect == 4 )
-		{
-			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, ReadLanguages(iLanguage) );
-		}
-		/*else if( TextParams.effect == 3 )
-		{
-			TextParams.y -= 0.005;
-			
-			if( TextParams.y < 0 )
-				g_EntityFuncs.Remove( self );
-		}
-		else if( TextParams.effect == 4 )
-		{
-			TextParams.y += 0.005;
-			
-			if( TextParams.y > 1 )
-				g_EntityFuncs.Remove( self );
-		}*/
+		// Game text legacy -// For some reasons this is not doing TOGGLE. not sure. didn't tested more than func_wall_toggle.
+		self.SUB_UseTargets( pPlayer, USE_TOGGLE, 0 );
 		
-		g_EntityFuncs.FireTargets( self.pev.target, pPlayer, pPlayer, USE_TOGGLE );
-
+		// Ditto
 		if( killtarget != "" && killtarget != self.GetTargetname() )
 		{
 			do g_EntityFuncs.Remove( g_EntityFuncs.FindEntityByTargetname( null, killtarget ) );
 			while( g_EntityFuncs.FindEntityByTargetname( null, killtarget ) !is null );
 		}
+		
+		int iLanguage = MLAN::GetCKV(pPlayer, "$f_lenguage");
+
+		if( !self.pev.SpawnFlagBitSet( 2 ) )	// No echo console flag
+		{
+			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTCONSOLE, string(ReadLanguages(iLanguage))+"\n" );
+		}
+
+		// Game text things
+		if( TextParams.effect <= 2 )
+		{
+			g_PlayerFuncs.HudMessage( pPlayer, TextParams, ReadLanguages(iLanguage) );
+		}
+		// trigger_once/multiple-like messages
+		else if( TextParams.effect == 3 )
+		{
+			g_PlayerFuncs.ShowMessage( pPlayer, ""+string(ReadLanguages(iLanguage))+"\n" );
+		}
+		// Scrolling mesage ( must trigger to update)
+		else if( TextParams.effect == 4 )
+		{
+			TextParams.y -= 0.005;
+
+			if( TextParams.y < 0 )
+			{
+				g_EntityFuncs.Remove( self );
+			}
+		}
+		// Ditto. opposite.
+		else if( TextParams.effect == 5 )
+		{
+			TextParams.y += 0.005;
+			
+			if( TextParams.y > 1 )
+			{
+				g_EntityFuncs.Remove( self );
+			}
+		}
+		// Motd message
+		else if( TextParams.effect == 6 )
+		{
+			ShowMOTD( pPlayer, string( "motd info" ), string( ReadLanguages(iLanguage)  ) );
+		}
+		// Chat message
+		else if( TextParams.effect == 7 )
+		{
+			g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, ""+string(ReadLanguages(iLanguage))+"\n" );
+		}
 	}
 
-    string_t ReadLanguages( int iLanguage )
-    {
-        dictionary Languages =
-        {
-            {"0", self.pev.message},
-            {"1", message_spanish},
-            {"2", message_portuguese},
-            {"3", message_german},
-            {"4", message_french},
-            {"5", message_italian},
-            {"6", message_esperanto}
-        };
-
-		return string_t(Languages[ iLanguage ]);
-    }
-	
-    /* Shows a MOTD message to the player */ // Code by Geigue
+    /*	Shows a MOTD message to the player -Code by Geigue	*/
     void ShowMOTD(EHandle hPlayer, const string& in szTitle, const string& in szMessage)
     {
         if( !hPlayer )

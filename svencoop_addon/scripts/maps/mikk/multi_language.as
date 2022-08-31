@@ -1,12 +1,27 @@
-// Read current map .ent localization script.
-const string EntFileLoad = "multi_language/localizations/" + string( g_Engine.mapname ) + ".ent";
+/*
 
-// Include game_text_custom
-#include "game_text_custom"
+INSTALL:
+
+#include "mikk/entities/utils"
+#include "mikk/multi_language"
+
+void MapInit()
+{
+	MultiLanguageInit();
+}
+
+- Suggestions:
+	- 
+	- 
+	- 
+	- 
+*/
+
+// Read current map .ent localization script.
+const string EntFileLoad = "multi_language/" + string( g_Engine.mapname ) + ".ent";
 
 void MultiLanguageInit()
 {
-	RegisterCustomTextGame();
 	// Wait a moment before deleting old entities.
 	g_Scheduler.SetTimeout( "MultiLanguageActivate", 1.0f );
 }
@@ -22,7 +37,7 @@ void MultiLanguageActivate()
 	{
 		while ( ( @pNewTexts = g_EntityFuncs.FindEntityByClassname( pNewTexts, "game_text_custom" ) ) !is null )
 		{
-			// Find new entities ad save their targetnames
+			// Find new entities and save their targetnames
 			Names.insertLast(pNewTexts.GetTargetname());
 		}
 		

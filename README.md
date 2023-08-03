@@ -1,4 +1,3 @@
 # Residual-Point-svencoop
 
-**Half-Life: Residual-Point Sven Co-op Port**
-For more information visit [scmapdb.com](http://scmapdb.wikidot.com/map:residual-point)
+This may be aa old version, this project is currently a work in progress behind the scenes so this may be old outdated and possibly broken

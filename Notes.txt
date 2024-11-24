@@ -1,1 +1,0 @@
-rp_c02 was causing massive lag for someone's DS. tried in my LS but works fine. test again in DS at some point.-Mikk

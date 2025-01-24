@@ -1,48 +1,12 @@
 /*
     Replacemet for point_checkpoint that will save everyone's lifes and not only dead ones.
-    
-    NOTE: This scripts required you to Include https://github.com/Outerbeast/Entities-and-Gamemodes/blob/master/respawndead_keepweapons.as
-
-
-OLD SCRIPT but im not doing lazyripent yet until v2 or something
-
 */
-
-#include "../respawndead_keepweapons"
 
 void RegisterGameSave()
 {
     g_Hooks.RegisterHook( Hooks::Player::PlayerPreThink, @PlayerUseSpawn::PlayerUse );
     g_CustomEntityFuncs.RegisterCustomEntity( "game_save", "point_checkpoint" );
     g_Game.PrecacheOther( "point_checkpoint" );
-
-    dictionary keyvalues;
-
-    keyvalues = 
-    {
-        { "message", "Press 'E' key to respawn"},
-        { "message_spanish", "Presione la tecla 'E' para reaparecer"},
-        { "message_portuguese", "Pressione a tecla 'E' para reaparecer"},
-        { "message_french", "Appuyez sur la touche 'E' pour reapparaitre"},
-        { "message_italian", "Premi il tasto 'E' per rigenerarti"},
-        { "message_esperanto", "Premu la 'E' klavon por reakiri"},
-        { "message_german", "Drucken Sie die 'E'-Taste, um zu respawnen"},
-        { "x", "-1"},
-        { "y", "0.67"},
-        { "effect", "0"},
-        { "holdtime", "1"},
-        { "fadeout", "0"},
-        { "fadein", "0"},
-        { "channel", "7"},
-        { "fxtime", "0"},
-        { "color", "255 0 0"},
-        { "color2", "100 100 100"},
-        { "spawnflags", "2"}, // No echo console + activator only
-        { "targetname", "GZ_IZL_HOWTOUSE"}
-    };
-    if( g_CustomEntityFuncs.IsCustomEntity( "game_text_custom" ) )
-    { g_EntityFuncs.CreateEntity( "game_text_custom", keyvalues, true ); }
-    else{ g_EntityFuncs.CreateEntity( "game_text", keyvalues, true ); }
 }
 
 HUDTextParams SpawnCountHudText;
@@ -279,16 +243,15 @@ namespace PlayerUseSpawn
 
         if( !pPlayer.IsAlive() && pPlayer.GetObserver().IsObserver() )
         {
-            g_EntityFuncs.FireTargets( "GZ_IZL_HOWTOUSE", pPlayer, pPlayer, USE_ON );
+            g_PlayerFuncs.PrintKeyBindingString( pPlayer, "Press +use key to respawn" );
         
             if( pPlayer.m_afButtonLast & IN_USE != 0 || pPlayer.m_afButtonPressed & IN_USE != 0  )
             {
-                pPlayer.GetObserver().RemoveDeadBody(); //Remove the dead player body
-                
-                g_PlayerFuncs.RespawnPlayer( pPlayer, false, true );
+                pPlayer.Revive();
 
-                // Must include https://github.com/Outerbeast/Entities-and-Gamemodes/blob/master/respawndead_keepweapons.as
-                RESPAWNDEAD_KEEPWEAPONS::ReEquipCollected( pPlayer, true );
+                pPlayer.GetObserver().RemoveDeadBody(); //Remove the dead player body
+
+                g_PlayerFuncs.RespawnPlayer( pPlayer, true, true );
                 
                 ckvSpawns.SetKeyvalue("$i_gs_spawns", kvSpawnIs - 1 );
             }
